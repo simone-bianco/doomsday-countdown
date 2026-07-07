@@ -1,0 +1,69 @@
+# AI Laravel Starter index
+
+## Scope
+
+This index describes only the `ai-laravel-starter` project. Do not use it to operate on parent GDRRAG files or databases.
+
+## Quickstart
+
+- Install PHP dependencies: `composer install`.
+- Install frontend dependencies: `npm install`.
+- Prepare local env/database: copy `.env.example` to `.env`, create `database/database.sqlite`, then run `php artisan key:generate` and `php artisan migrate` for the starter database only.
+- Initialize starter data: `php artisan initialize-ai-project`.
+- Start local development: `composer run dev` or run Laravel/Vite processes separately.
+
+## Runtime surfaces
+
+- Home page: `GET /` -> `app/Http/Controllers/HomeController.php` -> `resources/js/Pages/Home.vue`.
+- Agent demo JSON endpoint: `POST /agent/demo` -> `app/Http/Controllers/Agent/DemoAgentController.php` -> `app/Services/Starter/DemoAgentService.php`.
+- Login/logout: `routes/web.php` with `AuthSessionController`.
+- Backoffice: prefix from `config/ai-starter.php` key `backoffice_path`, default `/backoffice`.
+- Backoffice users: `backoffice.users.store`, `backoffice.users.update`, `backoffice.users.destroy` handled by `UserController`.
+- Backoffice OpenAI keys: `backoffice.openai-keys.store`, `backoffice.openai-keys.update`, `backoffice.openai-keys.destroy` handled by `OpenAiKeyController`.
+
+## Package inventory
+
+- PHP packages under `packages/simone-bianco/`: `laravel-ai-agents`, `laravel-fill-variables`, `laravel-form-bridge`, `laravel-key-rotator`, `laravel-patches`.
+- Vue packages under `packages/simone-bianco/`: `vue-form-core`, `vue-ui-components`, `vue-ui-components-testing`.
+- Local path repositories are declared in the root `composer.json` of this starter.
+
+## DTOs and generated artifacts
+
+- DTO source of truth: `app/Data/*.php`.
+- Form rules: `resources/js/generated/form-rules.ts`; regenerate with `php artisan form-bridge:generate` after DTO changes.
+- TypeScript declarations: `resources/js/types/generated.d.ts`; regenerate with `php artisan typescript:transform` after exported type changes.
+- Frontend forms should use `useSmartForm` and generated rules unless a documented JSON debug exception applies.
+
+## Config and env
+
+- Starter config: `config/ai-starter.php`.
+- Key rotation config: `config/laravel-key-rotator.php`.
+- OpenAI config: `config/services.php` keys under `openai`.
+- `.env.example` includes `AI_STARTER_BACKOFFICE_PATH`, `OPENAI_API_KEY`, `OPENAI_MODEL`, and `KEY_ROTATOR_ENCRYPT_KEYS`.
+
+## QA commands
+
+Run from `ai-laravel-starter` only:
+
+```bash
+composer validate --strict
+php artisan route:list
+php artisan list | findstr initialize-ai-project
+php artisan form-bridge:generate
+php artisan typescript:transform
+npm run build
+php artisan test --stop-on-failure
+```
+
+`composer validate --strict` may fail on intentionally local `@dev` or unconstrained package constraints; investigate any new error separately.
+
+## Safe script policy
+
+`start-ngrok-all.bat` must not kill global `ngrok.exe`, `php.exe`, or unrelated `artisan` processes. If a port is occupied, close only the starter-owned process manually.
+
+## Known guardrails
+
+- Do not run real migrations, setup scripts, or ngrok scripts against a parent project database.
+- Do not expose plaintext OpenAI keys in UI, logs, docs, or `extra_data`.
+- Preserve `POST /agent/demo` as a JSON endpoint with payload `{ message: string }`.
+- Preserve the configurable backoffice path contract from `AI_STARTER_BACKOFFICE_PATH`.
