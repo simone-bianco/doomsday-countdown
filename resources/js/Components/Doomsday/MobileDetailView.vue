@@ -55,7 +55,7 @@ const homeUrl = computed(() => `/?lang=${props.currentLocale}`);
                 v-for="tab in tabs"
                 :key="tab.value"
                 variant="link"
-                :ui="{ root: ['doomsday-display rounded-none border-b-2 px-0 py-4 text-xs no-underline', activeTab === tab.value ? 'border-ui-primary text-ui-primary' : 'border-transparent text-ui-muted-foreground'].join(' ') }"
+                :ui="{ root: ['doomsday-display rounded-none border-b-2 px-0 py-4 text-xs no-underline outline-none ring-0 shadow-none focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 active:ring-0 active:outline-none', activeTab === tab.value ? 'border-ui-primary text-ui-primary' : 'border-transparent text-ui-muted-foreground'].join(' ') }"
                 @click="activeTab = tab.value"
             >
                 {{ tab.label }}

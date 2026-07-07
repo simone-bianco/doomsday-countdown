@@ -37,7 +37,7 @@ void i18n.use(LanguageDetector).init({
         it: {
             translation: {
                 home: 'Home',
-                about: 'Metodo',
+                about: 'About',
                 overview: 'Sintesi',
                 predictions: 'Previsioni',
                 statistics: 'Statistiche',
@@ -58,12 +58,12 @@ void i18n.use(LanguageDetector).init({
                 methodology: 'Scopri la metodologia',
             },
         },
-        fr: { translation: { home: 'Home', about: 'À propos' } },
-        de: { translation: { home: 'Home', about: 'Über' } },
-        es: { translation: { home: 'Home', about: 'Acerca de' } },
-        nl: { translation: { home: 'Home', about: 'Over' } },
-        sv: { translation: { home: 'Home', about: 'Om' } },
-        pl: { translation: { home: 'Home', about: 'O nas' } },
+        fr: { translation: { home: 'Home', about: 'About' } },
+        de: { translation: { home: 'Home', about: 'About' } },
+        es: { translation: { home: 'Home', about: 'About' } },
+        nl: { translation: { home: 'Home', about: 'About' } },
+        sv: { translation: { home: 'Home', about: 'About' } },
+        pl: { translation: { home: 'Home', about: 'About' } },
     },
 });
 

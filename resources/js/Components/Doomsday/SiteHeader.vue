@@ -24,14 +24,14 @@ function navClass(page: 'home' | 'about'): string {
 
 <template>
     <header class="sticky top-0 z-40 border-b border-white/10 bg-black/75 backdrop-blur-xl">
-        <div class="mx-auto flex max-w-[1760px] items-center justify-between px-4 py-4 sm:px-7">
+        <div class="mx-auto flex max-w-[1760px] items-center justify-between px-4 py-3 sm:px-7">
             <a :href="homeUrl" class="flex items-center gap-3" aria-label="Doomsday Countdown home">
-                <img src="/images/doomsday/doomsday_logo_transparent.png" alt="Doomsday Countdown" class="h-10 w-auto sm:h-12" />
+                <img src="/images/doomsday/doomsday_logo_transparent.png" alt="Doomsday Countdown" class="h-9 w-auto sm:h-10" />
             </a>
 
             <nav class="hidden items-center gap-10 text-sm uppercase tracking-[0.18em] lg:flex">
-                <a :href="homeUrl" :class="['border-b-2 px-2 py-7', navClass('home')]">{{ t('home') }}</a>
-                <a :href="aboutUrl" :class="['border-b-2 px-2 py-7', navClass('about')]">{{ t('about') }}</a>
+                <a :href="homeUrl" :class="['border-b-2 px-2 py-5', navClass('home')]">{{ t('home') }}</a>
+                <a :href="aboutUrl" :class="['border-b-2 px-2 py-5', navClass('about')]">{{ t('about') }}</a>
             </nav>
 
             <LanguageSelector :languages="languages" :current-locale="currentLocale" />
