@@ -76,8 +76,7 @@ watch(() => `${props.countdown.slug}:${props.currentLocale}`, () => {
                         {{ expanded ? 'Collapse' : 'Expand' }}
                     </Button>
                 </div>
-                <p class="doomsday-display text-[11px] text-ui-muted-foreground">{{ t('selectedEvent') }}</p>
-                <h2 class="doomsday-display mt-2 text-xl leading-tight text-white sm:text-2xl 2xl:text-3xl">{{ countdown.title }}</h2>
+                <h2 class="doomsday-display mt-4 text-xl leading-tight text-white sm:text-2xl 2xl:text-3xl">{{ countdown.title }}</h2>
                 <p class="mt-2 max-w-3xl text-sm leading-relaxed text-ui-muted-foreground">{{ countdown.summary }}</p>
             </div>
             <div class="min-w-0 max-w-full justify-self-start text-center xl:justify-self-end">
