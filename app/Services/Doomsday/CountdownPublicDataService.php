@@ -25,11 +25,16 @@ use App\Models\Initiative;
 use App\Models\News;
 use App\Models\Projection;
 use App\Models\Visualization;
+use App\Services\Doomsday\Copy\AboutPageCopy;
 use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Collection;
 
 final class CountdownPublicDataService
 {
+    public function __construct(private readonly AboutPageCopy $aboutPageCopy)
+    {
+    }
+
     /** @var array<string, array{label: string, native: string, flag: string}> */
     private const LANGUAGES = [
         'en' => ['label' => 'English', 'native' => 'English', 'flag' => '🇬🇧'],
@@ -105,13 +110,10 @@ final class CountdownPublicDataService
         $locale = $this->normalizeLocale($locale);
         $copy = $this->aboutCopy($locale);
 
-        return [
+        return array_merge([
             'app_name' => 'Doomsday Countdown',
             'current_locale' => $locale,
-            'title' => $copy['title'],
-            'subtitle' => $copy['subtitle'],
-            'sections' => $copy['sections'],
-        ];
+        ], $copy);
     }
 
     /** @param array<string, mixed> $aboutPayload */
@@ -135,7 +137,21 @@ final class CountdownPublicDataService
             languages: $payload['languages'],
             title: (string) $payload['title'],
             subtitle: (string) $payload['subtitle'],
+            eyebrow: (string) $payload['eyebrow'],
+            hero_badge: (string) $payload['hero_badge'],
+            filter_watch_label: (string) $payload['filter_watch_label'],
+            visual_label: (string) $payload['visual_label'],
+            pipeline_label: (string) $payload['pipeline_label'],
+            faq_title: (string) $payload['faq_title'],
+            faq_subtitle: (string) $payload['faq_subtitle'],
+            closing_label: (string) $payload['closing_label'],
+            intro: $payload['intro'],
+            stats: $payload['stats'],
             sections: $payload['sections'],
+            timeline: $payload['timeline'],
+            faq: $payload['faq'],
+            closing_title: (string) $payload['closing_title'],
+            closing_body: (string) $payload['closing_body'],
         );
     }
 
@@ -373,12 +389,7 @@ final class CountdownPublicDataService
     /** @return array<string, mixed> */
     private function aboutCopy(string $locale): array
     {
-        $copy = [
-            'en' => ['title' => 'About the countdowns', 'subtitle' => 'A public monitoring interface for critical global risk scenarios.', 'sections' => [['title' => 'Methodology', 'body' => 'Each countdown is an editorial forecast based on curated public-source scenario data, trend indicators, and transparent assumptions. Dates are estimated targets, not certainties.'], ['title' => 'Scenario data', 'body' => 'The current public dataset is seeded from curated public sources in the local database. It does not ingest live feeds or external services.'], ['title' => 'Interpretation', 'body' => 'The interface is designed to make risk signals legible. It should be read as a planning and awareness tool, not as a deterministic prediction.']]],
-            'it' => ['title' => 'Informazioni sui countdown', 'subtitle' => 'Un’interfaccia pubblica di monitoraggio per scenari critici globali.', 'sections' => [['title' => 'Metodologia', 'body' => 'Ogni countdown è una previsione editoriale basata su dati scenario da fonti pubbliche curate, indicatori di tendenza e assunzioni trasparenti. Le date sono obiettivi stimati, non certezze.'], ['title' => 'Dati scenario', 'body' => 'Il dataset pubblico corrente è popolato nel database locale da fonti pubbliche curate. Non acquisisce feed live o servizi esterni.'], ['title' => 'Interpretazione', 'body' => 'L’interfaccia rende leggibili i segnali di rischio. Va letta come strumento di pianificazione e consapevolezza, non come previsione deterministica.']]],
-        ];
-
-        return $copy[$locale] ?? $copy['en'];
+        return $this->aboutPageCopy->forLocale($locale);
     }
 
     /** @return array<string, string> */

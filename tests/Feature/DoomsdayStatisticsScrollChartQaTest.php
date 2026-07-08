@@ -30,6 +30,9 @@ final class DoomsdayStatisticsScrollChartQaTest extends TestCase
         $this->assertStringContainsString('grid min-w-0 shrink-0 gap-4', $detail);
         $this->assertStringContainsString('doomsday-scrollbar flex shrink-0', $detail);
         $this->assertStringContainsString('doomsday-scrollbar grid min-h-0 min-w-0 flex-1 auto-rows-max gap-5 overflow-y-auto overscroll-contain', $detail);
+        $this->assertStringContainsString('class="doomsday-scrollbar grid min-h-0 min-w-0 flex-1 auto-rows-max gap-5 overflow-y-auto overscroll-contain p-4 pr-2 sm:p-5 sm:pr-3"', $detail);
+        $this->assertStringContainsString(":class=\"['grid w-full min-w-0 gap-5', expanded ? 'xl:grid-cols-2' : '']\"", $detail);
+        $this->assertStringNotContainsString("['doomsday-scrollbar grid min-h-0 min-w-0 flex-1 auto-rows-max gap-5 overflow-y-auto overscroll-contain p-4 pr-2 sm:p-5 sm:pr-3', expanded ? 'xl:grid-cols-2' : '']", $detail);
         $this->assertStringContainsString("activeTab === 'statistics'", $detail);
         $this->assertStringContainsString('<StatisticsSection v-if="statisticsSection" :section="statisticsSection" />', $detail);
         $this->assertStringNotContainsString('max-h-[calc(100vh-5.25rem)]', $detail);

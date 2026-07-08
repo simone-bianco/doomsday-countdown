@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
+import { motion } from 'motion-v';
 import { Button, Card, Image } from '@simone-bianco/vue-ui-components';
 import { ChevronDown, ChevronLeft, FileText, Folder, Newspaper, Share2, Sparkles, X } from 'lucide-vue-next';
 import CountdownTimer from './CountdownTimer.vue';
@@ -11,6 +12,7 @@ import NewsSection from './NewsSection.vue';
 import StatisticsSection from './StatisticsSection.vue';
 import { isLazySectionKey, useDoomsdayLazySections, type LazySectionKey } from '@/Composables/useDoomsdayLazySections';
 import { t } from '@/i18n';
+import { panelReveal, resolveMotionPreset, useDoomsdayReducedMotion } from '@/animations/doomsdayMotion';
 import type { CountdownForecastsData, CountdownInitiativesSectionData, CountdownNewsSectionData, CountdownOverviewData, CountdownStatisticsData } from '@/types/generated';
 
 const props = defineProps<{
@@ -46,6 +48,8 @@ const forecastSection = lazy.forecastSection;
 const statisticsSection = lazy.statisticsSection;
 const newsSection = lazy.newsSection;
 const initiativesSection = lazy.initiativesSection;
+const reducedMotion = useDoomsdayReducedMotion();
+const panelMotion = computed(() => resolveMotionPreset(panelReveal, reducedMotion.value));
 
 function activateTab(value: string): void {
     activeTab.value = value;
@@ -61,7 +65,7 @@ watch(() => `${props.countdown.slug}:${props.currentLocale}`, () => {
 </script>
 
 <template>
-    <section class="min-h-screen bg-black pb-24 lg:hidden">
+    <motion.section class="min-h-screen bg-black pb-24 lg:hidden" :initial="panelMotion.initial" :animate="panelMotion.animate" :transition="panelMotion.transition">
         <header class="sticky top-0 z-40 flex h-16 items-center justify-between border-b border-white/10 bg-black/95 px-4 backdrop-blur-xl">
             <Button variant="link" size="sm" :icon="ChevronLeft" aria-label="Back to countdown list" :ui="{ root: 'p-0 text-ui-primary no-underline' }" @click="emit('close')" />
             <h1 class="doomsday-display max-w-[58vw] truncate text-center text-lg text-white">{{ countdown.title }}</h1>
@@ -140,5 +144,5 @@ watch(() => `${props.countdown.slug}:${props.currentLocale}`, () => {
             <a :href="`/about?lang=${currentLocale}`" class="grid justify-items-center gap-1"><Folder class="h-5 w-5" />{{ t('resources') }}</a>
             <Button variant="link" size="sm" :icon="FileText" :ui="{ root: 'grid justify-items-center gap-1 p-0 text-ui-muted-foreground no-underline' }" @click="activateTab('forecasts')">{{ t('analysis') }}</Button>
         </nav>
-    </section>
+    </motion.section>
 </template>

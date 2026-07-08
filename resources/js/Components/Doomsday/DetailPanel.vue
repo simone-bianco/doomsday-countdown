@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
+import { AnimatePresence, motion } from 'motion-v';
 import { ArrowLeft, Maximize2, Minimize2 } from 'lucide-vue-next';
 import { Button, Image } from '@simone-bianco/vue-ui-components';
 import CountdownTimer from './CountdownTimer.vue';
@@ -12,6 +13,7 @@ import OverviewSection from './OverviewSection.vue';
 import StatisticsSection from './StatisticsSection.vue';
 import { isLazySectionKey, useDoomsdayLazySections, type LazySectionKey } from '@/Composables/useDoomsdayLazySections';
 import { t } from '@/i18n';
+import { resolveMotionPreset, tabContent, useDoomsdayReducedMotion } from '@/animations/doomsdayMotion';
 import type { CountdownForecastsData, CountdownInitiativesSectionData, CountdownNewsSectionData, CountdownOverviewData, CountdownStatisticsData } from '@/types/generated';
 
 const props = withDefaults(defineProps<{
@@ -51,12 +53,43 @@ const forecastSection = lazy.forecastSection;
 const statisticsSection = lazy.statisticsSection;
 const newsSection = lazy.newsSection;
 const initiativesSection = lazy.initiativesSection;
+const reducedMotion = useDoomsdayReducedMotion();
+const tabMotion = computed(() => resolveMotionPreset(tabContent, reducedMotion.value));
+const tabContentKey = computed(() => `${props.countdown.slug}:${activeTab.value}:${sectionState(activeTab.value)}`);
 
 function activateTab(value: string): void {
     activeTab.value = value;
     if (isLazySectionKey(value)) {
         void lazy.loadSection(value);
     }
+}
+
+function sectionState(value: string): string {
+    if (! isLazySectionKey(value)) {
+        return 'ready';
+    }
+
+    if (lazy.hasError(value)) {
+        return 'error';
+    }
+
+    return sectionByKey(value) === null ? 'loading' : 'ready';
+}
+
+function sectionByKey(key: LazySectionKey) {
+    if (key === 'forecasts') {
+        return forecastSection.value;
+    }
+
+    if (key === 'statistics') {
+        return statisticsSection.value;
+    }
+
+    if (key === 'news') {
+        return newsSection.value;
+    }
+
+    return initiativesSection.value;
 }
 
 watch(() => `${props.countdown.slug}:${props.currentLocale}`, () => {
@@ -96,34 +129,45 @@ watch(() => `${props.countdown.slug}:${props.currentLocale}`, () => {
             </Button>
         </div>
 
-        <div :class="['doomsday-scrollbar grid min-h-0 min-w-0 flex-1 auto-rows-max gap-5 overflow-y-auto overscroll-contain p-4 pr-2 sm:p-5 sm:pr-3', expanded ? 'xl:grid-cols-2' : '']">
-            <template v-if="activeTab === 'overview'">
-                <OverviewSection :countdown="countdown" />
-            </template>
+        <div class="doomsday-scrollbar grid min-h-0 min-w-0 flex-1 auto-rows-max gap-5 overflow-y-auto overscroll-contain p-4 pr-2 sm:p-5 sm:pr-3">
+            <AnimatePresence mode="wait" :initial="false">
+                <motion.div
+                    :key="tabContentKey"
+                    :class="['grid w-full min-w-0 gap-5', expanded ? 'xl:grid-cols-2' : '']"
+                    :initial="tabMotion.initial"
+                    :animate="tabMotion.animate"
+                    :exit="tabMotion.exit"
+                    :transition="tabMotion.transition"
+                >
+                    <template v-if="activeTab === 'overview'">
+                        <OverviewSection :countdown="countdown" />
+                    </template>
 
-            <template v-else-if="activeTab === 'forecasts'">
-                <ForecastsSection v-if="forecastSection" :section="forecastSection" />
-                <DoomsdaySectionError v-else-if="lazy.hasError('forecasts')" title="Forecasts unavailable" @retry="lazy.loadSection('forecasts')" />
-                <DoomsdaySkeletonBlock v-else variant="chart" />
-            </template>
+                    <template v-else-if="activeTab === 'forecasts'">
+                        <ForecastsSection v-if="forecastSection" :section="forecastSection" />
+                        <DoomsdaySectionError v-else-if="lazy.hasError('forecasts')" title="Forecasts unavailable" @retry="lazy.loadSection('forecasts')" />
+                        <DoomsdaySkeletonBlock v-else variant="chart" />
+                    </template>
 
-            <template v-else-if="activeTab === 'statistics'">
-                <StatisticsSection v-if="statisticsSection" :section="statisticsSection" />
-                <DoomsdaySectionError v-else-if="lazy.hasError('statistics')" title="Statistics unavailable" @retry="lazy.loadSection('statistics')" />
-                <DoomsdaySkeletonBlock v-else variant="summary" />
-            </template>
+                    <template v-else-if="activeTab === 'statistics'">
+                        <StatisticsSection v-if="statisticsSection" :section="statisticsSection" />
+                        <DoomsdaySectionError v-else-if="lazy.hasError('statistics')" title="Statistics unavailable" @retry="lazy.loadSection('statistics')" />
+                        <DoomsdaySkeletonBlock v-else variant="summary" />
+                    </template>
 
-            <template v-else-if="activeTab === 'news'">
-                <NewsSection v-if="newsSection" :section="newsSection" />
-                <DoomsdaySectionError v-else-if="lazy.hasError('news')" title="News unavailable" @retry="lazy.loadSection('news')" />
-                <DoomsdaySkeletonBlock v-else variant="list" />
-            </template>
+                    <template v-else-if="activeTab === 'news'">
+                        <NewsSection v-if="newsSection" :section="newsSection" />
+                        <DoomsdaySectionError v-else-if="lazy.hasError('news')" title="News unavailable" @retry="lazy.loadSection('news')" />
+                        <DoomsdaySkeletonBlock v-else variant="list" />
+                    </template>
 
-            <template v-else-if="activeTab === 'initiatives'">
-                <InitiativesSection v-if="initiativesSection" :section="initiativesSection" />
-                <DoomsdaySectionError v-else-if="lazy.hasError('initiatives')" title="Initiatives unavailable" @retry="lazy.loadSection('initiatives')" />
-                <DoomsdaySkeletonBlock v-else variant="initiatives" />
-            </template>
+                    <template v-else-if="activeTab === 'initiatives'">
+                        <InitiativesSection v-if="initiativesSection" :section="initiativesSection" />
+                        <DoomsdaySectionError v-else-if="lazy.hasError('initiatives')" title="Initiatives unavailable" @retry="lazy.loadSection('initiatives')" />
+                        <DoomsdaySkeletonBlock v-else variant="initiatives" />
+                    </template>
+                </motion.div>
+            </AnimatePresence>
         </div>
     </section>
 </template>

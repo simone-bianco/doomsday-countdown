@@ -15,6 +15,7 @@
         "i18next-browser-languagedetector": "^8.2.0",
         "ky": "^1.14.0",
         "lucide-vue-next": "^0.563.0",
+        "motion-v": "^2.3.0",
         "vue": "^3.4.0"
     },
     "devDependencies": {

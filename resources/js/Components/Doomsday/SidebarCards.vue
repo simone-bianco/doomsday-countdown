@@ -1,13 +1,20 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import { Link } from '@inertiajs/vue3';
+import { motion } from 'motion-v';
 import { Card, Image, Button } from '@simone-bianco/vue-ui-components';
 import { ChevronRight } from 'lucide-vue-next';
 import { t } from '@/i18n';
+import { ctaHover, ctaPress, disabledMotionTarget, fastTransition, useDoomsdayReducedMotion } from '@/animations/doomsdayMotion';
 import type { CountdownIndexData } from '@/types/generated';
 
 defineProps<{
     readonly featured: CountdownIndexData | null;
 }>();
+
+const reducedMotion = useDoomsdayReducedMotion();
+const ctaHoverMotion = computed(() => disabledMotionTarget(ctaHover, reducedMotion.value));
+const ctaPressMotion = computed(() => disabledMotionTarget(ctaPress, reducedMotion.value));
 </script>
 
 <template>
@@ -19,15 +26,17 @@ defineProps<{
                 <h3 class="doomsday-display text-xl text-white">{{ t('dailyUpdate') }}</h3>
                 <p class="text-sm leading-relaxed text-ui-muted-foreground">{{ featured.summary }}</p>
                 <Link :href="featured.url" class="block w-full sm:w-fit">
-                    <Button
-                        variant="secondary"
-                        size="md"
-                        icon-position="right"
-                        :icon="ChevronRight"
-                        :ui="{ root: 'group doomsday-display w-full border-ui-primary/50 bg-ui-primary/10 px-4 py-2.5 text-[0.7rem] font-bold uppercase tracking-[0.12em] text-ui-primary shadow-[0_0_18px_rgba(255,42,35,0.16)] hover:border-ui-primary hover:bg-ui-primary/20 hover:text-white hover:shadow-[0_0_26px_rgba(255,42,35,0.28)] sm:w-auto', icon: 'transition-transform group-hover:translate-x-0.5' }"
-                    >
-                        {{ t('viewDetails') }}
-                    </Button>
+                    <motion.div class="w-full sm:w-fit" :while-hover="ctaHoverMotion" :while-press="ctaPressMotion" :transition="fastTransition">
+                        <Button
+                            variant="secondary"
+                            size="md"
+                            icon-position="right"
+                            :icon="ChevronRight"
+                            :ui="{ root: 'group doomsday-display w-full border-ui-primary/50 bg-ui-primary/10 px-4 py-2.5 text-[0.7rem] font-bold uppercase tracking-[0.12em] text-ui-primary shadow-[0_0_18px_rgba(255,42,35,0.16)] hover:border-ui-primary hover:bg-ui-primary/20 hover:text-white hover:shadow-[0_0_26px_rgba(255,42,35,0.28)] sm:w-auto', icon: 'transition-transform group-hover:translate-x-0.5' }"
+                        >
+                            {{ t('viewDetails') }}
+                        </Button>
+                    </motion.div>
                 </Link>
             </div>
         </Card>

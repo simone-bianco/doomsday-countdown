@@ -127,8 +127,37 @@ body {
     100% { background-position: -220% 0; }
 }
 
+.doomsday-about-orbit {
+    animation: doomsday-about-orbit 16s linear infinite;
+    transform-origin: center;
+}
+
+.doomsday-about-orbit-slow {
+    animation: doomsday-about-orbit 24s linear infinite reverse;
+    transform-origin: center;
+}
+
+.doomsday-about-scan {
+    animation: doomsday-about-scan 3.8s ease-in-out infinite;
+    box-shadow: 0 0 28px rgba(255, 42, 35, 0.36);
+}
+
+@keyframes doomsday-about-orbit {
+    0% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(180deg) scale(1.035); }
+    100% { transform: rotate(360deg) scale(1); }
+}
+
+@keyframes doomsday-about-scan {
+    0%, 100% { opacity: 0.18; transform: translateY(-90px); }
+    50% { opacity: 0.86; transform: translateY(90px); }
+}
+
 @media (prefers-reduced-motion: reduce) {
-    .doomsday-skeleton {
+    .doomsday-skeleton,
+    .doomsday-about-orbit,
+    .doomsday-about-orbit-slow,
+    .doomsday-about-scan {
         animation: none;
     }
 }

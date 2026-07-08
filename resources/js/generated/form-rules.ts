@@ -22,7 +22,21 @@ export const AboutPageDataRules: FormRuleMap = {
   languages: { default: [], rules: [{ name: 'present' }, { name: 'array' }] },
   title: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
   subtitle: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  eyebrow: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  hero_badge: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  filter_watch_label: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  visual_label: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  pipeline_label: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  faq_title: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  faq_subtitle: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  closing_label: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  intro: { default: [], rules: [{ name: 'required' }, { name: 'array' }] },
+  stats: { default: [], rules: [{ name: 'required' }, { name: 'array' }] },
   sections: { default: [], rules: [{ name: 'required' }, { name: 'array' }] },
+  timeline: { default: [], rules: [{ name: 'required' }, { name: 'array' }] },
+  faq: { default: [], rules: [{ name: 'required' }, { name: 'array' }] },
+  closing_title: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  closing_body: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
 };
 
 export const CountdownDetailDataRules: FormRuleMap = {

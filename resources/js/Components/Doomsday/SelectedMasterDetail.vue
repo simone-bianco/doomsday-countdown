@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
+import { motion } from 'motion-v';
 import CountdownList from './CountdownList.vue';
 import DetailPanel from './DetailPanel.vue';
 import DoomsdaySkeletonBlock from './DoomsdaySkeletonBlock.vue';
+import { panelReveal, resolveMotionPreset, useDoomsdayReducedMotion } from '@/animations/doomsdayMotion';
 import type { CountdownForecastsData, CountdownIndexData, CountdownInitiativesSectionData, CountdownNewsSectionData, CountdownOverviewData, CountdownStatisticsData } from '@/types/generated';
 
 withDefaults(defineProps<{
@@ -29,10 +31,12 @@ const emit = defineEmits<{
 }>();
 
 const isDetailExpanded = ref(false);
+const reducedMotion = useDoomsdayReducedMotion();
+const detailMotion = computed(() => resolveMotionPreset(panelReveal, reducedMotion.value));
 </script>
 
 <template>
-    <section :class="['mx-auto hidden max-w-[1760px] h-[calc(100vh-64px)] min-h-0 gap-5 overflow-hidden px-5 py-4 lg:grid xl:px-7', isDetailExpanded ? 'grid-cols-1' : 'grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]']">
+    <motion.section :class="['mx-auto hidden max-w-[1760px] h-[calc(100vh-64px)] min-h-0 gap-5 overflow-hidden px-5 py-4 lg:grid xl:px-7', isDetailExpanded ? 'grid-cols-1' : 'grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]']" :initial="detailMotion.initial" :animate="detailMotion.animate" :transition="detailMotion.transition">
         <div v-if="!isDetailExpanded" class="doomsday-scrollbar grid min-h-0 min-w-0 content-start gap-5 overflow-y-auto pr-1">
             <div class="relative min-w-0 overflow-hidden rounded-2xl border border-white/10 bg-black p-6 xl:p-8">
                 <img :src="hero.desktop_image" alt="Earth horizon with red monitoring arcs" class="absolute inset-0 h-full w-full object-cover object-center opacity-45" />
@@ -66,5 +70,5 @@ const isDetailExpanded = ref(false);
             />
             <DoomsdaySkeletonBlock v-else />
         </div>
-    </section>
+    </motion.section>
 </template>

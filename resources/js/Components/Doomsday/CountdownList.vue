@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+import { motion } from 'motion-v';
 import CountdownCard from './CountdownCard.vue';
+import { cardReveal, cardStaggerDelay, resolveMotionPreset, useDoomsdayReducedMotion, withMotionDelay } from '@/animations/doomsdayMotion';
 import type { CountdownIndexData } from '@/types/generated';
 
 withDefaults(defineProps<{
@@ -16,18 +19,33 @@ withDefaults(defineProps<{
 const emit = defineEmits<{
     select: [countdown: CountdownIndexData];
 }>();
+
+const reducedMotion = useDoomsdayReducedMotion();
+const cardMotion = computed(() => resolveMotionPreset(cardReveal, reducedMotion.value));
+
+function cardTransition(index: number) {
+    return resolveMotionPreset(withMotionDelay(cardReveal, cardStaggerDelay(index)), reducedMotion.value).transition;
+}
 </script>
 
 <template>
     <section class="grid content-start items-start gap-3 sm:gap-4">
-        <CountdownCard
-            v-for="countdown in countdowns"
+        <motion.div
+            v-for="(countdown, index) in countdowns"
             :key="countdown.slug"
-            :countdown="countdown"
-            :compact="compact"
-            :selected-slug="selectedSlug"
-            :pending-slug="pendingSlug"
-            @select="emit('select', $event)"
-        />
+            class="min-w-0"
+            :initial="cardMotion.initial"
+            :animate="cardMotion.animate"
+            :exit="cardMotion.exit"
+            :transition="cardTransition(index)"
+        >
+            <CountdownCard
+                :countdown="countdown"
+                :compact="compact"
+                :selected-slug="selectedSlug"
+                :pending-slug="pendingSlug"
+                @select="emit('select', $event)"
+            />
+        </motion.div>
     </section>
 </template>

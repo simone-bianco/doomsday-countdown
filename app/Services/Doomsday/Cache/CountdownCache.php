@@ -28,7 +28,13 @@ final class CountdownCache
     public function about(string $locale, string $currentPath): array
     {
         $locale = $this->service->normalizeLocale($locale);
-        $payload = $this->remember(DoomsdayCacheKeys::about($locale), fn (): array => $this->service->aboutPayload($locale));
+        $key = DoomsdayCacheKeys::about($locale);
+        $payload = $this->remember($key, fn (): array => $this->service->aboutPayload($locale));
+
+        if (! $this->isCompleteAboutPayload($payload)) {
+            Cache::forget($key);
+            $payload = $this->service->aboutPayload($locale);
+        }
 
         return $this->service->aboutFromPayload($locale, $currentPath, $payload);
     }
@@ -101,6 +107,18 @@ final class CountdownCache
         foreach ($keys as $key) {
             Cache::forget($key);
         }
+    }
+
+    /** @param array<string, mixed> $payload */
+    private function isCompleteAboutPayload(array $payload): bool
+    {
+        foreach (['title', 'subtitle', 'eyebrow', 'hero_badge', 'filter_watch_label', 'visual_label', 'pipeline_label', 'faq_title', 'faq_subtitle', 'closing_label', 'intro', 'stats', 'sections', 'timeline', 'faq', 'closing_title', 'closing_body'] as $key) {
+            if (! array_key_exists($key, $payload)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /** @return array<string, mixed> */
