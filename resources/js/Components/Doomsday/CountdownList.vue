@@ -19,7 +19,7 @@ const emit = defineEmits<{
 </script>
 
 <template>
-    <section class="grid gap-3 sm:gap-4">
+    <section class="grid content-start items-start gap-3 sm:gap-4">
         <CountdownCard
             v-for="countdown in countdowns"
             :key="countdown.slug"

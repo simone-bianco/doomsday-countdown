@@ -34,13 +34,14 @@ const timerClass = computed(() => props.compact
         tabindex="0"
         :aria-pressed="isSelected"
         :ui="{
-            root: ['doomsday-card min-w-0 rounded-xl transition duration-200 hover:border-ui-primary/80 focus:outline-none focus:ring-2 focus:ring-ui-primary/50', isSelected ? 'doomsday-glow border-ui-primary' : '', isPending ? 'border-ui-primary/70 shadow-[0_0_28px_rgba(255,42,35,0.18)]' : ''].join(' '),
+            root: ['doomsday-card relative h-fit self-start min-w-0 overflow-hidden rounded-xl transition duration-200 hover:border-ui-primary/80 focus:outline-none focus:ring-2 focus:ring-ui-primary/50', isSelected ? 'doomsday-glow border-ui-primary' : '', isPending ? 'border-ui-primary/70 shadow-[0_0_28px_rgba(255,42,35,0.18)]' : ''].join(' '),
             body: 'p-0 min-w-0',
         }"
         @click="emit('select', countdown)"
         @keydown.enter="emit('select', countdown)"
         @keydown.space.prevent="emit('select', countdown)"
     >
+        <span v-if="isSelected" aria-hidden="true" class="pointer-events-none absolute inset-y-0 left-0 z-20 w-[2px] bg-ui-primary shadow-[0_0_16px_rgba(255,42,35,0.75)]" />
         <div :class="gridClass">
             <CountdownCardImage
                 :image-url="countdown.image_url"

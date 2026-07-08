@@ -29,7 +29,7 @@ withDefaults(defineProps<{
             </div>
         </div>
 
-        <div v-else-if="variant === 'initiatives'" class="grid gap-4 sm:grid-cols-2">
+        <div v-else-if="variant === 'initiatives'" class="grid grid-cols-1 gap-4">
             <div v-for="index in 2" :key="index" class="rounded-lg border border-ui-primary/20 bg-ui-primary/5 p-4">
                 <div class="doomsday-skeleton h-4 w-28 rounded" />
                 <div class="doomsday-skeleton mt-4 h-5 w-3/4 rounded" />

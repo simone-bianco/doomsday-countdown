@@ -37,12 +37,12 @@ defineProps<{
 
                 <div class="grid gap-5">
                     <Card :ui="{ root: 'doomsday-card rounded-2xl', body: 'p-7' }">
-                        <p class="doomsday-display text-xs text-ui-primary">Phase 1 status</p>
+                        <p class="doomsday-display text-xs text-ui-primary">Data status</p>
                         <div class="mt-5 flex items-end gap-3 text-ui-primary">
-                            <span class="doomsday-display text-7xl leading-none">04</span>
-                            <span class="pb-3 text-white/65">sample scenarios online</span>
+                            <span class="doomsday-display text-7xl leading-none">01</span>
+                            <span class="pb-3 text-white/65">public-source scenario online</span>
                         </div>
-                        <p class="mt-5 leading-relaxed text-ui-muted-foreground">The public interface currently uses local seeded scenario data and curated visual assets. No live feeds are ingested in this phase.</p>
+                        <p class="mt-5 leading-relaxed text-ui-muted-foreground">The public interface currently uses curated public-source scenario data seeded from the local database. No live feeds are ingested in this phase.</p>
                     </Card>
                     <Card :ui="{ root: 'doomsday-card rounded-2xl', body: 'p-7' }">
                         <p class="doomsday-display text-xs text-ui-primary">How to read the clock</p>

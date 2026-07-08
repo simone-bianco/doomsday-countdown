@@ -30,7 +30,7 @@ final class DoomsdayLazyCacheInitiativesTest extends TestCase
     {
         $this->seed(DoomsdaySeeder::class);
 
-        $response = $this->withHeaders($this->partialHeaders('forecast_section'))->get('/countdowns/fall-of-europe?lang=en');
+        $response = $this->withHeaders($this->partialHeaders('forecast_section'))->get('/countdowns/taiwan-invasion?lang=en');
 
         $response->assertOk();
         $props = $response->json('props');
@@ -40,7 +40,7 @@ final class DoomsdayLazyCacheInitiativesTest extends TestCase
         $this->assertArrayNotHasKey('statistics_section', $props);
         $this->assertArrayNotHasKey('news_section', $props);
         $this->assertArrayNotHasKey('initiatives_section', $props);
-        $this->assertSame('fall-of-europe', $props['forecast_section']['countdown_slug']);
+        $this->assertSame('taiwan-invasion', $props['forecast_section']['countdown_slug']);
         $this->assertNotEmpty($props['forecast_section']['projections']);
     }
 
@@ -48,7 +48,7 @@ final class DoomsdayLazyCacheInitiativesTest extends TestCase
     {
         $this->seed(DoomsdaySeeder::class);
 
-        $response = $this->withHeaders($this->partialHeaders('initiatives_section'))->get('/countdowns/fall-of-europe?lang=en');
+        $response = $this->withHeaders($this->partialHeaders('initiatives_section'))->get('/countdowns/taiwan-invasion?lang=en');
 
         $response->assertOk();
         $props = $response->json('props');
@@ -58,7 +58,7 @@ final class DoomsdayLazyCacheInitiativesTest extends TestCase
         $this->assertArrayNotHasKey('forecast_section', $props);
         $this->assertArrayNotHasKey('statistics_section', $props);
         $this->assertArrayNotHasKey('news_section', $props);
-        $this->assertSame('fall-of-europe', $props['initiatives_section']['countdown_slug']);
+        $this->assertSame('taiwan-invasion', $props['initiatives_section']['countdown_slug']);
         $this->assertNotEmpty($props['initiatives_section']['initiatives']);
     }
 
@@ -66,7 +66,7 @@ final class DoomsdayLazyCacheInitiativesTest extends TestCase
     {
         $this->seed(DoomsdaySeeder::class);
 
-        $response = $this->withHeaders($this->partialHeaders('selected_countdown'))->get('/countdowns/fall-of-europe?lang=en');
+        $response = $this->withHeaders($this->partialHeaders('selected_countdown'))->get('/countdowns/taiwan-invasion?lang=en');
 
         $response->assertOk();
         $props = $response->json('props');
@@ -78,7 +78,7 @@ final class DoomsdayLazyCacheInitiativesTest extends TestCase
         $this->assertArrayNotHasKey('statistics_section', $props);
         $this->assertArrayNotHasKey('news_section', $props);
         $this->assertArrayNotHasKey('initiatives_section', $props);
-        $this->assertSame('fall-of-europe', $props['selected_countdown']['slug']);
+        $this->assertSame('taiwan-invasion', $props['selected_countdown']['slug']);
     }
 
     public function test_partial_reload_closes_selected_countdown_from_home_route(): void
@@ -100,16 +100,16 @@ final class DoomsdayLazyCacheInitiativesTest extends TestCase
     {
         $this->seed(DoomsdaySeeder::class);
 
-        $overview = $this->getJson(route('countdowns.data.overview', ['slug' => 'fall-of-europe', 'lang' => 'it']));
+        $overview = $this->getJson(route('countdowns.data.overview', ['slug' => 'taiwan-invasion', 'lang' => 'it']));
         $overview->assertOk()
-            ->assertJsonPath('data.slug', 'fall-of-europe')
-            ->assertJsonPath('data.title', 'Caduta dell’Europa');
+            ->assertJsonPath('data.slug', 'taiwan-invasion')
+            ->assertJsonPath('data.title', 'Invasione di Taiwan');
 
         $sections = [
-            'countdowns.data.forecasts' => ['projections', 'fall-of-europe'],
-            'countdowns.data.statistics' => ['visualizations', 'fall-of-europe'],
-            'countdowns.data.news' => ['news', 'fall-of-europe'],
-            'countdowns.data.initiatives' => ['initiatives', 'fall-of-europe'],
+            'countdowns.data.forecasts' => ['projections', 'taiwan-invasion'],
+            'countdowns.data.statistics' => ['visualizations', 'taiwan-invasion'],
+            'countdowns.data.news' => ['news', 'taiwan-invasion'],
+            'countdowns.data.initiatives' => ['initiatives', 'taiwan-invasion'],
         ];
 
         foreach ($sections as $routeName => [$payloadKey, $slug]) {

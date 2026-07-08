@@ -66,7 +66,7 @@ watch(() => `${props.countdown.slug}:${props.currentLocale}`, () => {
 </script>
 
 <template>
-    <section class="doomsday-card flex max-h-[calc(100vh-5.25rem)] min-h-0 flex-col rounded-2xl">
+    <section class="doomsday-card flex h-full min-h-0 flex-col overflow-hidden rounded-2xl">
         <div class="grid min-w-0 shrink-0 gap-4 border-b border-white/10 p-4 sm:p-5 xl:grid-cols-[minmax(0,1fr)_auto]">
             <Image :src="countdown.image_url" :alt="countdown.title" aspect-ratio="56.25%" rounded="lg" :ui="{ root: 'sm:hidden' }" />
             <div class="min-w-0">
@@ -96,7 +96,7 @@ watch(() => `${props.countdown.slug}:${props.currentLocale}`, () => {
             </Button>
         </div>
 
-        <div :class="['doomsday-scrollbar grid min-h-0 min-w-0 flex-1 gap-5 overflow-y-auto p-4 sm:p-5', expanded ? 'xl:grid-cols-2' : '']">
+        <div :class="['doomsday-scrollbar grid min-h-0 min-w-0 flex-1 auto-rows-max gap-5 overflow-y-auto overscroll-contain p-4 pr-2 sm:p-5 sm:pr-3', expanded ? 'xl:grid-cols-2' : '']">
             <template v-if="activeTab === 'overview'">
                 <OverviewSection :countdown="countdown" />
             </template>

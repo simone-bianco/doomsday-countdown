@@ -20,7 +20,7 @@ const titleClass = computed(() => props.compact
     : 'doomsday-display line-clamp-2 text-[clamp(1.25rem,3vw,1.95rem)] font-bold leading-[1.05] tracking-[0.06em] text-white drop-shadow-[0_2px_16px_rgba(0,0,0,0.9)]');
 const subtitleClass = computed(() => props.compact
     ? 'mt-2 line-clamp-2 text-[0.72rem] leading-relaxed text-white/75 sm:text-xs'
-    : 'mt-3 line-clamp-2 text-xs leading-relaxed text-white/75 sm:text-sm');
+    : 'line-clamp-2 text-xs leading-relaxed text-white/75 sm:text-sm');
 </script>
 
 <template>

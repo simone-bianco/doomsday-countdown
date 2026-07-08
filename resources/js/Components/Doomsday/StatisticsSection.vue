@@ -16,7 +16,7 @@ const otherVisualizations = computed(() => props.section.visualizations.filter((
 
 <template>
     <KeyIndicatorsCard :visualization="keyIndicators" />
-    <Card v-for="visualization in otherVisualizations" :key="visualization.key" :ui="{ root: 'doomsday-card rounded-xl', body: 'p-5 sm:p-6' }">
+    <Card v-for="visualization in otherVisualizations" :key="visualization.key" :ui="{ root: 'doomsday-card min-w-0 rounded-xl', body: 'overflow-visible p-5 sm:p-6' }">
         <h3 class="doomsday-display mb-4 text-white">{{ visualization.title || t('statistics') }}</h3>
         <VisualizationChart v-if="visualization.type === 'line' || visualization.type === 'area'" :payload="visualization.payload" />
         <p class="mt-4 text-sm text-ui-muted-foreground">{{ visualization.description }}</p>

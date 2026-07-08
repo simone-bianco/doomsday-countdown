@@ -17,15 +17,15 @@ final class DoomsdayFinalQaRegressionTest extends TestCase
     {
         $this->seed(DoomsdaySeeder::class);
 
-        $page = app(CountdownCache::class)->page('it', 'fall-of-europe', 'countdowns/fall-of-europe');
+        $page = app(CountdownCache::class)->page('it', 'taiwan-invasion', 'countdowns/taiwan-invasion');
         $languages = collect($page['languages']);
 
         $this->assertCount(8, $languages);
         $this->assertSame('it', $page['current_locale']);
         $this->assertTrue($languages->firstWhere('code', 'it')['is_current']);
         $this->assertFalse($languages->firstWhere('code', 'en')['is_current']);
-        $this->assertSame('/countdowns/fall-of-europe?lang=it', $languages->firstWhere('code', 'it')['url']);
-        $this->assertSame('/countdowns/fall-of-europe?lang=en', $languages->firstWhere('code', 'en')['url']);
+        $this->assertSame('/countdowns/taiwan-invasion?lang=it', $languages->firstWhere('code', 'it')['url']);
+        $this->assertSame('/countdowns/taiwan-invasion?lang=en', $languages->firstWhere('code', 'en')['url']);
     }
 
     public function test_public_payload_copy_has_no_prohibited_legacy_terms(): void
@@ -34,12 +34,12 @@ final class DoomsdayFinalQaRegressionTest extends TestCase
 
         $cache = app(CountdownCache::class);
         $payload = json_encode([
-            'page' => $cache->page('en', 'fall-of-europe', 'countdowns/fall-of-europe'),
-            'selected_countdown' => $cache->overview('fall-of-europe', 'en'),
-            'forecast_section' => $cache->forecasts('fall-of-europe', 'en'),
-            'statistics_section' => $cache->statistics('fall-of-europe', 'en'),
-            'news_section' => $cache->news('fall-of-europe', 'en'),
-            'initiatives_section' => $cache->initiatives('fall-of-europe', 'en'),
+            'page' => $cache->page('en', 'taiwan-invasion', 'countdowns/taiwan-invasion'),
+            'selected_countdown' => $cache->overview('taiwan-invasion', 'en'),
+            'forecast_section' => $cache->forecasts('taiwan-invasion', 'en'),
+            'statistics_section' => $cache->statistics('taiwan-invasion', 'en'),
+            'news_section' => $cache->news('taiwan-invasion', 'en'),
+            'initiatives_section' => $cache->initiatives('taiwan-invasion', 'en'),
         ], JSON_THROW_ON_ERROR);
 
         foreach (['Artificial Intelligence', 'OpenAI', 'AI ', 'AI<', 'Agent Debug', 'Backoffice', 'Login'] as $prohibited) {
@@ -94,6 +94,7 @@ final class DoomsdayFinalQaRegressionTest extends TestCase
         $this->assertStringNotContainsString('grid-cols-3', $mobile);
         $this->assertStringNotContainsString('-mt-8', $mobile);
         $this->assertStringContainsString('hidden max-w-[1760px]', $desktop);
+        $this->assertStringContainsString('h-[calc(100vh-64px)] min-h-0', $desktop);
         $this->assertStringContainsString('lg:grid', $desktop);
         $this->assertStringNotContainsString('minmax(500px', $desktop);
         $this->assertStringNotContainsString('minmax(720px', $desktop);
@@ -120,7 +121,9 @@ final class DoomsdayFinalQaRegressionTest extends TestCase
         $this->assertStringContainsString("route('countdowns.data.overview'", $selection);
         $this->assertStringContainsString('axios.get<{ data: SectionDataByKey[K] }>', $lazy);
         $this->assertStringContainsString('DoomsdaySkeletonBlock', $detail);
-        $this->assertStringContainsString('flex max-h-[calc(100vh-5.25rem)] min-h-0 flex-col', $detail);
+        $this->assertStringContainsString('flex h-full min-h-0 flex-col overflow-hidden', $detail);
+        $this->assertStringContainsString('auto-rows-max', $detail);
+        $this->assertStringContainsString('overscroll-contain', $detail);
         $this->assertStringContainsString('doomsday-scrollbar', $detail);
         $this->assertStringContainsString('overflow-y-auto', $detail);
         $this->assertStringContainsString('toggleExpanded', $detail);

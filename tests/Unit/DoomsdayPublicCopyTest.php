@@ -38,6 +38,12 @@ final class DoomsdayPublicCopyTest extends TestCase
         $this->assertStringNotContainsString('Agent Debug', $content);
         $this->assertStringNotContainsString('Backoffice', $content);
         $this->assertStringNotContainsString('Login', $content);
+        $this->assertStringNotContainsString('sample data', strtolower($content));
+        $this->assertStringNotContainsString('sample scenario', strtolower($content));
+        $this->assertStringNotContainsString('dati campione', strtolower($content));
+        $this->assertStringNotContainsString('example.org', strtolower($content));
+        $this->assertStringNotContainsString('daily monitor', strtolower($content));
+        $this->assertStringNotContainsString('global desk', strtolower($content));
     }
 
     public function test_public_layout_menu_contains_only_home_and_about_links(): void
@@ -149,6 +155,7 @@ final class DoomsdayPublicCopyTest extends TestCase
         $cardImage = (string) file_get_contents(__DIR__ . '/../../resources/js/Components/Doomsday/CountdownCardImage.vue');
         $app = (string) file_get_contents(__DIR__ . '/../../resources/js/app.js');
         $loader = (string) file_get_contents(__DIR__ . '/../../resources/js/Components/App/AppNavigationLoader.vue');
+        $sidebar = (string) file_get_contents(__DIR__ . '/../../resources/js/Components/Doomsday/SidebarCards.vue');
 
         $this->assertStringContainsString('readonly selected_countdown?: CountdownOverviewData | null', $home);
         $this->assertStringContainsString('useDoomsdaySelection', $home);
@@ -169,11 +176,15 @@ final class DoomsdayPublicCopyTest extends TestCase
 
         $this->assertStringContainsString('defineEmits', $countdownList);
         $this->assertStringContainsString('@select="emit', $countdownList);
+        $this->assertStringContainsString('items-start max-w-[1760px]', $home);
+        $this->assertStringContainsString('content-start items-start', $home);
+        $this->assertStringContainsString('content-start items-start', $countdownList);
         $this->assertStringContainsString('@click="emit', $countdownCard);
         $this->assertStringNotContainsString('prefetch cache-for="2m"', $countdownCard);
         $this->assertStringNotContainsString('<Link', $countdownCard);
         $this->assertStringContainsString('readonly selectedSlug?: string | null', $countdownCard);
         $this->assertStringContainsString('readonly pendingSlug?: string | null', $countdownCard);
+        $this->assertStringContainsString('h-fit self-start', $countdownCard);
         $this->assertStringContainsString('min-w-0', $countdownCard);
         $this->assertStringContainsString("'grid min-w-0 grid-cols-1 gap-0'", $countdownCard);
         $this->assertStringContainsString('border-t border-white/10', $countdownCard);
@@ -213,6 +224,25 @@ final class DoomsdayPublicCopyTest extends TestCase
         $this->assertStringContainsString('InitiativesSection', $mobileDetail);
         $this->assertStringContainsString('fixed inset-x-0 bottom-0', $mobileDetail);
 
+        $newsSection = (string) file_get_contents(__DIR__ . '/../../resources/js/Components/Doomsday/NewsSection.vue');
+        $initiativesSection = (string) file_get_contents(__DIR__ . '/../../resources/js/Components/Doomsday/InitiativesSection.vue');
+        $chart = (string) file_get_contents(__DIR__ . '/../../resources/js/Components/Doomsday/VisualizationChart.vue');
+        $this->assertStringContainsString(':href="item.source_url ??', $newsSection);
+        $this->assertStringContainsString('grid grid-cols-1 gap-4', $newsSection);
+        $this->assertStringNotContainsString('sm:grid-cols-2', $newsSection);
+        $this->assertStringContainsString('target="_blank"', $newsSection);
+        $this->assertStringContainsString('rel="noopener noreferrer"', $newsSection);
+        $this->assertStringContainsString(':href="item.url"', $initiativesSection);
+        $this->assertStringContainsString('grid grid-cols-1 gap-4', $initiativesSection);
+        $this->assertStringNotContainsString('sm:grid-cols-2', $initiativesSection);
+        $this->assertStringContainsString('ExternalLink', $initiativesSection);
+        $this->assertStringContainsString('RawSeries', $chart);
+        $this->assertStringContainsString('min-w-[600px]', $chart);
+        $this->assertStringContainsString('h-[22rem]', $chart);
+        $this->assertStringContainsString('pb-6', $chart);
+        $this->assertStringContainsString('paddedMax', $chart);
+        $this->assertStringNotContainsString('Math.max(100', $chart);
+
         $this->assertStringNotContainsString('countdown.timer.estimated_label', $detail);
         $this->assertStringNotContainsString('countdown.timer.estimated_label', $mobileDetail);
         $this->assertStringContainsString('All countdowns', $detail);
@@ -220,7 +250,11 @@ final class DoomsdayPublicCopyTest extends TestCase
         $this->assertStringContainsString('Minimize2', $detail);
         $this->assertStringContainsString('readonly expanded?: boolean', $detail);
         $this->assertStringContainsString('toggleExpanded', $detail);
-        $this->assertStringContainsString('flex max-h-[calc(100vh-5.25rem)] min-h-0 flex-col', $detail);
+        $this->assertStringContainsString('flex h-full min-h-0 flex-col overflow-hidden', $detail);
+        $this->assertStringContainsString('auto-rows-max', $detail);
+        $this->assertStringContainsString('overscroll-contain', $detail);
+        $this->assertStringContainsString('h-[calc(100vh-64px)] min-h-0', $masterDetail);
+        $this->assertStringContainsString('self-stretch', $masterDetail);
         $this->assertStringContainsString('doomsday-scrollbar', $detail);
         $this->assertStringContainsString('overflow-y-auto', $detail);
         $this->assertStringContainsString('shrink-0', $detail);
@@ -237,6 +271,11 @@ final class DoomsdayPublicCopyTest extends TestCase
         $this->assertStringContainsString("import { ZiggyVue } from '../../vendor/tightenco/ziggy';", $app);
         $this->assertLessThan(strpos($app, '.use(plugin)'), strpos($app, '.use(ZiggyVue)'));
         $this->assertStringContainsString('h(AppNavigationLoader)', $app);
+        $this->assertStringContainsString('block w-full sm:w-fit', $sidebar);
+        $this->assertStringContainsString('size="md"', $sidebar);
+        $this->assertStringContainsString('doomsday-display w-full border-ui-primary/50 bg-ui-primary/10', $sidebar);
+        $this->assertStringContainsString('hover:shadow-[0_0_26px_rgba(255,42,35,0.28)]', $sidebar);
+        $this->assertStringContainsString('group-hover:translate-x-0.5', $sidebar);
         $this->assertStringContainsString('router.on(\'start\'', $loader);
         $this->assertStringContainsString('fixed inset-x-0 top-0', $loader);
     }

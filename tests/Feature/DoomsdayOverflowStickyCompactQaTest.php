@@ -34,6 +34,9 @@ final class DoomsdayOverflowStickyCompactQaTest extends TestCase
         $cardImage = (string) file_get_contents(base_path('resources/js/Components/Doomsday/CountdownCardImage.vue'));
 
         $this->assertStringContainsString("'grid min-w-0 grid-cols-1 gap-0'", $card);
+        $this->assertStringContainsString('doomsday-card relative h-fit self-start min-w-0 overflow-hidden', $card);
+        $this->assertStringContainsString('v-if="isSelected"', $card);
+        $this->assertStringContainsString('absolute inset-y-0 left-0 z-20 w-[2px] bg-ui-primary', $card);
         $this->assertStringContainsString('border-t border-white/10', $card);
         $this->assertStringContainsString('py-2.5', $card);
         $this->assertStringContainsString('py-3', $card);
@@ -66,18 +69,20 @@ final class DoomsdayOverflowStickyCompactQaTest extends TestCase
         $this->assertStringContainsString('Minimize2', $detail);
         $this->assertStringContainsString('expanded ? Minimize2 : Maximize2', $detail);
         $this->assertStringContainsString("{{ expanded ? 'Collapse' : 'Expand' }}", $detail);
-        $this->assertStringContainsString('doomsday-card flex max-h-[calc(100vh-5.25rem)] min-h-0 flex-col', $detail);
+        $this->assertStringContainsString('doomsday-card flex h-full min-h-0 flex-col overflow-hidden', $detail);
         $this->assertStringContainsString('grid min-w-0 shrink-0 gap-4', $detail);
         $this->assertStringContainsString('p-4 sm:p-5', $detail);
         $this->assertStringContainsString('text-xl leading-tight text-white sm:text-2xl 2xl:text-3xl', $detail);
         $this->assertStringContainsString('doomsday-scrollbar flex shrink-0', $detail);
-        $this->assertStringContainsString('doomsday-scrollbar grid min-h-0 min-w-0 flex-1 gap-5 overflow-y-auto', $detail);
+        $this->assertStringContainsString('doomsday-scrollbar grid min-h-0 min-w-0 flex-1 auto-rows-max gap-5 overflow-y-auto overscroll-contain', $detail);
 
         foreach (['sm:grid-cols-[1fr_auto]', 'min-w-72', 'countdown.timer.estimated_label', 'absolute right-5 top-5'] as $forbidden) {
             $this->assertStringNotContainsString($forbidden, $detail, 'DetailPanel regression: ' . $forbidden);
         }
 
         $this->assertStringContainsString('const isDetailExpanded = ref(false)', $selectedMaster);
+        $this->assertStringContainsString('h-[calc(100vh-64px)] min-h-0', $selectedMaster);
+        $this->assertStringContainsString('min-h-0 min-w-0 self-stretch', $selectedMaster);
         $this->assertStringContainsString("isDetailExpanded ? 'grid-cols-1'", $selectedMaster);
         $this->assertStringContainsString('v-if="!isDetailExpanded"', $selectedMaster);
         $this->assertStringContainsString(':expanded="isDetailExpanded"', $selectedMaster);
@@ -88,6 +93,7 @@ final class DoomsdayOverflowStickyCompactQaTest extends TestCase
     public function test_auto_fit_widgets_latest_update_columns_and_no_estimated_label_surfaces(): void
     {
         $home = (string) file_get_contents(base_path('resources/js/Pages/Doomsday/Home.vue'));
+        $sidebar = (string) file_get_contents(base_path('resources/js/Components/Doomsday/SidebarCards.vue'));
         $overview = (string) file_get_contents(base_path('resources/js/Components/Doomsday/OverviewSection.vue'));
         $mobile = (string) file_get_contents(base_path('resources/js/Components/Doomsday/MobileDetailView.vue'));
         $detail = (string) file_get_contents(base_path('resources/js/Components/Doomsday/DetailPanel.vue'));
@@ -98,6 +104,11 @@ final class DoomsdayOverflowStickyCompactQaTest extends TestCase
         $this->assertStringContainsString('grid-cols-[repeat(auto-fit,minmax(120px,1fr))]', $overview);
         $this->assertStringContainsString('grid-cols-[repeat(auto-fit,minmax(96px,1fr))]', $mobile);
         $this->assertStringNotContainsString('grid-cols-3', $overview . $mobile);
+        $this->assertStringContainsString('block w-full sm:w-fit', $sidebar);
+        $this->assertStringContainsString('size="md"', $sidebar);
+        $this->assertStringContainsString('doomsday-display w-full border-ui-primary/50 bg-ui-primary/10', $sidebar);
+        $this->assertStringContainsString('hover:border-ui-primary hover:bg-ui-primary/20 hover:text-white', $sidebar);
+        $this->assertStringContainsString('group-hover:translate-x-0.5', $sidebar);
 
         foreach (['countdown.timer.estimated_label', 'Estimated target'] as $forbidden) {
             $this->assertStringNotContainsString($forbidden, $card . $detail . $mobile, 'Estimated label surface regression: ' . $forbidden);

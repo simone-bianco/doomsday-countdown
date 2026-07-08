@@ -32,8 +32,8 @@ const isDetailExpanded = ref(false);
 </script>
 
 <template>
-    <section :class="['mx-auto hidden max-w-[1760px] gap-5 px-5 py-4 lg:grid xl:px-7', isDetailExpanded ? 'grid-cols-1' : 'grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]']">
-        <div v-if="!isDetailExpanded" class="grid min-w-0 content-start gap-5">
+    <section :class="['mx-auto hidden max-w-[1760px] h-[calc(100vh-64px)] min-h-0 gap-5 overflow-hidden px-5 py-4 lg:grid xl:px-7', isDetailExpanded ? 'grid-cols-1' : 'grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]']">
+        <div v-if="!isDetailExpanded" class="doomsday-scrollbar grid min-h-0 min-w-0 content-start gap-5 overflow-y-auto pr-1">
             <div class="relative min-w-0 overflow-hidden rounded-2xl border border-white/10 bg-black p-6 xl:p-8">
                 <img :src="hero.desktop_image" alt="Earth horizon with red monitoring arcs" class="absolute inset-0 h-full w-full object-cover object-center opacity-45" />
                 <div class="absolute inset-0 bg-gradient-to-r from-black via-black/85 to-black/20" />
@@ -51,7 +51,7 @@ const isDetailExpanded = ref(false);
             <CountdownList :countdowns="countdowns" :compact="true" :selected-slug="selectedSlug" :pending-slug="pendingSlug" @select="emit('select', $event)" />
         </div>
 
-        <div class="min-w-0 self-start">
+        <div class="min-h-0 min-w-0 self-stretch">
             <DetailPanel
                 v-if="selectedCountdown && !isLoadingSelection"
                 :countdown="selectedCountdown"

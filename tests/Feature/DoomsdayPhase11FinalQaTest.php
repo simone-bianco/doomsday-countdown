@@ -25,7 +25,7 @@ final class DoomsdayPhase11FinalQaTest extends TestCase
 
         foreach ($sectionAssertions as $requestedSection => $requiredKeys) {
             $response = $this->withHeaders($this->partialHeaders($requestedSection))
-                ->get('/countdowns/fall-of-europe?lang=en');
+                ->get('/countdowns/taiwan-invasion?lang=en');
 
             $response->assertOk();
             $props = $response->json('props');
@@ -43,7 +43,7 @@ final class DoomsdayPhase11FinalQaTest extends TestCase
                 $this->assertArrayHasKey($requiredKey, $props[$requestedSection]);
             }
 
-            $this->assertSame('fall-of-europe', $props[$requestedSection]['countdown_slug']);
+            $this->assertSame('taiwan-invasion', $props[$requestedSection]['countdown_slug']);
         }
     }
 

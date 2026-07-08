@@ -61,8 +61,8 @@ const selection = useDoomsdaySelection(initialSelectedCountdown, currentLocale);
 
         <template v-else>
             <HeroSection :hero="hero" />
-            <div class="mx-auto grid max-w-[1760px] gap-5 px-4 py-7 sm:px-7 lg:grid-cols-[minmax(0,1fr)_560px] 2xl:grid-cols-[minmax(0,1fr)_600px]">
-                <div class="grid gap-5">
+            <div class="mx-auto grid items-start max-w-[1760px] gap-5 px-4 py-7 sm:px-7 lg:grid-cols-[minmax(0,1fr)_560px] 2xl:grid-cols-[minmax(0,1fr)_600px]">
+                <div class="grid content-start items-start gap-5">
                     <CountdownList
                         :countdowns="page.countdowns"
                         :selected-slug="selection.activeSelectedSlug.value"
@@ -73,7 +73,7 @@ const selection = useDoomsdaySelection(initialSelectedCountdown, currentLocale);
                 <SidebarCards class="hidden lg:grid" :featured="featured" />
             </div>
             <footer class="mx-auto flex max-w-[1760px] items-center justify-between px-4 pb-8 text-xs text-ui-muted-foreground sm:px-7">
-                <span>All countdowns are estimates generated from sample scenario data.</span>
+                <span>All countdowns are editorial estimates based on public-source scenario data.</span>
                 <a :href="`/about?lang=${page.current_locale}`" class="text-ui-primary">Learn more about our methodology</a>
             </footer>
         </template>

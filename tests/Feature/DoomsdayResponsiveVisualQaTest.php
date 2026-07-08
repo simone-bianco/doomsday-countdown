@@ -61,9 +61,9 @@ final class DoomsdayResponsiveVisualQaTest extends TestCase
         $this->assertStringContainsString('grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]', $selectedMasterDetail);
         $this->assertStringContainsString("isDetailExpanded ? 'grid-cols-1'", $selectedMasterDetail);
         $this->assertStringContainsString('v-if="!isDetailExpanded"', $selectedMasterDetail);
-        $this->assertStringContainsString('grid min-w-0 content-start', $selectedMasterDetail);
+        $this->assertStringContainsString('doomsday-scrollbar grid min-h-0 min-w-0 content-start', $selectedMasterDetail);
         $this->assertStringContainsString('relative min-w-0 overflow-hidden', $selectedMasterDetail);
-        $this->assertStringContainsString('min-w-0 self-start', $selectedMasterDetail);
+        $this->assertStringContainsString('min-h-0 min-w-0 self-stretch', $selectedMasterDetail);
         $this->assertStringContainsString('@toggle-expanded="isDetailExpanded = !isDetailExpanded"', $selectedMasterDetail);
         $this->assertStringNotContainsString('2xl:grid-cols-[minmax(420px,0.9fr)_minmax(680px,1.2fr)]', $selectedMasterDetail);
         $this->assertStringNotContainsString('xl:sticky', $selectedMasterDetail);
@@ -94,7 +94,15 @@ final class DoomsdayResponsiveVisualQaTest extends TestCase
             $this->assertStringNotContainsString($forbidden, $card, 'CountdownCard regression: ' . $forbidden);
         }
 
-        $this->assertStringContainsString('doomsday-card min-w-0', $card);
+        $home = (string) file_get_contents(base_path('resources/js/Pages/Doomsday/Home.vue'));
+        $list = (string) file_get_contents(base_path('resources/js/Components/Doomsday/CountdownList.vue'));
+
+        $this->assertStringContainsString('items-start max-w-[1760px]', $home);
+        $this->assertStringContainsString('content-start items-start', $home);
+        $this->assertStringContainsString('content-start items-start', $list);
+        $this->assertStringContainsString('doomsday-card relative h-fit self-start min-w-0 overflow-hidden', $card);
+        $this->assertStringContainsString('v-if="isSelected"', $card);
+        $this->assertStringContainsString('absolute inset-y-0 left-0 z-20 w-[2px] bg-ui-primary', $card);
         $this->assertStringContainsString('body: \'p-0 min-w-0\'', $card);
         $this->assertStringContainsString('grid min-w-0 grid-cols-1', $card);
         $this->assertStringNotContainsString('minmax(190px,0.42fr)', $card);
@@ -128,6 +136,34 @@ final class DoomsdayResponsiveVisualQaTest extends TestCase
         $this->assertStringNotContainsString('icon', strtolower($cardImage));
     }
 
+    public function test_charts_news_and_initiatives_are_readable_single_column_clickable_contracts(): void
+    {
+        $chart = (string) file_get_contents(base_path('resources/js/Components/Doomsday/VisualizationChart.vue'));
+        $news = (string) file_get_contents(base_path('resources/js/Components/Doomsday/NewsSection.vue'));
+        $initiatives = (string) file_get_contents(base_path('resources/js/Components/Doomsday/InitiativesSection.vue'));
+        $seed = (string) file_get_contents(base_path('database/seeders/DoomsdaySeeder.php'));
+
+        $this->assertStringContainsString('RawSeries', $chart);
+        $this->assertStringContainsString('min-w-[600px]', $chart);
+        $this->assertStringContainsString('h-[22rem]', $chart);
+        $this->assertStringContainsString('pb-6', $chart);
+        $this->assertStringContainsString('paddedMax', $chart);
+        $this->assertStringNotContainsString('Math.max(100', $chart);
+        $this->assertStringContainsString("'name' => 'Pessimistic'", $seed);
+        $this->assertStringContainsString("'color' => '#ff2a23'", $seed);
+        $this->assertStringContainsString("'name' => 'Optimistic'", $seed);
+        $this->assertStringContainsString("'color' => '#22c55e'", $seed);
+        $this->assertStringContainsString("'name' => 'Neutral'", $seed);
+        $this->assertStringContainsString("'color' => '#38bdf8'", $seed);
+
+        $this->assertStringContainsString('grid grid-cols-1 gap-4', $news);
+        $this->assertStringContainsString(':href="item.source_url ??', $news);
+        $this->assertStringNotContainsString('sm:grid-cols-2', $news);
+        $this->assertStringContainsString('grid grid-cols-1 gap-4', $initiatives);
+        $this->assertStringContainsString(':href="item.url"', $initiatives);
+        $this->assertStringNotContainsString('sm:grid-cols-2', $initiatives);
+    }
+
     public function test_detail_tabs_scroll_internally_and_mini_widgets_do_not_use_fixed_three_columns(): void
     {
         $detail = (string) file_get_contents(base_path('resources/js/Components/Doomsday/DetailPanel.vue'));
@@ -135,9 +171,11 @@ final class DoomsdayResponsiveVisualQaTest extends TestCase
         $mobile = (string) file_get_contents(base_path('resources/js/Components/Doomsday/MobileDetailView.vue'));
         $css = (string) file_get_contents(base_path('resources/css/app.css'));
 
-        $this->assertStringContainsString('flex max-h-[calc(100vh-5.25rem)] min-h-0 flex-col', $detail);
+        $this->assertStringContainsString('flex h-full min-h-0 flex-col overflow-hidden', $detail);
         $this->assertStringContainsString('doomsday-scrollbar', $detail);
         $this->assertStringContainsString('overflow-y-auto', $detail);
+        $this->assertStringContainsString('auto-rows-max', $detail);
+        $this->assertStringContainsString('overscroll-contain', $detail);
         $this->assertStringContainsString('shrink-0', $detail);
         $this->assertStringContainsString('Maximize2', $detail);
         $this->assertStringContainsString('Minimize2', $detail);

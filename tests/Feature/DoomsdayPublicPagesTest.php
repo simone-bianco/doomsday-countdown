@@ -23,7 +23,9 @@ final class DoomsdayPublicPagesTest extends TestCase
                 ->component('Doomsday/Home')
                 ->where('page.app_name', 'Doomsday Countdown')
                 ->where('page.current_locale', 'en')
-                ->has('page.countdowns', 4)
+                ->has('page.countdowns', 1)
+                ->where('page.countdowns.0.slug', 'taiwan-invasion')
+                ->where('page.countdowns.0.title', 'Taiwan Invasion')
                 ->where('page.selected_countdown', null)
                 ->where('selected_countdown', null)
                 ->missing('forecast_section')
@@ -36,14 +38,14 @@ final class DoomsdayPublicPagesTest extends TestCase
     {
         $this->seed(DoomsdaySeeder::class);
 
-        $this->get('/countdowns/fall-of-europe?lang=it')
+        $this->get('/countdowns/taiwan-invasion?lang=it')
             ->assertOk()
             ->assertInertia(fn (Assert $page): Assert => $page
                 ->component('Doomsday/Home')
                 ->where('page.current_locale', 'it')
                 ->where('page.selected_countdown', null)
-                ->where('selected_countdown.slug', 'fall-of-europe')
-                ->where('selected_countdown.title', 'Caduta dell’Europa')
+                ->where('selected_countdown.slug', 'taiwan-invasion')
+                ->where('selected_countdown.title', 'Invasione di Taiwan')
                 ->has('selected_countdown.key_indicators')
                 ->missing('selected_countdown.projections')
                 ->missing('selected_countdown.visualizations')

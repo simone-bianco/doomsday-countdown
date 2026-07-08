@@ -21,256 +21,263 @@ final class DoomsdaySeeder extends Seeder
     {
         Countdown::query()->delete();
 
-        foreach ($this->events() as $index => $event) {
-            $countdown = Countdown::query()->create([
-                'slug' => $event['slug'],
-                'title' => $event['title'],
-                'summary' => $event['summary'],
-                'description' => $event['description'],
-                'causes' => $event['causes'],
-                'consequences' => $event['consequences'],
-                'recommended_actions' => $event['recommended_actions'],
-                'icon' => $event['icon'],
-                'severity' => $event['severity'],
-                'status' => CountdownStatus::Active,
-                'target_date' => $event['target_date'],
-                'image_path' => $event['image_path'],
+        $countdown = Countdown::query()->create([
+            'slug' => 'taiwan-invasion',
+            'title' => [
+                'en' => 'Taiwan Invasion',
+                'it' => 'Invasione di Taiwan',
+            ],
+            'summary' => [
+                'en' => 'China–Taiwan conflict risk and the 2027 readiness window',
+                'it' => 'Rischio di conflitto Cina–Taiwan e finestra di prontezza 2027',
+            ],
+            'description' => [
+                'en' => 'A large-scale amphibious invasion of Taiwan is plausible but remains a lower-probability path than blockade, quarantine, cyber pressure, sabotage and other coercive grey-zone operations in the near term. The countdown uses public-source indicators to frame a 2027 readiness window, not a certain event date.',
+                'it' => 'Una invasione anfibia su larga scala di Taiwan è plausibile, ma nel breve termine resta meno probabile di blocco, quarantena, pressione cyber, sabotaggio e altre operazioni coercitive grey-zone. Il countdown usa indicatori da fonti pubbliche per inquadrare una finestra di prontezza 2027, non una data certa.',
+            ],
+            'causes' => [
+                'en' => [
+                    'PLA modernization and the 2027 readiness marker.',
+                    'Grey-zone pressure, coast guard normalization and blockade rehearsal.',
+                    'Domestic legitimacy and coercive bargaining risk.',
+                    'Taiwan semiconductor concentration and strategic geography.',
+                ],
+                'it' => [
+                    'Modernizzazione del PLA e soglia di prontezza 2027.',
+                    'Pressione grey-zone, normalizzazione della guardia costiera e prove di blocco.',
+                    'Legittimità interna e rischio di coercizione negoziale.',
+                    'Concentrazione dei semiconduttori a Taiwan e geografia strategica.',
+                ],
+            ],
+            'consequences' => [
+                'en' => [
+                    'Missile, cyber and information opening phase followed by blockade pressure.',
+                    'Regional escalation risk involving U.S., Japan and Philippine posture.',
+                    'Multi-trillion-dollar trade and semiconductor shock.',
+                    'Energy, logistics and civil-resilience stress inside Taiwan.',
+                    'Severe humanitarian pressure and displacement risk.',
+                ],
+                'it' => [
+                    'Fase iniziale missilistica, cyber e informativa seguita da pressione di blocco.',
+                    'Rischio di escalation regionale con postura di Stati Uniti, Giappone e Filippine.',
+                    'Shock da migliaia di miliardi su commercio e semiconduttori.',
+                    'Stress energetico, logistico e di resilienza civile a Taiwan.',
+                    'Grave pressione umanitaria e rischio di sfollamento.',
+                ],
+            ],
+            'recommended_actions' => [
+                'en' => [
+                    'Monitor PLA naval, coast guard and ADIZ activity separately from invasion headlines.',
+                    'Track Taiwan civil-resilience drills, energy stocks and drone procurement.',
+                    'Follow allied deterrence statements, sanctions coordination and evacuation planning.',
+                    'Separate invasion risk from blockade, quarantine and coercive pressure scenarios.',
+                ],
+                'it' => [
+                    'Monitorare attività navale, guardia costiera e ADIZ del PLA separandole dai titoli sull’invasione.',
+                    'Seguire esercitazioni di resilienza civile, scorte energetiche e acquisti di droni di Taiwan.',
+                    'Seguire dichiarazioni alleate di deterrenza, coordinamento sanzioni e piani di evacuazione.',
+                    'Separare il rischio di invasione da blocco, quarantena e pressione coercitiva.',
+                ],
+            ],
+            'icon' => 'shield',
+            'severity' => CountdownSeverity::Critical,
+            'status' => CountdownStatus::Active,
+            'target_date' => CarbonImmutable::parse('2027-10-01 00:00:00', 'UTC'),
+            'image_path' => 'images/doomsday/taiwan_invasion.png',
+            'sort_order' => 1,
+            'is_published' => true,
+        ]);
+
+        foreach ($this->projections() as $projection) {
+            $createdProjection = $countdown->projections()->create($projection);
+
+            if ($projection['type'] === ProjectionType::Neutral) {
+                $createdProjection->visualizations()->create([
+                    'key' => 'projection_curve',
+                    'type' => VisualizationType::Line,
+                    'title' => ['en' => 'Risk window curve', 'it' => 'Curva della finestra di rischio'],
+                    'description' => ['en' => 'Editorial probability curve for invasion risk, separating full invasion from blockade and quarantine scenarios.', 'it' => 'Curva editoriale di probabilità del rischio invasione, distinta dagli scenari di blocco e quarantena.'],
+                    'payload' => [
+                        'unit' => '% invasion probability',
+                        'labels' => ['2026-Q3', '2027-Q1', '2027-Q4', '2028-Q4', '2029-Q1'],
+                        'series' => [
+                            ['name' => 'Pessimistic', 'color' => '#ff2a23', 'values' => [18, 24, 28, 24, 20]],
+                            ['name' => 'Optimistic', 'color' => '#22c55e', 'values' => [8, 10, 12, 10, 8]],
+                            ['name' => 'Neutral', 'color' => '#38bdf8', 'values' => [12, 16, 18, 16, 12]],
+                        ],
+                        'sources' => [$this->sources()['dod'], $this->sources()['reuters_status_quo']],
+                    ],
+                    'schema_version' => 1,
+                    'sort_order' => 1,
+                ]);
+            }
+        }
+
+        foreach ($this->visualizations() as $visualization) {
+            $countdown->visualizations()->create($visualization);
+        }
+
+        foreach ($this->news() as $index => $news) {
+            $countdown->news()->create(array_merge($news, [
+                'image_path' => 'images/doomsday/taiwan_invasion.png',
                 'sort_order' => $index + 1,
-                'is_published' => true,
-            ]);
+                'is_featured' => $index === 0,
+            ]));
+        }
 
-            $neutral = $countdown->projections()->create([
+        foreach ($this->initiatives() as $index => $initiative) {
+            $countdown->initiatives()->create(array_merge($initiative, [
+                'image_path' => 'images/doomsday/taiwan_invasion.png',
+                'sort_order' => $index + 1,
+                'is_featured' => $index === 0,
+            ]));
+        }
+    }
+
+    /** @return array<int, array<string, mixed>> */
+    private function projections(): array
+    {
+        $methodology = [
+            'assumption' => 'Editorial risk estimate as of 2026-07-08; dates are scenario windows, not predictions.',
+            'drivers' => ['PLA 2027 readiness marker', 'ADIZ and naval activity', 'blockade and quarantine alternatives', 'Taiwan civil resilience', 'allied deterrence'],
+            'sources' => [$this->sources()['dod'], $this->sources()['reuters_status_quo'], $this->sources()['reuters_naval'], $this->sources()['reuters_drone']],
+        ];
+
+        return [
+            [
+                'type' => ProjectionType::Optimistic,
+                'target_date' => CarbonImmutable::parse('2029-01-15 00:00:00', 'UTC'),
+                'title' => ['en' => 'Deterrence holds', 'it' => 'La deterrenza regge'],
+                'summary' => ['en' => 'Coercion remains below full invasion; a major crisis is avoided while grey-zone pressure persists.', 'it' => 'La coercizione resta sotto la soglia dell’invasione; la crisi maggiore viene evitata mentre continua la pressione grey-zone.'],
+                'confidence_score' => 54,
+                'probability_score' => 12,
+                'trend' => 'stable',
+                'methodology' => $methodology,
+                'sort_order' => 1,
+            ],
+            [
                 'type' => ProjectionType::Neutral,
-                'target_date' => $event['target_date'],
-                'title' => ['en' => 'Baseline forecast', 'it' => 'Previsione base'],
-                'summary' => ['en' => $event['projection_summary_en'], 'it' => $event['projection_summary_it']],
-                'confidence_score' => $event['confidence'],
-                'probability_score' => $event['probability'],
-                'trend' => $event['trend'],
-                'sort_order' => 1,
-            ]);
-
-            $countdown->projections()->create([
-                'type' => ProjectionType::Pessimistic,
-                'target_date' => CarbonImmutable::parse($event['target_date'])->subMonths(8),
-                'title' => ['en' => 'Accelerated scenario', 'it' => 'Scenario accelerato'],
-                'summary' => ['en' => 'Stress indicators compress the estimated window.', 'it' => 'Gli indicatori di stress riducono la finestra stimata.'],
-                'confidence_score' => max(35, $event['confidence'] - 10),
-                'probability_score' => min(98, $event['probability'] + 8),
+                'target_date' => CarbonImmutable::parse('2027-10-01 00:00:00', 'UTC'),
+                'title' => ['en' => 'Baseline risk window', 'it' => 'Finestra base di rischio'],
+                'summary' => ['en' => 'Full amphibious invasion remains lower-probability than blockade or quarantine, but 2027 readiness and grey-zone escalation make the risk non-negligible.', 'it' => 'L’invasione anfibia completa resta meno probabile di blocco o quarantena, ma prontezza 2027 ed escalation grey-zone rendono il rischio non trascurabile.'],
+                'confidence_score' => 62,
+                'probability_score' => 18,
                 'trend' => 'rising',
+                'methodology' => $methodology,
                 'sort_order' => 2,
-            ]);
+            ],
+            [
+                'type' => ProjectionType::Pessimistic,
+                'target_date' => CarbonImmutable::parse('2027-03-15 00:00:00', 'UTC'),
+                'title' => ['en' => 'Accelerated crisis', 'it' => 'Crisi accelerata'],
+                'summary' => ['en' => 'Missile and cyber opening moves, blockade pressure and coercive operations compress the crisis window; amphibious risk rises if deterrence and civil logistics fail.', 'it' => 'Apertura missilistica e cyber, pressione di blocco e operazioni coercitive comprimono la finestra di crisi; il rischio anfibio cresce se deterrenza e logistica civile falliscono.'],
+                'confidence_score' => 48,
+                'probability_score' => 28,
+                'trend' => 'rising',
+                'methodology' => $methodology,
+                'sort_order' => 3,
+            ],
+        ];
+    }
 
-            $neutral->visualizations()->create([
-                'key' => 'projection_curve',
-                'type' => VisualizationType::Line,
-                'title' => ['en' => 'Projection model', 'it' => 'Modello di proiezione'],
-                'description' => ['en' => 'Probability of event occurrence.', 'it' => 'Probabilità di occorrenza dello scenario.'],
-                'payload' => $this->projectionPayload($event['probability']),
-                'schema_version' => 1,
-                'sort_order' => 1,
-            ]);
-
-            $countdown->visualizations()->create([
+    /** @return array<int, array<string, mixed>> */
+    private function visualizations(): array
+    {
+        return [
+            [
                 'key' => 'key_indicators',
                 'type' => VisualizationType::Kpi,
                 'title' => ['en' => 'Key indicators', 'it' => 'Indicatori chiave'],
-                'description' => ['en' => 'Scenario pressure signals.', 'it' => 'Segnali di pressione dello scenario.'],
-                'payload' => ['items' => $event['indicators']],
+                'description' => ['en' => 'Public-source pressure signals used by the editorial risk model.', 'it' => 'Segnali da fonti pubbliche usati dal modello editoriale di rischio.'],
+                'payload' => [
+                    'items' => [
+                        ['label' => 'PLA ADIZ activity 2024', 'value' => '2,771', 'direction' => 'up', 'sparkline' => [22, 33, 31, 50, 79], 'source' => $this->sources()['dod']],
+                        ['label' => 'Taiwan Strait trade at risk', 'value' => 'US$2.45T', 'direction' => 'up', 'sparkline' => [30, 44, 56, 70, 82], 'source' => $this->sources()['csis_trade']],
+                        ['label' => 'Leading-edge chips in Taiwan', 'value' => '>90%', 'direction' => 'up', 'sparkline' => [88, 90, 91, 92, 93], 'source' => $this->sources()['trade_semiconductors']],
+                        ['label' => 'Taiwan energy import dependence', 'value' => '95%', 'direction' => 'up', 'sparkline' => [90, 92, 94, 95, 95], 'source' => $this->sources()['energy_resilience']],
+                        ['label' => 'Drone special budget', 'value' => 'NT$210B', 'direction' => 'up', 'sparkline' => [20, 34, 51, 66, 82], 'source' => $this->sources()['reuters_drone']],
+                    ],
+                ],
                 'schema_version' => 1,
                 'sort_order' => 1,
-            ]);
-
-            foreach ($event['news'] as $newsIndex => $news) {
-                $countdown->news()->create([
-                    'locale' => $news['locale'],
-                    'title' => $news['title'],
-                    'excerpt' => $news['excerpt'],
-                    'source_name' => $news['source_name'],
-                    'image_path' => $event['image_path'],
-                    'published_at' => CarbonImmutable::now()->subHours($newsIndex + 2),
-                    'sort_order' => $newsIndex + 1,
-                    'is_featured' => $newsIndex === 0,
-                ]);
-            }
-
-            foreach ($this->initiatives($event['title']['en']) as $initiativeIndex => $initiative) {
-                $countdown->initiatives()->create([
-                    'locale' => $initiative['locale'],
-                    'type' => $initiative['type'],
-                    'title' => $initiative['title'],
-                    'excerpt' => $initiative['excerpt'],
-                    'body' => $initiative['body'],
-                    'organization' => $initiative['organization'],
-                    'url' => $initiative['url'],
-                    'image_path' => $event['image_path'],
-                    'cta_label' => $initiative['cta_label'],
-                    'starts_at' => CarbonImmutable::now()->addDays($initiativeIndex + 4),
-                    'sort_order' => $initiativeIndex + 1,
-                    'is_featured' => $initiativeIndex === 0,
-                ]);
-            }
-        }
+            ],
+            $this->lineVisualization('pla_pressure_trend', ['en' => 'PLA pressure trend', 'it' => 'Trend pressione PLA'], ['en' => 'Annual Taiwan ADIZ activity reported in the China Military Power Report.', 'it' => 'Attività annuale ADIZ di Taiwan riportata nel China Military Power Report.'], ['2021', '2022', '2023', '2024'], [972, 1733, 1703, 2771], 'activity count', [$this->sources()['dod']], 2),
+            $this->lineVisualization('naval_pressure_2026', ['en' => 'Naval pressure 2026', 'it' => 'Pressione navale 2026'], ['en' => 'Display baseline versus July 2026 reports of more than 110 military and coast guard ships in the region.', 'it' => 'Baseline espositiva contro i report di luglio 2026 su oltre 110 navi militari e della guardia costiera nella regione.'], ['Baseline', 'July 2026'], [50, 110], 'ships', [$this->sources()['reuters_naval']], 3),
+            $this->lineVisualization('economic_exposure', ['en' => 'Economic exposure', 'it' => 'Esposizione economica'], ['en' => 'Trade, annual activity and sanctions shock ranges exposed by Taiwan Strait disruption.', 'it' => 'Commercio, attività annuale e shock da sanzioni esposti a una crisi nello Stretto di Taiwan.'], ['Strait trade', 'Annual activity at risk', 'Max sanctions shock'], [2.45, 2.0, 3.0], 'US$ trillion', [$this->sources()['csis_trade'], $this->sources()['rhodium_disruptions']], 4),
+            $this->lineVisualization('scenario_gdp_shock', ['en' => 'Scenario GDP shock', 'it' => 'Shock PIL per scenario'], ['en' => 'Editorial midpoint estimates for first-year Taiwan GDP shock by scenario.', 'it' => 'Stime editoriali mediane dello shock sul PIL taiwanese nel primo anno per scenario.'], ['Optimistic', 'Neutral', 'Pessimistic'], [15, 32, 45], '% Taiwan GDP', [$this->sources()['rhodium_disruptions']], 5),
+            $this->lineVisualization('energy_resilience', ['en' => 'Energy resilience', 'it' => 'Resilienza energetica'], ['en' => 'Energy import dependence, oil and gas dependence, and displayed LNG reserve days.', 'it' => 'Dipendenza energetica, dipendenza da petrolio e gas e giorni di riserva LNG visualizzati.'], ['Energy import dependence', 'Oil/gas import dependence', 'LNG reserve days'], [95, 99, 12], 'value', [$this->sources()['energy_resilience']], 6),
+        ];
     }
 
-    /** @return array<int, array<string, mixed>> */
-    private function events(): array
+    /** @param array<string, string> $title @param array<string, string> $description @param array<int, string> $labels @param array<int, int|float> $series @param array<int, string> $sources @return array<string, mixed> */
+    private function lineVisualization(string $key, array $title, array $description, array $labels, array $series, string $unit, array $sources, int $sortOrder): array
     {
         return [
-            [
-                'slug' => 'society-collapse',
-                'title' => ['en' => 'Society Collapse', 'it' => 'Collasso Sociale'],
-                'summary' => ['en' => 'Social systems breakdown and civil order failure', 'it' => 'Rottura dei sistemi sociali e dell’ordine civile'],
-                'description' => ['en' => 'A convergence of fragile institutions, supply shocks, and civic distrust can erode the routines that keep public life stable.', 'it' => 'La convergenza di istituzioni fragili, shock alle forniture e sfiducia civica può erodere le routine che mantengono stabile la vita pubblica.'],
-                'causes' => ['en' => ['Institutional fatigue', 'Supply chain fragility', 'Civic trust decline'], 'it' => ['Logoramento istituzionale', 'Fragilità delle catene di fornitura', 'Calo della fiducia civica']],
-                'consequences' => ['en' => ['Localized unrest', 'Service interruption', 'Emergency governance'], 'it' => ['Disordini locali', 'Interruzione dei servizi', 'Governance d’emergenza']],
-                'recommended_actions' => ['en' => ['Monitor resilience indicators', 'Strengthen local continuity plans'], 'it' => ['Monitorare gli indicatori di resilienza', 'Rafforzare i piani locali di continuità']],
-                'icon' => 'users',
-                'severity' => CountdownSeverity::Critical,
-                'target_date' => CarbonImmutable::now()->addYears(5)->addDays(247)->addHours(12),
-                'image_path' => 'images/doomsday/society_collapse_separate.png',
-                'confidence' => 74,
-                'probability' => 81,
-                'trend' => 'rising',
-                'projection_summary_en' => 'Urban fragility indicators remain elevated across several simulated regions.',
-                'projection_summary_it' => 'Gli indicatori di fragilità urbana restano elevati in diverse regioni simulate.',
-                'indicators' => $this->indicators(['Trust Index' => -18, 'Supply Stress' => 42, 'Civil Unrest' => 214, 'Service Continuity' => -23]),
-                'news' => $this->news('Civic stress signals rise in multiple regions', 'Local continuity planners review emergency thresholds'),
+            'key' => $key,
+            'type' => VisualizationType::Line,
+            'title' => $title,
+            'description' => $description,
+            'payload' => [
+                'labels' => $labels,
+                'series' => $series,
+                'unit' => $unit,
+                'sources' => $sources,
             ],
-            [
-                'slug' => 'fall-of-europe',
-                'title' => ['en' => 'Fall of Europe', 'it' => 'Caduta dell’Europa'],
-                'summary' => ['en' => 'Economic collapse and geopolitical instability', 'it' => 'Collasso economico e instabilità geopolitica'],
-                'description' => ['en' => 'Europe faces a convergence of economic stagnation, political fragmentation, and demographic decline that could weaken major institutions.', 'it' => 'L’Europa affronta stagnazione economica, frammentazione politica e declino demografico che potrebbero indebolire le istituzioni principali.'],
-                'causes' => ['en' => ['Low growth', 'Energy pressure', 'Political fragmentation'], 'it' => ['Bassa crescita', 'Pressione energetica', 'Frammentazione politica']],
-                'consequences' => ['en' => ['Fiscal gridlock', 'Border tension', 'Institutional paralysis'], 'it' => ['Stallo fiscale', 'Tensioni ai confini', 'Paralisi istituzionale']],
-                'recommended_actions' => ['en' => ['Track fiscal cohesion', 'Review energy exposure'], 'it' => ['Seguire la coesione fiscale', 'Valutare l’esposizione energetica']],
-                'icon' => 'europe',
-                'severity' => CountdownSeverity::Severe,
-                'target_date' => CarbonImmutable::now()->addYears(3)->addDays(189)->addHours(7),
-                'image_path' => 'images/doomsday/fall_of_europe_separate.png',
-                'confidence' => 72,
-                'probability' => 78,
-                'trend' => 'decreasing',
-                'projection_summary_en' => 'The baseline window remains driven by fiscal stress, inflation, and social stability indicators.',
-                'projection_summary_it' => 'La finestra base resta guidata da stress fiscale, inflazione e indicatori di stabilità sociale.',
-                'indicators' => $this->indicators(['GDP Growth (EU)' => -0.3, 'Energy Inflation' => 38.7, 'Political Stability' => 2.1, 'Public Debt Avg' => 89.4, 'Social Unrest' => 214]),
-                'news' => $this->news('EU leaders fail to agree on new fiscal pact', 'Energy crisis worsens as winter approaches'),
-            ],
-            [
-                'slug' => 'extreme-heat-breakpoint',
-                'title' => ['en' => 'Extreme Heat Breakpoint', 'it' => 'Punto Critico del Caldo Estremo'],
-                'summary' => ['en' => 'Unsurvivable heat conditions in many regions', 'it' => 'Condizioni di caldo insostenibile in molte regioni'],
-                'description' => ['en' => 'Compound heat and humidity events can push urban and agricultural systems beyond safe operating limits.', 'it' => 'Eventi combinati di calore e umidità possono superare i limiti operativi sicuri di città e agricoltura.'],
-                'causes' => ['en' => ['Wet-bulb heat', 'Urban heat islands', 'Water scarcity'], 'it' => ['Calore a bulbo umido', 'Isole di calore urbane', 'Scarsità idrica']],
-                'consequences' => ['en' => ['Outdoor work collapse', 'Crop losses', 'Grid overload'], 'it' => ['Crollo del lavoro all’aperto', 'Perdite agricole', 'Sovraccarico della rete']],
-                'recommended_actions' => ['en' => ['Map heat refuges', 'Monitor grid reserve margins'], 'it' => ['Mappare rifugi climatici', 'Monitorare i margini della rete']],
-                'icon' => 'thermometer',
-                'severity' => CountdownSeverity::Critical,
-                'target_date' => CarbonImmutable::now()->addYears(2)->addDays(68)->addHours(19),
-                'image_path' => 'images/doomsday/extreme_heat_breakpoint_separate.png',
-                'confidence' => 79,
-                'probability' => 86,
-                'trend' => 'rising',
-                'projection_summary_en' => 'Heat stress accelerates when temperature, humidity, and infrastructure load peak together.',
-                'projection_summary_it' => 'Lo stress termico accelera quando temperatura, umidità e carico infrastrutturale raggiungono picchi simultanei.',
-                'indicators' => $this->indicators(['Heat Index' => 49, 'Grid Load' => 88, 'Water Stress' => 63, 'Crop Risk' => 57]),
-                'news' => $this->news('Heat resilience plans move to emergency review', 'Water stress warnings expand across vulnerable regions'),
-            ],
-            [
-                'slug' => 'uninhabitable-earth',
-                'title' => ['en' => 'Uninhabitable Earth', 'it' => 'Terra Inabitabile'],
-                'summary' => ['en' => 'Environmental collapse makes Earth uninhabitable', 'it' => 'Il collasso ambientale rende la Terra inabitabile'],
-                'description' => ['en' => 'The combined degradation of climate stability, coastal safety, food systems, and biodiversity can reduce safe human habitat.', 'it' => 'Il degrado combinato di stabilità climatica, sicurezza costiera, sistemi alimentari e biodiversità può ridurre gli habitat umani sicuri.'],
-                'causes' => ['en' => ['Sea-level pressure', 'Food system failure', 'Biodiversity loss'], 'it' => ['Pressione del livello del mare', 'Crisi dei sistemi alimentari', 'Perdita di biodiversità']],
-                'consequences' => ['en' => ['Mass displacement', 'Coastal abandonment', 'Habitat contraction'], 'it' => ['Spostamenti di massa', 'Abbandono costiero', 'Contrazione degli habitat']],
-                'recommended_actions' => ['en' => ['Track relocation thresholds', 'Protect critical ecosystems'], 'it' => ['Monitorare le soglie di ricollocazione', 'Proteggere ecosistemi critici']],
-                'icon' => 'waves',
-                'severity' => CountdownSeverity::Existential,
-                'target_date' => CarbonImmutable::now()->addYears(7)->addDays(310)->addHours(23),
-                'image_path' => 'images/doomsday/uninhabitable_earth_separate.png',
-                'confidence' => 68,
-                'probability' => 64,
-                'trend' => 'rising',
-                'projection_summary_en' => 'Long-horizon signals remain slower but broader than the other sample scenarios.',
-                'projection_summary_it' => 'I segnali di lungo periodo restano più lenti ma più ampi rispetto agli altri scenari campione.',
-                'indicators' => $this->indicators(['Coastal Risk' => 71, 'Food Stability' => -24, 'Habitat Loss' => 46, 'Displacement' => 31]),
-                'news' => $this->news('Coastal adaptation budgets face new pressure', 'Habitat loss indicators remain above warning band'),
-            ],
+            'schema_version' => 1,
+            'sort_order' => $sortOrder,
         ];
     }
 
     /** @return array<int, array<string, mixed>> */
-    private function indicators(array $values): array
-    {
-        $items = [];
-        foreach ($values as $label => $value) {
-            $items[] = [
-                'label' => $label,
-                'value' => is_float($value) ? sprintf('%+.1f', $value) : sprintf('%+d', $value),
-                'direction' => $value >= 0 ? 'up' : 'down',
-                'sparkline' => [18, 24, 20, 31, 26, 36, 30, 42, 33, 38],
-            ];
-        }
-
-        return $items;
-    }
-
-    /** @return array<int, array<string, mixed>> */
-    private function news(string $first, string $second): array
+    private function news(): array
     {
         return [
-            ['locale' => NewsLocale::All, 'title' => $first, 'excerpt' => 'Scenario monitors updated the latest public risk notes.', 'source_name' => 'Daily Monitor'],
-            ['locale' => NewsLocale::En, 'title' => $second, 'excerpt' => 'Regional observers report a changing risk profile.', 'source_name' => 'Global Desk'],
-            ['locale' => NewsLocale::It, 'title' => 'Nuovo aggiornamento sugli indicatori regionali', 'excerpt' => 'Gli osservatori regionali segnalano un profilo di rischio in evoluzione.', 'source_name' => 'Osservatorio'],
+            ['locale' => NewsLocale::All, 'title' => 'Taiwan says China risks creating a new status quo', 'excerpt' => 'Taipei warned that repeated pressure around Taiwan can normalize coercive activity even below the threshold of war.', 'source_name' => 'Reuters', 'source_url' => $this->sources()['reuters_status_quo'], 'published_at' => CarbonImmutable::parse('2026-07-08 12:00:00', 'UTC')],
+            ['locale' => NewsLocale::All, 'title' => 'Taiwan says attack preparations are not provocation', 'excerpt' => 'Senior officials framed civil and military preparedness as deterrence and resilience rather than escalation.', 'source_name' => 'Reuters', 'source_url' => $this->sources()['reuters_preparedness'], 'published_at' => CarbonImmutable::parse('2026-07-07 12:00:00', 'UTC')],
+            ['locale' => NewsLocale::All, 'title' => 'Taiwan tracks upward trend in Chinese naval movements', 'excerpt' => 'Taiwan reported an upward trend in Chinese naval and coast guard activity, with more than 110 ships in the region.', 'source_name' => 'Reuters', 'source_url' => $this->sources()['reuters_naval'], 'published_at' => CarbonImmutable::parse('2026-07-06 12:00:00', 'UTC')],
+            ['locale' => NewsLocale::All, 'title' => 'China launches coast guard patrol east of Taiwan', 'excerpt' => 'The patrol highlighted a pressure pattern beyond the median line and around Taiwan’s eastern approaches.', 'source_name' => 'Reuters', 'source_url' => $this->sources()['reuters_coast_guard'], 'published_at' => CarbonImmutable::parse('2026-07-04 12:00:00', 'UTC')],
+            ['locale' => NewsLocale::All, 'title' => 'Taiwan drills a worst-case blockade and invasion chain', 'excerpt' => 'Exercises combined blockade, earthquake, sabotage and invasion stress to test whole-of-society response.', 'source_name' => 'Reuters', 'source_url' => $this->sources()['reuters_drill'], 'published_at' => CarbonImmutable::parse('2026-07-03 12:00:00', 'UTC')],
+            ['locale' => NewsLocale::All, 'title' => 'Drone deterrence plan calls for a hornet’s nest', 'excerpt' => 'A proposed NT$210B drone package underlined Taiwan’s move toward distributed asymmetric deterrence.', 'source_name' => 'Reuters', 'source_url' => $this->sources()['reuters_drone'], 'published_at' => CarbonImmutable::parse('2026-07-02 12:00:00', 'UTC')],
+            ['locale' => NewsLocale::It, 'title' => 'Il commercio nello Stretto è una vulnerabilità globale', 'excerpt' => 'Le analisi CSIS indicano che un’interruzione nello Stretto avrebbe effetti severi su Cina, Taiwan e catene globali.', 'source_name' => 'CSIS', 'source_url' => $this->sources()['csis_trade'], 'published_at' => CarbonImmutable::parse('2026-06-20 12:00:00', 'UTC')],
+            ['locale' => NewsLocale::All, 'title' => 'China Military Power Report details Taiwan pressure indicators', 'excerpt' => 'The report provides the baseline for PLA modernization, ADIZ activity and regional military balance assumptions.', 'source_name' => 'U.S. Department of Defense', 'source_url' => $this->sources()['dod'], 'published_at' => CarbonImmutable::parse('2025-12-23 12:00:00', 'UTC')],
         ];
     }
 
     /** @return array<int, array<string, mixed>> */
-    private function initiatives(string $eventTitle): array
+    private function initiatives(): array
     {
         return [
-            [
-                'locale' => InitiativeLocale::All,
-                'type' => InitiativeType::Campaign,
-                'title' => $eventTitle . ' resilience campaign',
-                'excerpt' => 'A coordinated public action hub for monitoring, preparedness and local risk communication.',
-                'body' => 'Sample initiative data for phase 1.1. It links scenario awareness with community planning resources.',
-                'organization' => 'Civic Risk Network',
-                'url' => 'https://example.org/doomsday/' . str($eventTitle)->slug()->toString(),
-                'cta_label' => 'View campaign',
-            ],
-            [
-                'locale' => InitiativeLocale::En,
-                'type' => InitiativeType::Petition,
-                'title' => 'Sign the preparedness petition',
-                'excerpt' => 'A sample petition asking institutions to publish clear risk thresholds and continuity plans.',
-                'body' => 'The petition is seeded content only and does not submit to an external service in phase 1.1.',
-                'organization' => 'Preparedness Watch',
-                'url' => 'https://example.org/petitions/preparedness',
-                'cta_label' => 'Read petition',
-            ],
-            [
-                'locale' => InitiativeLocale::It,
-                'type' => InitiativeType::Resource,
-                'title' => 'Risorse locali di preparazione',
-                'excerpt' => 'Una scheda campione con risorse e azioni di continuità per comunità locali.',
-                'body' => 'Contenuto seed per mostrare la localizzazione delle iniziative nella tab dedicata.',
-                'organization' => 'Osservatorio Civico',
-                'url' => 'https://example.org/risorse/preparazione',
-                'cta_label' => 'Apri risorsa',
-            ],
+            ['locale' => InitiativeLocale::All, 'type' => InitiativeType::Resource, 'title' => 'Whole-of-Society Defense Resilience Committee', 'excerpt' => 'Taiwan presidential committee coordinating civil resilience, continuity and whole-of-society defense planning.', 'body' => 'Use this source to track official resilience framing, committee priorities and public preparedness language.', 'organization' => 'Office of the President, Taiwan', 'url' => $this->sources()['whole_society'], 'cta_label' => 'Open committee'],
+            ['locale' => InitiativeLocale::All, 'type' => InitiativeType::Resource, 'title' => 'In Case of Crisis: Taiwan Public Safety Guide', 'excerpt' => 'Official public safety guide for households and communities preparing for emergencies and coercive pressure.', 'body' => 'The guide is relevant to civil readiness, sheltering, communications and continuity behavior under crisis.', 'organization' => 'Taiwan Ministry of National Defense', 'url' => $this->sources()['public_safety_guide'], 'cta_label' => 'Open guide'],
+            ['locale' => InitiativeLocale::All, 'type' => InitiativeType::Campaign, 'title' => '2026 Urban Resilience Exercises', 'excerpt' => 'Exercises focused on city-level resilience and civil response under multi-domain crisis pressure.', 'body' => 'Use this source to track how Taiwan drills city services, local response and continuity under stress.', 'organization' => 'All-Out Defense Mobilization Agency', 'url' => $this->sources()['urban_resilience'], 'cta_label' => 'View exercises'],
+            ['locale' => InitiativeLocale::All, 'type' => InitiativeType::Resource, 'title' => 'Kuma Academy civil-defense education', 'excerpt' => 'Civil-defense education network focused on public awareness, resilience and preparedness skills.', 'body' => 'Kuma Academy is a public civil-society resource for non-government preparedness education.', 'organization' => 'Kuma Academy', 'url' => $this->sources()['kuma'], 'cta_label' => 'Open academy'],
+            ['locale' => InitiativeLocale::All, 'type' => InitiativeType::Resource, 'title' => 'G7 geopolitical statement on Taiwan Strait stability', 'excerpt' => 'G7 leaders emphasized peace and stability across the Taiwan Strait as a geopolitical priority.', 'body' => 'Use this source to track allied diplomatic signaling around deterrence and crisis response.', 'organization' => 'G7', 'url' => $this->sources()['g7_statement'], 'cta_label' => 'Read statement'],
+            ['locale' => InitiativeLocale::All, 'type' => InitiativeType::Resource, 'title' => 'Quad foreign ministers’ statement', 'excerpt' => 'Regional partners reiterated support for a free, open Indo-Pacific and stability in maritime flashpoints.', 'body' => 'Use this source to track diplomatic alignment and deterrence language among Quad partners.', 'organization' => 'Quad', 'url' => $this->sources()['quad_statement'], 'cta_label' => 'Read statement'],
+            ['locale' => InitiativeLocale::It, 'type' => InitiativeType::Resource, 'title' => 'Guida pubblica di sicurezza in caso di crisi', 'excerpt' => 'Versione localizzata del riferimento operativo per seguire preparazione civile e comunicazioni di emergenza.', 'body' => 'Riga italiana dedicata per mostrare la tab iniziative localizzata senza cambiare schema dati.', 'organization' => 'Ministero della Difesa di Taiwan', 'url' => $this->sources()['public_safety_guide'], 'cta_label' => 'Apri guida'],
         ];
     }
 
-    /** @return array<string, mixed> */
-    private function projectionPayload(int $peak): array
+    /** @return array<string, string> */
+    private function sources(): array
     {
         return [
-            'unit' => '%',
-            'labels' => ['2024', '2025', '2026', '2027', '2028', '2029'],
-            'series' => [max(18, $peak - 58), max(24, $peak - 46), max(35, $peak - 31), $peak, min(96, $peak + 7), min(99, $peak + 14)],
-            'highlight' => $peak,
+            'dod' => 'https://media.defense.gov/2025/Dec/23/2003849070/-1/-1/1/ANNUAL-REPORT-TO-CONGRESS-MILITARY-AND-SECURITY-DEVELOPMENTS-INVOLVING-THE-PEOPLES-REPUBLIC-OF-CHINA-2025.PDF',
+            'reuters_status_quo' => 'https://www.reuters.com/world/china/chinas-actions-risk-creation-new-status-quo-taiwan-official-says-2026-07-08/',
+            'reuters_preparedness' => 'https://www.reuters.com/business/aerospace-defense/taiwans-preparations-face-chinese-attack-are-not-provocation-senior-official-2026-07-07/',
+            'reuters_naval' => 'https://www.reuters.com/world/china/taiwan-says-it-is-tracking-upward-trend-chinese-naval-movements-2026-07-06/',
+            'reuters_coast_guard' => 'https://www.reuters.com/world/china/china-launches-coast-guard-patrol-east-taiwan-despite-international-pushback-2026-07-04/',
+            'reuters_drill' => 'https://www.reuters.com/world/china/inside-taiwans-nightmare-scenario-chinese-blockade-earthquake-sabotage-invasion-2026-07-03/',
+            'reuters_drone' => 'https://www.reuters.com/world/china/taiwan-needs-hornets-nest-drones-deter-conflict-us-diplomat-says-2026-07-02/',
+            'csis_trade' => 'https://www.csis.org/analysis/disruptions-trade-taiwan-strait-would-severely-impact-chinas-economy',
+            'rhodium_disruptions' => 'https://rhg.com/research/taiwan-economic-disruptions/',
+            'trade_semiconductors' => 'https://www.trade.gov/country-commercial-guides/taiwan-semiconductors-including-chip-design-ai',
+            'energy_resilience' => 'https://www.atlanticcouncil.org/blogs/energysource/the-iran-war-tests-taiwans-energy-resilience/',
+            'whole_society' => 'https://english.president.gov.tw/Page/669',
+            'public_safety_guide' => 'https://adma.mnd.gov.tw/files/web/191/file_up/100004/66/InCaseofCrisisTaiwanPublicSafetyGuide.pdf',
+            'urban_resilience' => 'https://adma.mnd.gov.tw/uniten/100005/8074',
+            'kuma' => 'https://kuma-academy.org/about?lang=en',
+            'g7_statement' => 'https://www.elysee.fr/en/G7evian/2026/06/17/g7-leaders-statement-on-geopolitical-issues',
+            'quad_statement' => 'https://www.state.gov/releases/office-of-the-spokesperson/2026/05/joint-statement-from-the-quad-foreign-ministers-meeting-in-new-delhi',
         ];
     }
 }
