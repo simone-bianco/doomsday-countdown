@@ -24,10 +24,15 @@ final class DoomsdayPublicPagesTest extends TestCase
                 ->where('page.app_name', 'Doomsday Countdown')
                 ->where('page.current_locale', 'en')
                 ->has('page.countdowns', 4)
-                ->where('page.selected_countdown', null));
+                ->where('page.selected_countdown', null)
+                ->where('selected_countdown', null)
+                ->missing('forecast_section')
+                ->missing('statistics_section')
+                ->missing('news_section')
+                ->missing('initiatives_section'));
     }
 
-    public function test_detail_route_renders_selected_countdown(): void
+    public function test_detail_route_renders_top_level_selected_countdown_overview_only(): void
     {
         $this->seed(DoomsdaySeeder::class);
 
@@ -36,8 +41,17 @@ final class DoomsdayPublicPagesTest extends TestCase
             ->assertInertia(fn (Assert $page): Assert => $page
                 ->component('Doomsday/Home')
                 ->where('page.current_locale', 'it')
-                ->where('page.selected_countdown.slug', 'fall-of-europe')
-                ->where('page.selected_countdown.title', 'Caduta dell’Europa'));
+                ->where('page.selected_countdown', null)
+                ->where('selected_countdown.slug', 'fall-of-europe')
+                ->where('selected_countdown.title', 'Caduta dell’Europa')
+                ->has('selected_countdown.key_indicators')
+                ->missing('selected_countdown.projections')
+                ->missing('selected_countdown.visualizations')
+                ->missing('selected_countdown.news')
+                ->missing('forecast_section')
+                ->missing('statistics_section')
+                ->missing('news_section')
+                ->missing('initiatives_section'));
     }
 
     public function test_about_page_renders_public_methodology(): void

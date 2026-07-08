@@ -10,6 +10,7 @@
         "@inertiajs/vue3": "^2.0.0",
         "@simone-bianco/vue-form-core": "file:packages/simone-bianco/vue-form-core",
         "@simone-bianco/vue-ui-components": "file:packages/simone-bianco/vue-ui-components",
+        "axios": "^1.18.1",
         "i18next": "^25.7.2",
         "i18next-browser-languagedetector": "^8.2.0",
         "ky": "^1.14.0",

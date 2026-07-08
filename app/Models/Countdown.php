@@ -75,4 +75,9 @@ final class Countdown extends Model
     {
         return $this->hasMany(News::class);
     }
+
+    public function initiatives(): HasMany
+    {
+        return $this->hasMany(Initiative::class);
+    }
 }

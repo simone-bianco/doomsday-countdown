@@ -1,86 +1,130 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import { Link } from '@inertiajs/vue3';
-import { Button, Card, Image } from '@simone-bianco/vue-ui-components';
-import { X } from 'lucide-vue-next';
+import { computed, ref, watch } from 'vue';
+import { ArrowLeft, Maximize2, Minimize2 } from 'lucide-vue-next';
+import { Button, Image } from '@simone-bianco/vue-ui-components';
 import CountdownTimer from './CountdownTimer.vue';
-import KeyIndicatorsCard from './KeyIndicatorsCard.vue';
-import VisualizationChart from './VisualizationChart.vue';
+import DoomsdaySectionError from './DoomsdaySectionError.vue';
+import DoomsdaySkeletonBlock from './DoomsdaySkeletonBlock.vue';
+import ForecastsSection from './ForecastsSection.vue';
+import InitiativesSection from './InitiativesSection.vue';
+import NewsSection from './NewsSection.vue';
+import OverviewSection from './OverviewSection.vue';
+import StatisticsSection from './StatisticsSection.vue';
+import { isLazySectionKey, useDoomsdayLazySections, type LazySectionKey } from '@/Composables/useDoomsdayLazySections';
 import { t } from '@/i18n';
-import type { CountdownDetailData, VisualizationData } from '@/types/generated';
+import type { CountdownForecastsData, CountdownInitiativesSectionData, CountdownNewsSectionData, CountdownOverviewData, CountdownStatisticsData } from '@/types/generated';
 
-const props = defineProps<{
-    readonly countdown: CountdownDetailData;
+const props = withDefaults(defineProps<{
+    readonly countdown: CountdownOverviewData;
     readonly currentLocale: string;
+    readonly forecastSection: CountdownForecastsData | null;
+    readonly statisticsSection: CountdownStatisticsData | null;
+    readonly newsSection: CountdownNewsSectionData | null;
+    readonly initiativesSection: CountdownInitiativesSectionData | null;
+    readonly expanded?: boolean;
+}>(), {
+    expanded: false,
+});
+
+const emit = defineEmits<{
+    close: [];
+    toggleExpanded: [];
 }>();
 
 const activeTab = ref('overview');
 const tabs = computed(() => [
     { value: 'overview', label: t('overview') },
-    { value: 'predictions', label: t('predictions') },
+    { value: 'forecasts', label: t('predictions') },
     { value: 'statistics', label: t('statistics') },
     { value: 'news', label: t('news') },
+    { value: 'initiatives', label: t('initiatives') },
 ]);
-const indicators = computed((): VisualizationData | null => props.countdown.visualizations.find((item) => item.key === 'key_indicators') ?? null);
-const projectionChart = computed((): VisualizationData | null => props.countdown.main_projection?.visualizations.find((item) => item.key === 'projection_curve') ?? null);
+const countdownSlug = computed(() => props.countdown.slug);
+const currentLocale = computed(() => props.currentLocale);
+const lazy = useDoomsdayLazySections(countdownSlug, currentLocale, {
+    forecasts: computed(() => props.forecastSection),
+    statistics: computed(() => props.statisticsSection),
+    news: computed(() => props.newsSection),
+    initiatives: computed(() => props.initiativesSection),
+});
+const forecastSection = lazy.forecastSection;
+const statisticsSection = lazy.statisticsSection;
+const newsSection = lazy.newsSection;
+const initiativesSection = lazy.initiativesSection;
+
+function activateTab(value: string): void {
+    activeTab.value = value;
+    if (isLazySectionKey(value)) {
+        void lazy.loadSection(value);
+    }
+}
+
+watch(() => `${props.countdown.slug}:${props.currentLocale}`, () => {
+    activeTab.value = 'overview';
+    lazy.reset();
+});
 </script>
 
 <template>
-    <section class="doomsday-card rounded-2xl">
-        <div class="relative grid gap-6 border-b border-white/10 p-5 sm:grid-cols-[1fr_auto] sm:p-7">
+    <section class="doomsday-card flex max-h-[calc(100vh-5.25rem)] min-h-0 flex-col rounded-2xl">
+        <div class="grid min-w-0 shrink-0 gap-4 border-b border-white/10 p-4 sm:p-5 xl:grid-cols-[minmax(0,1fr)_auto]">
             <Image :src="countdown.image_url" :alt="countdown.title" aspect-ratio="56.25%" rounded="lg" :ui="{ root: 'sm:hidden' }" />
-            <div>
-                <p class="doomsday-display text-xs text-ui-muted-foreground">{{ t('selectedEvent') }}</p>
-                <h2 class="doomsday-display mt-3 text-2xl text-white sm:text-3xl">{{ countdown.title }}</h2>
-                <p class="mt-3 max-w-xl text-sm leading-relaxed text-ui-muted-foreground">{{ countdown.summary }}</p>
+            <div class="min-w-0">
+                <div class="mb-2 flex flex-wrap items-center gap-3">
+                    <Button variant="link" size="sm" :icon="ArrowLeft" :ui="{ root: 'p-0 text-ui-primary no-underline' }" @click="emit('close')">All countdowns</Button>
+                    <Button variant="link" size="sm" :icon="expanded ? Minimize2 : Maximize2" :ui="{ root: 'p-0 text-ui-muted-foreground no-underline hover:text-ui-primary' }" @click="emit('toggleExpanded')">
+                        {{ expanded ? 'Collapse' : 'Expand' }}
+                    </Button>
+                </div>
+                <p class="doomsday-display text-[11px] text-ui-muted-foreground">{{ t('selectedEvent') }}</p>
+                <h2 class="doomsday-display mt-2 text-xl leading-tight text-white sm:text-2xl 2xl:text-3xl">{{ countdown.title }}</h2>
+                <p class="mt-2 max-w-3xl text-sm leading-relaxed text-ui-muted-foreground">{{ countdown.summary }}</p>
             </div>
-            <div class="min-w-72">
+            <div class="min-w-0 max-w-full justify-self-start text-center xl:justify-self-end">
                 <CountdownTimer :target-date="countdown.timer.target_date" />
-                <p class="mt-3 text-sm text-ui-muted-foreground">{{ countdown.timer.estimated_label }}</p>
             </div>
-            <Link :href="`/?lang=${currentLocale}`" class="absolute right-5 top-5 text-white/60 hover:text-ui-primary" aria-label="Close detail"><X class="h-6 w-6" /></Link>
         </div>
 
-        <div class="flex gap-4 overflow-x-auto border-b border-white/10 px-5 sm:px-7">
+        <div class="doomsday-scrollbar flex shrink-0 gap-3 overflow-x-auto border-b border-white/10 px-4 sm:px-5">
             <Button
                 v-for="tab in tabs"
                 :key="tab.value"
                 variant="link"
-                :ui="{ root: ['doomsday-display rounded-none border-b-2 px-0 py-4 text-xs no-underline outline-none ring-0 shadow-none focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 active:ring-0 active:outline-none', activeTab === tab.value ? 'border-ui-primary text-ui-primary' : 'border-transparent text-ui-muted-foreground'].join(' ') }"
-                @click="activeTab = tab.value"
+                :ui="{ root: ['doomsday-display rounded-none border-b-2 px-0 py-3 text-xs no-underline outline-none ring-0 shadow-none focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 active:ring-0 active:outline-none', activeTab === tab.value ? 'border-ui-primary text-ui-primary' : 'border-transparent text-ui-muted-foreground'].join(' ') }"
+                @click="activateTab(tab.value)"
             >
                 {{ tab.label }}
             </Button>
         </div>
 
-        <div class="grid gap-5 p-5 sm:grid-cols-2 sm:p-7">
-            <Card v-if="activeTab === 'overview'" :ui="{ root: 'doomsday-card rounded-xl', body: 'p-6' }">
-                <h3 class="doomsday-display mb-4 text-white">{{ t('summary') }}</h3>
-                <p class="leading-relaxed text-ui-muted-foreground">{{ countdown.description }}</p>
-                <div class="mt-6 grid grid-cols-3 gap-3 text-sm">
-                    <div class="rounded-lg border border-white/10 bg-white/5 p-3"><span class="text-ui-muted-foreground">Confidence</span><strong class="block text-xl text-white">{{ countdown.main_projection?.confidence_score ?? 0 }}%</strong></div>
-                    <div class="rounded-lg border border-white/10 bg-white/5 p-3"><span class="text-ui-muted-foreground">Trend</span><strong class="block text-ui-primary">{{ countdown.main_projection?.trend }}</strong></div>
-                    <div class="rounded-lg border border-white/10 bg-white/5 p-3"><span class="text-ui-muted-foreground">Risk</span><strong class="block text-ui-primary">{{ countdown.severity }}</strong></div>
-                </div>
-            </Card>
+        <div :class="['doomsday-scrollbar grid min-h-0 min-w-0 flex-1 gap-5 overflow-y-auto p-4 sm:p-5', expanded ? 'xl:grid-cols-2' : '']">
+            <template v-if="activeTab === 'overview'">
+                <OverviewSection :countdown="countdown" />
+            </template>
 
-            <KeyIndicatorsCard v-if="activeTab === 'overview'" :visualization="indicators" />
+            <template v-else-if="activeTab === 'forecasts'">
+                <ForecastsSection v-if="forecastSection" :section="forecastSection" />
+                <DoomsdaySectionError v-else-if="lazy.hasError('forecasts')" title="Forecasts unavailable" @retry="lazy.loadSection('forecasts')" />
+                <DoomsdaySkeletonBlock v-else variant="chart" />
+            </template>
 
-            <Card v-if="activeTab === 'overview' || activeTab === 'predictions'" :ui="{ root: 'doomsday-card rounded-xl sm:col-span-1', body: 'p-6' }">
-                <h3 class="doomsday-display mb-4 text-white">{{ t('projectionModel') }}</h3>
-                <VisualizationChart v-if="projectionChart" :payload="projectionChart.payload" />
-                <p class="mt-4 text-sm text-ui-muted-foreground">{{ projectionChart?.description }}</p>
-            </Card>
+            <template v-else-if="activeTab === 'statistics'">
+                <StatisticsSection v-if="statisticsSection" :section="statisticsSection" />
+                <DoomsdaySectionError v-else-if="lazy.hasError('statistics')" title="Statistics unavailable" @retry="lazy.loadSection('statistics')" />
+                <DoomsdaySkeletonBlock v-else variant="summary" />
+            </template>
 
-            <Card v-if="activeTab === 'overview' || activeTab === 'news'" :ui="{ root: 'doomsday-card rounded-xl', body: 'p-6' }">
-                <h3 class="doomsday-display mb-4 text-white">{{ t('news') }}</h3>
-                <div class="grid gap-4">
-                    <article v-for="item in countdown.news" :key="item.title" class="border-b border-white/5 pb-3 last:border-b-0 last:pb-0">
-                        <h4 class="text-sm text-white">{{ item.title }}</h4>
-                        <p class="mt-1 text-xs leading-relaxed text-ui-muted-foreground">{{ item.excerpt }}</p>
-                    </article>
-                </div>
-            </Card>
+            <template v-else-if="activeTab === 'news'">
+                <NewsSection v-if="newsSection" :section="newsSection" />
+                <DoomsdaySectionError v-else-if="lazy.hasError('news')" title="News unavailable" @retry="lazy.loadSection('news')" />
+                <DoomsdaySkeletonBlock v-else variant="list" />
+            </template>
+
+            <template v-else-if="activeTab === 'initiatives'">
+                <InitiativesSection v-if="initiativesSection" :section="initiativesSection" />
+                <DoomsdaySectionError v-else-if="lazy.hasError('initiatives')" title="Initiatives unavailable" @retry="lazy.loadSection('initiatives')" />
+                <DoomsdaySkeletonBlock v-else variant="initiatives" />
+            </template>
         </div>
     </section>
 </template>

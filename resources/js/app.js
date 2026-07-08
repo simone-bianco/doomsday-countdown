@@ -6,8 +6,10 @@ import './i18n';
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createApp, h } from 'vue';
+import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 import { ThemeProvider } from '@simone-bianco/vue-ui-components';
 import { loadValidationMessages, setValidationLocale } from '@simone-bianco/vue-form-core';
+import AppNavigationLoader from './Components/App/AppNavigationLoader.vue';
 import { i18n } from './i18n';
 
 void import('./generated/validation-messages').then(({ validationMessages }) => {
@@ -24,10 +26,11 @@ createInertiaApp({
         const app = createApp({
             render: () => h(ThemeProvider, { defaultTheme: 'doomsday' }, () => [
                 h(App, props),
+                h(AppNavigationLoader),
             ]),
         });
 
-        return app.use(plugin).mount(el);
+        return app.use(ZiggyVue).use(plugin).mount(el);
     },
     progress: false,
 });

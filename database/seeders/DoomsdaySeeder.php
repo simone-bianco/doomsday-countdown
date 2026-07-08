@@ -6,6 +6,8 @@ namespace Database\Seeders;
 
 use App\Enums\CountdownSeverity;
 use App\Enums\CountdownStatus;
+use App\Enums\InitiativeLocale;
+use App\Enums\InitiativeType;
 use App\Enums\NewsLocale;
 use App\Enums\ProjectionType;
 use App\Enums\VisualizationType;
@@ -89,6 +91,23 @@ final class DoomsdaySeeder extends Seeder
                     'published_at' => CarbonImmutable::now()->subHours($newsIndex + 2),
                     'sort_order' => $newsIndex + 1,
                     'is_featured' => $newsIndex === 0,
+                ]);
+            }
+
+            foreach ($this->initiatives($event['title']['en']) as $initiativeIndex => $initiative) {
+                $countdown->initiatives()->create([
+                    'locale' => $initiative['locale'],
+                    'type' => $initiative['type'],
+                    'title' => $initiative['title'],
+                    'excerpt' => $initiative['excerpt'],
+                    'body' => $initiative['body'],
+                    'organization' => $initiative['organization'],
+                    'url' => $initiative['url'],
+                    'image_path' => $event['image_path'],
+                    'cta_label' => $initiative['cta_label'],
+                    'starts_at' => CarbonImmutable::now()->addDays($initiativeIndex + 4),
+                    'sort_order' => $initiativeIndex + 1,
+                    'is_featured' => $initiativeIndex === 0,
                 ]);
             }
         }
@@ -204,6 +223,43 @@ final class DoomsdaySeeder extends Seeder
             ['locale' => NewsLocale::All, 'title' => $first, 'excerpt' => 'Scenario monitors updated the latest public risk notes.', 'source_name' => 'Daily Monitor'],
             ['locale' => NewsLocale::En, 'title' => $second, 'excerpt' => 'Regional observers report a changing risk profile.', 'source_name' => 'Global Desk'],
             ['locale' => NewsLocale::It, 'title' => 'Nuovo aggiornamento sugli indicatori regionali', 'excerpt' => 'Gli osservatori regionali segnalano un profilo di rischio in evoluzione.', 'source_name' => 'Osservatorio'],
+        ];
+    }
+
+    /** @return array<int, array<string, mixed>> */
+    private function initiatives(string $eventTitle): array
+    {
+        return [
+            [
+                'locale' => InitiativeLocale::All,
+                'type' => InitiativeType::Campaign,
+                'title' => $eventTitle . ' resilience campaign',
+                'excerpt' => 'A coordinated public action hub for monitoring, preparedness and local risk communication.',
+                'body' => 'Sample initiative data for phase 1.1. It links scenario awareness with community planning resources.',
+                'organization' => 'Civic Risk Network',
+                'url' => 'https://example.org/doomsday/' . str($eventTitle)->slug()->toString(),
+                'cta_label' => 'View campaign',
+            ],
+            [
+                'locale' => InitiativeLocale::En,
+                'type' => InitiativeType::Petition,
+                'title' => 'Sign the preparedness petition',
+                'excerpt' => 'A sample petition asking institutions to publish clear risk thresholds and continuity plans.',
+                'body' => 'The petition is seeded content only and does not submit to an external service in phase 1.1.',
+                'organization' => 'Preparedness Watch',
+                'url' => 'https://example.org/petitions/preparedness',
+                'cta_label' => 'Read petition',
+            ],
+            [
+                'locale' => InitiativeLocale::It,
+                'type' => InitiativeType::Resource,
+                'title' => 'Risorse locali di preparazione',
+                'excerpt' => 'Una scheda campione con risorse e azioni di continuità per comunità locali.',
+                'body' => 'Contenuto seed per mostrare la localizzazione delle iniziative nella tab dedicata.',
+                'organization' => 'Osservatorio Civico',
+                'url' => 'https://example.org/risorse/preparazione',
+                'cta_label' => 'Apri risorsa',
+            ],
         ];
     }
 

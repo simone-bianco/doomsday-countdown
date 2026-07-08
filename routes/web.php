@@ -6,6 +6,7 @@ use App\Http\Controllers\Backoffice\DashboardController as BackofficeDashboardCo
 use App\Http\Controllers\Backoffice\OpenAiKeyController;
 use App\Http\Controllers\Backoffice\UserController;
 use App\Http\Controllers\Web\AboutPageController;
+use App\Http\Controllers\Web\CountdownDataController;
 use App\Http\Controllers\Web\CountdownShowPageController;
 use App\Http\Controllers\Web\HomePageController;
 use Illuminate\Support\Facades\Route;
@@ -13,6 +14,11 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', HomePageController::class)->name('home');
 Route::get('/about', AboutPageController::class)->name('about');
 Route::get('/countdowns/{slug}', CountdownShowPageController::class)->name('countdowns.show');
+Route::get('/countdowns/{slug}/overview-data', [CountdownDataController::class, 'overview'])->name('countdowns.data.overview');
+Route::get('/countdowns/{slug}/forecasts-data', [CountdownDataController::class, 'forecasts'])->name('countdowns.data.forecasts');
+Route::get('/countdowns/{slug}/statistics-data', [CountdownDataController::class, 'statistics'])->name('countdowns.data.statistics');
+Route::get('/countdowns/{slug}/news-data', [CountdownDataController::class, 'news'])->name('countdowns.data.news');
+Route::get('/countdowns/{slug}/initiatives-data', [CountdownDataController::class, 'initiatives'])->name('countdowns.data.initiatives');
 
 Route::post('/agent/demo', DemoAgentController::class)->name('agent.demo');
 

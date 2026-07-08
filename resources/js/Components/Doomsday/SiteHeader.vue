@@ -23,15 +23,15 @@ function navClass(page: 'home' | 'about'): string {
 </script>
 
 <template>
-    <header class="sticky top-0 z-40 border-b border-white/10 bg-black/75 backdrop-blur-xl">
-        <div class="mx-auto flex max-w-[1760px] items-center justify-between px-4 py-3 sm:px-7">
+    <header class="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-black/82 backdrop-blur-xl">
+        <div class="mx-auto flex max-w-[1760px] items-center justify-between px-4 py-2 sm:px-7">
             <a :href="homeUrl" class="flex items-center gap-3" aria-label="Doomsday Countdown home">
                 <img src="/images/doomsday/doomsday_logo_transparent.png" alt="Doomsday Countdown" class="h-9 w-auto sm:h-10" />
             </a>
 
-            <nav class="hidden items-center gap-10 text-sm uppercase tracking-[0.18em] lg:flex">
-                <a :href="homeUrl" :class="['border-b-2 px-2 py-5', navClass('home')]">{{ t('home') }}</a>
-                <a :href="aboutUrl" :class="['border-b-2 px-2 py-5', navClass('about')]">{{ t('about') }}</a>
+            <nav class="hidden items-center gap-8 text-sm uppercase tracking-[0.18em] lg:flex">
+                <a :href="homeUrl" :class="['border-b-2 px-2 pb-2 pt-1', navClass('home')]">{{ t('home') }}</a>
+                <a :href="aboutUrl" :class="['border-b-2 px-2 pb-2 pt-1', navClass('about')]">{{ t('about') }}</a>
             </nav>
 
             <LanguageSelector :languages="languages" :current-locale="currentLocale" />

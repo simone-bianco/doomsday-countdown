@@ -1,20 +1,40 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import CountdownList from './CountdownList.vue';
 import DetailPanel from './DetailPanel.vue';
-import type { CountdownDetailData, CountdownIndexData } from '@/types/generated';
+import DoomsdaySkeletonBlock from './DoomsdaySkeletonBlock.vue';
+import type { CountdownForecastsData, CountdownIndexData, CountdownInitiativesSectionData, CountdownNewsSectionData, CountdownOverviewData, CountdownStatisticsData } from '@/types/generated';
 
-defineProps<{
+withDefaults(defineProps<{
     readonly countdowns: readonly CountdownIndexData[];
-    readonly selectedCountdown: CountdownDetailData;
+    readonly selectedCountdown: CountdownOverviewData | null;
     readonly hero: Record<string, string>;
     readonly currentLocale: string;
+    readonly forecastSection: CountdownForecastsData | null;
+    readonly statisticsSection: CountdownStatisticsData | null;
+    readonly newsSection: CountdownNewsSectionData | null;
+    readonly initiativesSection: CountdownInitiativesSectionData | null;
+    readonly selectedSlug?: string | null;
+    readonly pendingSlug?: string | null;
+    readonly isLoadingSelection?: boolean;
+}>(), {
+    selectedSlug: null,
+    pendingSlug: null,
+    isLoadingSelection: false,
+});
+
+const emit = defineEmits<{
+    select: [countdown: CountdownIndexData];
+    close: [];
 }>();
+
+const isDetailExpanded = ref(false);
 </script>
 
 <template>
-    <section class="mx-auto hidden max-w-[1760px] grid-cols-[minmax(500px,0.95fr)_minmax(720px,1.25fr)] gap-5 px-7 py-7 lg:grid">
-        <div class="grid content-start gap-5">
-            <div class="relative overflow-hidden rounded-2xl border border-white/10 bg-black p-8">
+    <section :class="['mx-auto hidden max-w-[1760px] gap-5 px-5 py-4 lg:grid xl:px-7', isDetailExpanded ? 'grid-cols-1' : 'grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]']">
+        <div v-if="!isDetailExpanded" class="grid min-w-0 content-start gap-5">
+            <div class="relative min-w-0 overflow-hidden rounded-2xl border border-white/10 bg-black p-6 xl:p-8">
                 <img :src="hero.desktop_image" alt="Earth horizon with red monitoring arcs" class="absolute inset-0 h-full w-full object-cover object-center opacity-45" />
                 <div class="absolute inset-0 bg-gradient-to-r from-black via-black/85 to-black/20" />
                 <div class="relative max-w-2xl">
@@ -28,11 +48,23 @@ defineProps<{
                 </div>
             </div>
 
-            <CountdownList :countdowns="countdowns" :compact="true" />
+            <CountdownList :countdowns="countdowns" :compact="true" :selected-slug="selectedSlug" :pending-slug="pendingSlug" @select="emit('select', $event)" />
         </div>
 
-        <div class="sticky top-28 max-h-[calc(100vh-8rem)] self-start overflow-y-auto pr-1">
-            <DetailPanel :countdown="selectedCountdown" :current-locale="currentLocale" />
+        <div class="min-w-0 self-start">
+            <DetailPanel
+                v-if="selectedCountdown && !isLoadingSelection"
+                :countdown="selectedCountdown"
+                :current-locale="currentLocale"
+                :forecast-section="forecastSection"
+                :statistics-section="statisticsSection"
+                :news-section="newsSection"
+                :initiatives-section="initiativesSection"
+                :expanded="isDetailExpanded"
+                @toggle-expanded="isDetailExpanded = !isDetailExpanded"
+                @close="emit('close')"
+            />
+            <DoomsdaySkeletonBlock v-else />
         </div>
     </section>
 </template>

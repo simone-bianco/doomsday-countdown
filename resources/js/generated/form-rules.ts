@@ -44,6 +44,12 @@ export const CountdownDetailDataRules: FormRuleMap = {
   news: { default: [], rules: [{ name: 'present' }, { name: 'array' }] },
 };
 
+export const CountdownForecastsDataRules: FormRuleMap = {
+  countdown_slug: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  projections: { default: [], rules: [{ name: 'present' }, { name: 'array' }] },
+  projection_chart: { default: [], rules: [{ name: 'nullable' }, { name: 'array' }] },
+};
+
 export const CountdownIndexDataRules: FormRuleMap = {
   id: { default: null, rules: [{ name: 'required' }, { name: 'numeric' }] },
   slug: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
@@ -60,6 +66,33 @@ export const CountdownIndexDataRules: FormRuleMap = {
   is_selected: { default: null, rules: [{ name: 'required' }, { name: 'boolean' }] },
 };
 
+export const CountdownInitiativesSectionDataRules: FormRuleMap = {
+  countdown_slug: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  initiatives: { default: [], rules: [{ name: 'present' }, { name: 'array' }] },
+};
+
+export const CountdownNewsSectionDataRules: FormRuleMap = {
+  countdown_slug: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  news: { default: [], rules: [{ name: 'present' }, { name: 'array' }] },
+};
+
+export const CountdownOverviewDataRules: FormRuleMap = {
+  id: { default: null, rules: [{ name: 'required' }, { name: 'numeric' }] },
+  slug: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  title: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  summary: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  description: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  image_url: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  icon: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  severity: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  timer: { default: [], rules: [{ name: 'required' }, { name: 'array' }] },
+  main_projection: { default: [], rules: [{ name: 'nullable' }, { name: 'array' }] },
+  causes: { default: [], rules: [{ name: 'required' }, { name: 'array' }] },
+  consequences: { default: [], rules: [{ name: 'required' }, { name: 'array' }] },
+  recommended_actions: { default: [], rules: [{ name: 'required' }, { name: 'array' }] },
+  key_indicators: { default: [], rules: [{ name: 'nullable' }, { name: 'array' }] },
+};
+
 export const CountdownPageDataRules: FormRuleMap = {
   app_name: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
   current_locale: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
@@ -69,10 +102,31 @@ export const CountdownPageDataRules: FormRuleMap = {
   selected_countdown: { default: [], rules: [{ name: 'nullable' }, { name: 'array' }] },
 };
 
+export const CountdownStatisticsDataRules: FormRuleMap = {
+  countdown_slug: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  visualizations: { default: [], rules: [{ name: 'present' }, { name: 'array' }] },
+};
+
 export const CountdownTimerDataRules: FormRuleMap = {
   target_date: { default: null, rules: [{ name: 'nullable' }] },
   estimated_label: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
   is_elapsed: { default: null, rules: [{ name: 'required' }, { name: 'boolean' }] },
+};
+
+export const InitiativeDataRules: FormRuleMap = {
+  locale: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  type: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  title: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  excerpt: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  body: { default: null, rules: [{ name: 'nullable' }, { name: 'string' }] },
+  organization: { default: null, rules: [{ name: 'nullable' }, { name: 'string' }] },
+  url: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  image_url: { default: null, rules: [{ name: 'nullable' }, { name: 'string' }] },
+  cta_label: { default: null, rules: [{ name: 'nullable' }, { name: 'string' }] },
+  starts_at: { default: null, rules: [{ name: 'nullable' }] },
+  ends_at: { default: null, rules: [{ name: 'nullable' }] },
+  is_featured: { default: null, rules: [{ name: 'required' }, { name: 'boolean' }] },
+  sort_order: { default: null, rules: [{ name: 'required' }, { name: 'numeric' }] },
 };
 
 export const LanguageOptionDataRules: FormRuleMap = {

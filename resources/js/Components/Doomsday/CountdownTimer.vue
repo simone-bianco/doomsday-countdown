@@ -52,9 +52,9 @@ const parts = computed(() => {
 });
 
 const valueClass = computed(() => props.dense
-    ? 'text-[1.05rem] leading-none sm:text-lg 2xl:text-xl'
-    : 'text-xl leading-none sm:text-3xl 2xl:text-4xl');
-const labelGapClass = computed(() => props.dense ? 'gap-x-2' : 'gap-x-4 sm:gap-x-5');
+    ? 'text-[clamp(0.72rem,2.15vw,1.08rem)] leading-none tabular-nums sm:text-[clamp(0.88rem,1.45vw,1.15rem)] 2xl:text-xl'
+    : 'text-[clamp(0.95rem,3.8vw,1.9rem)] leading-none tabular-nums sm:text-3xl 2xl:text-4xl');
+const labelGapClass = computed(() => props.dense ? 'gap-x-1 sm:gap-x-1.5' : 'gap-x-2 sm:gap-x-4');
 
 function pad(value: number): string {
     return value.toString().padStart(2, '0');
@@ -62,14 +62,14 @@ function pad(value: number): string {
 </script>
 
 <template>
-    <div class="doomsday-display max-w-full overflow-hidden">
-        <div class="flex flex-nowrap items-end gap-x-1 whitespace-nowrap text-ui-primary sm:gap-x-2">
+    <div class="doomsday-display max-w-full min-w-0">
+        <div class="flex min-w-0 flex-nowrap items-end justify-center gap-x-0.5 whitespace-nowrap text-ui-primary sm:gap-x-1">
             <template v-for="(part, index) in parts" :key="part.label">
                 <span :class="valueClass">{{ pad(part.value) }}</span>
                 <span v-if="index < parts.length - 1" :class="valueClass">:</span>
             </template>
         </div>
-        <div :class="['mt-1 flex flex-nowrap whitespace-nowrap text-[9px] text-ui-primary sm:text-[10px]', labelGapClass]">
+        <div :class="['mt-1 flex min-w-0 flex-nowrap justify-center whitespace-nowrap text-[8px] text-ui-primary sm:text-[10px]', labelGapClass]">
             <span v-for="part in parts" :key="part.label">{{ part.label }}</span>
         </div>
     </div>

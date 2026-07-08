@@ -28,6 +28,11 @@ projections: Array<ProjectionData>;
 visualizations: Array<VisualizationData>;
 news: Array<NewsData>;
 };
+export type CountdownForecastsData = {
+countdown_slug: string;
+projections: Array<ProjectionData>;
+projection_chart: VisualizationData | null;
+};
 export type CountdownIndexData = {
 id: number;
 slug: string;
@@ -43,15 +48,43 @@ main_projection: ProjectionData | null;
 url: string;
 is_selected: boolean;
 };
+export type CountdownInitiativesSectionData = {
+countdown_slug: string;
+initiatives: Array<InitiativeData>;
+};
+export type CountdownNewsSectionData = {
+countdown_slug: string;
+news: Array<NewsData>;
+};
+export type CountdownOverviewData = {
+id: number;
+slug: string;
+title: string;
+summary: string;
+description: string;
+image_url: string;
+icon: string;
+severity: string;
+timer: CountdownTimerData;
+main_projection: ProjectionData | null;
+causes: Array<any>;
+consequences: Array<any>;
+recommended_actions: Array<any>;
+key_indicators: VisualizationData | null;
+};
 export type CountdownPageData = {
 app_name: string;
 current_locale: string;
 languages: Array<LanguageOptionData>;
 hero: Array<any>;
 countdowns: Array<CountdownIndexData>;
-selected_countdown: CountdownDetailData | null;
+selected_countdown: CountdownOverviewData | null;
 };
 export type CountdownSeverity = 'low' | 'moderate' | 'elevated' | 'high' | 'severe' | 'critical' | 'existential';
+export type CountdownStatisticsData = {
+countdown_slug: string;
+visualizations: Array<VisualizationData>;
+};
 export type CountdownStatus = 'draft' | 'monitoring' | 'active' | 'stabilized' | 'averted' | 'occurred' | 'archived';
 export type CountdownTimerData = {
 target_date: string | null;
@@ -59,6 +92,23 @@ estimated_label: string;
 is_elapsed: boolean;
 };
 export type FreeLimitType = 'daily' | 'monthly' | 'none';
+export type InitiativeData = {
+locale: string;
+type: string;
+title: string;
+excerpt: string;
+body: string | null;
+organization: string | null;
+url: string;
+image_url: string | null;
+cta_label: string | null;
+starts_at: string | null;
+ends_at: string | null;
+is_featured: boolean;
+sort_order: number;
+};
+export type InitiativeLocale = 'all' | 'en' | 'it' | 'fr' | 'de' | 'es' | 'nl' | 'sv' | 'pl';
+export type InitiativeType = 'petition' | 'protest' | 'fundraiser' | 'campaign' | 'resource' | 'other';
 export type LanguageOptionData = {
 code: string;
 label: string;

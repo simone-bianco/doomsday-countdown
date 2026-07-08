@@ -5,22 +5,28 @@ declare(strict_types=1);
 namespace App\Services\Doomsday;
 
 use App\Data\Doomsday\AboutPageData;
-use App\Data\Doomsday\CountdownDetailData;
+use App\Data\Doomsday\CountdownForecastsData;
 use App\Data\Doomsday\CountdownIndexData;
-use App\Data\Doomsday\CountdownPageData;
+use App\Data\Doomsday\CountdownInitiativesSectionData;
+use App\Data\Doomsday\CountdownNewsSectionData;
+use App\Data\Doomsday\CountdownOverviewData;
+use App\Data\Doomsday\CountdownStatisticsData;
 use App\Data\Doomsday\CountdownTimerData;
+use App\Data\Doomsday\InitiativeData;
 use App\Data\Doomsday\LanguageOptionData;
 use App\Data\Doomsday\NewsData;
 use App\Data\Doomsday\ProjectionData;
 use App\Data\Doomsday\VisualizationData;
+use App\Enums\InitiativeLocale;
 use App\Enums\NewsLocale;
 use App\Enums\ProjectionType;
 use App\Models\Countdown;
+use App\Models\Initiative;
 use App\Models\News;
 use App\Models\Projection;
 use App\Models\Visualization;
-use Illuminate\Database\Eloquent\Collection;
 use Carbon\CarbonInterface;
+use Illuminate\Database\Eloquent\Collection;
 
 final class CountdownPublicDataService
 {
@@ -47,67 +53,179 @@ final class CountdownPublicDataService
         return in_array($locale, $this->supportedLocales(), true) ? (string) $locale : 'en';
     }
 
-    public function index(string $locale, ?string $selectedSlug, string $currentPath): CountdownPageData
+    /** @return array<string, mixed> */
+    public function indexPayload(string $locale): array
     {
         $locale = $this->normalizeLocale($locale);
         $countdowns = Countdown::query()
             ->published()
-            ->with(['projections.visualizations', 'visualizations', 'news'])
+            ->with(['projections'])
             ->orderBy('sort_order')
             ->get();
 
-        $selected = $selectedSlug !== null
-            ? $countdowns->firstWhere('slug', $selectedSlug)
-            : null;
+        return [
+            'app_name' => 'Doomsday Countdown',
+            'current_locale' => $locale,
+            'hero' => $this->hero($locale),
+            'countdowns' => $countdowns
+                ->map(fn (Countdown $countdown): array => $this->toIndexItem($countdown, $locale, false)->toArray())
+                ->values()
+                ->all(),
+        ];
+    }
 
-        return new CountdownPageData(
-            app_name: 'Doomsday Countdown',
-            current_locale: $locale,
-            languages: $this->languageOptions($locale, $currentPath),
-            hero: $this->hero($locale),
-            countdowns: $countdowns->map(fn (Countdown $countdown): CountdownIndexData => $this->toIndexItem($countdown, $locale, $countdown->is($selected)))->values()->all(),
-            selected_countdown: $selected instanceof Countdown ? $this->toDetail($selected, $locale) : null,
-        );
+    /** @param array<string, mixed> $indexPayload @param array<string, mixed>|null $overview */
+    public function pageFromPayload(string $locale, string $currentPath, array $indexPayload, ?array $overview): array
+    {
+        $locale = $this->normalizeLocale($locale);
+        $selectedSlug = is_array($overview) ? (string) ($overview['slug'] ?? '') : null;
+
+        $countdowns = collect($indexPayload['countdowns'] ?? [])
+            ->map(function (array $countdown) use ($selectedSlug): array {
+                $countdown['is_selected'] = $selectedSlug !== null && $selectedSlug !== '' && $countdown['slug'] === $selectedSlug;
+
+                return $countdown;
+            })
+            ->values()
+            ->all();
+
+        return [
+            'app_name' => $indexPayload['app_name'] ?? 'Doomsday Countdown',
+            'current_locale' => $locale,
+            'languages' => $this->languageOptionArrays($locale, $currentPath),
+            'hero' => $indexPayload['hero'] ?? $this->hero($locale),
+            'countdowns' => $countdowns,
+            'selected_countdown' => $overview,
+        ];
+    }
+
+    /** @return array<string, mixed> */
+    public function aboutPayload(string $locale): array
+    {
+        $locale = $this->normalizeLocale($locale);
+        $copy = $this->aboutCopy($locale);
+
+        return [
+            'app_name' => 'Doomsday Countdown',
+            'current_locale' => $locale,
+            'title' => $copy['title'],
+            'subtitle' => $copy['subtitle'],
+            'sections' => $copy['sections'],
+        ];
+    }
+
+    /** @param array<string, mixed> $aboutPayload */
+    public function aboutFromPayload(string $locale, string $currentPath, array $aboutPayload): array
+    {
+        $locale = $this->normalizeLocale($locale);
+
+        return array_merge($aboutPayload, [
+            'current_locale' => $locale,
+            'languages' => $this->languageOptionArrays($locale, $currentPath),
+        ]);
     }
 
     public function about(string $locale, string $currentPath): AboutPageData
     {
-        $locale = $this->normalizeLocale($locale);
-        $copy = [
-            'en' => [
-                'title' => 'About the countdowns',
-                'subtitle' => 'A public monitoring interface for critical global risk scenarios.',
-                'sections' => [
-                    ['title' => 'Methodology', 'body' => 'Each countdown is an editorial forecast based on seeded scenario data, trend indicators, and transparent assumptions. Dates are estimated targets, not certainties.'],
-                    ['title' => 'Scenario data', 'body' => 'Phase 1 uses curated sample data from the local database. It does not ingest live feeds or external services.'],
-                    ['title' => 'Interpretation', 'body' => 'The interface is designed to make risk signals legible. It should be read as a planning and awareness tool, not as a deterministic prediction.'],
-                ],
-            ],
-            'it' => [
-                'title' => 'Informazioni sui countdown',
-                'subtitle' => 'Un’interfaccia pubblica di monitoraggio per scenari critici globali.',
-                'sections' => [
-                    ['title' => 'Metodologia', 'body' => 'Ogni countdown è una previsione editoriale basata su dati scenario, indicatori di tendenza e assunzioni trasparenti. Le date sono obiettivi stimati, non certezze.'],
-                    ['title' => 'Dati scenario', 'body' => 'La fase 1 usa dati campione curati dal database locale. Non acquisisce feed live o servizi esterni.'],
-                    ['title' => 'Interpretazione', 'body' => 'L’interfaccia rende leggibili i segnali di rischio. Va letta come strumento di pianificazione e consapevolezza, non come previsione deterministica.'],
-                ],
-            ],
-        ];
-        $selected = $copy[$locale] ?? $copy['en'];
+        $payload = $this->aboutFromPayload($locale, $currentPath, $this->aboutPayload($locale));
 
         return new AboutPageData(
-            app_name: 'Doomsday Countdown',
-            current_locale: $locale,
-            languages: $this->languageOptions($locale, $currentPath),
-            title: $selected['title'],
-            subtitle: $selected['subtitle'],
-            sections: $selected['sections'],
+            app_name: (string) $payload['app_name'],
+            current_locale: (string) $payload['current_locale'],
+            languages: $payload['languages'],
+            title: (string) $payload['title'],
+            subtitle: (string) $payload['subtitle'],
+            sections: $payload['sections'],
         );
     }
 
     public function publicCountdownBySlug(string $slug): ?Countdown
     {
         return Countdown::query()->published()->where('slug', $slug)->first();
+    }
+
+    /** @return array<string, mixed>|null */
+    public function overview(string $slug, string $locale): ?array
+    {
+        $countdown = Countdown::query()
+            ->published()
+            ->where('slug', $slug)
+            ->with(['projections', 'visualizations'])
+            ->first();
+
+        return $countdown instanceof Countdown ? $this->toOverview($countdown, $this->normalizeLocale($locale))->toArray() : null;
+    }
+
+    /** @return array<string, mixed>|null */
+    public function forecasts(string $slug, string $locale): ?array
+    {
+        $countdown = Countdown::query()
+            ->published()
+            ->where('slug', $slug)
+            ->with(['projections.visualizations'])
+            ->first();
+
+        if (! $countdown instanceof Countdown) {
+            return null;
+        }
+
+        $locale = $this->normalizeLocale($locale);
+        $mainProjection = $this->mainProjection($countdown);
+        $projectionChart = $mainProjection instanceof Projection
+            ? $mainProjection->visualizations->firstWhere('key', 'projection_curve')
+            : null;
+
+        return (new CountdownForecastsData(
+            countdown_slug: $countdown->slug,
+            projections: $countdown->projections
+                ->sortBy('sort_order')
+                ->map(fn (Projection $projection): ProjectionData => $this->toProjection($projection, $locale, true))
+                ->values()
+                ->all(),
+            projection_chart: $projectionChart instanceof Visualization ? $this->toVisualization($projectionChart, $locale) : null,
+        ))->toArray();
+    }
+
+    /** @return array<string, mixed>|null */
+    public function statistics(string $slug, string $locale): ?array
+    {
+        $countdown = Countdown::query()
+            ->published()
+            ->where('slug', $slug)
+            ->with(['visualizations'])
+            ->first();
+
+        return $countdown instanceof Countdown
+            ? (new CountdownStatisticsData($countdown->slug, $this->toVisualizations($countdown->visualizations, $this->normalizeLocale($locale))))->toArray()
+            : null;
+    }
+
+    /** @return array<string, mixed>|null */
+    public function newsSection(string $slug, string $locale): ?array
+    {
+        $countdown = Countdown::query()
+            ->published()
+            ->where('slug', $slug)
+            ->with(['news'])
+            ->first();
+
+        return $countdown instanceof Countdown
+            ? (new CountdownNewsSectionData($countdown->slug, $this->localizedNews($countdown, $this->normalizeLocale($locale))))->toArray()
+            : null;
+    }
+
+    /** @return array<string, mixed>|null */
+    public function initiativesSection(string $slug, string $locale): ?array
+    {
+        $countdown = Countdown::query()
+            ->published()
+            ->where('slug', $slug)
+            ->with(['initiatives'])
+            ->first();
+
+        return $countdown instanceof Countdown
+            ? (new CountdownInitiativesSectionData($countdown->slug, $this->localizedInitiatives($countdown, $this->normalizeLocale($locale))))->toArray()
+            : null;
     }
 
     private function toIndexItem(Countdown $countdown, string $locale, bool $isSelected): CountdownIndexData
@@ -125,17 +243,18 @@ final class CountdownPublicDataService
             severity: $countdown->severity->value,
             sort_order: $countdown->sort_order,
             timer: $this->timer($mainProjection?->target_date ?? $countdown->target_date, $locale),
-            main_projection: $mainProjection instanceof Projection ? $this->toProjection($mainProjection, $locale) : null,
+            main_projection: $mainProjection instanceof Projection ? $this->toProjection($mainProjection, $locale, false) : null,
             url: '/countdowns/' . $countdown->slug . '?lang=' . $locale,
             is_selected: $isSelected,
         );
     }
 
-    private function toDetail(Countdown $countdown, string $locale): CountdownDetailData
+    private function toOverview(Countdown $countdown, string $locale): CountdownOverviewData
     {
         $mainProjection = $this->mainProjection($countdown);
+        $keyIndicators = $countdown->visualizations->firstWhere('key', 'key_indicators');
 
-        return new CountdownDetailData(
+        return new CountdownOverviewData(
             id: $countdown->id,
             slug: $countdown->slug,
             title: $this->text($countdown->title, $locale),
@@ -145,13 +264,11 @@ final class CountdownPublicDataService
             icon: $countdown->icon,
             severity: $countdown->severity->value,
             timer: $this->timer($mainProjection?->target_date ?? $countdown->target_date, $locale),
-            main_projection: $mainProjection instanceof Projection ? $this->toProjection($mainProjection, $locale) : null,
+            main_projection: $mainProjection instanceof Projection ? $this->toProjection($mainProjection, $locale, false) : null,
             causes: $this->textList($countdown->causes, $locale),
             consequences: $this->textList($countdown->consequences, $locale),
             recommended_actions: $this->textList($countdown->recommended_actions, $locale),
-            projections: $countdown->projections->sortBy('sort_order')->map(fn (Projection $projection): ProjectionData => $this->toProjection($projection, $locale))->values()->all(),
-            visualizations: $this->toVisualizations($countdown->visualizations, $locale),
-            news: $this->localizedNews($countdown, $locale),
+            key_indicators: $keyIndicators instanceof Visualization ? $this->toVisualization($keyIndicators, $locale) : null,
         );
     }
 
@@ -165,47 +282,28 @@ final class CountdownPublicDataService
         ];
 
         return $countdown->projections
-            ->sortBy(fn (Projection $projection): array => [
-                $priority[$projection->type->value] ?? 4,
-                $projection->sort_order,
-                $projection->id,
-            ])
+            ->sortBy(fn (Projection $projection): array => [$priority[$projection->type->value] ?? 4, $projection->sort_order, $projection->id])
             ->first();
     }
 
-    private function toProjection(Projection $projection, string $locale): ProjectionData
+    private function toProjection(Projection $projection, string $locale, bool $includeVisualizations): ProjectionData
     {
-        return new ProjectionData(
-            type: $projection->type->value,
-            target_date: $projection->target_date?->toImmutable(),
-            title: $this->text($projection->title, $locale),
-            summary: $this->text($projection->summary, $locale),
-            confidence_score: $projection->confidence_score,
-            probability_score: $projection->probability_score,
-            trend: $projection->trend,
-            visualizations: $this->toVisualizations($projection->visualizations, $locale),
-        );
+        $visualizations = $includeVisualizations && $projection->relationLoaded('visualizations')
+            ? $this->toVisualizations($projection->visualizations, $locale)
+            : [];
+
+        return new ProjectionData($projection->type->value, $projection->target_date?->toImmutable(), $this->text($projection->title, $locale), $this->text($projection->summary, $locale), $projection->confidence_score, $projection->probability_score, $projection->trend, $visualizations);
     }
 
-    /**
-     * @param Collection<int, Visualization> $visualizations
-     * @return array<int, VisualizationData>
-     */
+    /** @param Collection<int, Visualization> $visualizations @return array<int, VisualizationData> */
     private function toVisualizations(Collection $visualizations, string $locale): array
     {
-        return $visualizations
-            ->sortBy('sort_order')
-            ->map(fn (Visualization $visualization): VisualizationData => new VisualizationData(
-                key: $visualization->key,
-                type: $visualization->type->value,
-                title: $this->text($visualization->title, $locale),
-                description: $this->text($visualization->description, $locale),
-                payload: $visualization->payload ?? [],
-                schema_version: $visualization->schema_version,
-                sort_order: $visualization->sort_order,
-            ))
-            ->values()
-            ->all();
+        return $visualizations->sortBy('sort_order')->map(fn (Visualization $visualization): VisualizationData => $this->toVisualization($visualization, $locale))->values()->all();
+    }
+
+    private function toVisualization(Visualization $visualization, string $locale): VisualizationData
+    {
+        return new VisualizationData($visualization->key, $visualization->type->value, $this->text($visualization->title, $locale), $this->text($visualization->description, $locale), $visualization->payload ?? [], $visualization->schema_version, $visualization->sort_order);
     }
 
     /** @return array<int, NewsData> */
@@ -215,28 +313,24 @@ final class CountdownPublicDataService
             ->filter(fn (News $news): bool => in_array($news->locale->value, [NewsLocale::All->value, $locale], true))
             ->sortByDesc(fn (News $news): string => (string) $news->published_at)
             ->values()
-            ->map(fn (News $news): NewsData => new NewsData(
-                locale: $news->locale->value,
-                title: $news->title,
-                excerpt: $news->excerpt,
-                source_name: $news->source_name,
-                source_url: $news->source_url,
-                image_url: $news->image_path !== null ? asset($news->image_path) : null,
-                published_at: $news->published_at?->toImmutable(),
-                is_featured: $news->is_featured,
-            ))
+            ->map(fn (News $news): NewsData => new NewsData($news->locale->value, $news->title, $news->excerpt, $news->source_name, $news->source_url, $news->image_path !== null ? asset($news->image_path) : null, $news->published_at?->toImmutable(), $news->is_featured))
+            ->all();
+    }
+
+    /** @return array<int, InitiativeData> */
+    private function localizedInitiatives(Countdown $countdown, string $locale): array
+    {
+        return $countdown->initiatives
+            ->filter(fn (Initiative $initiative): bool => in_array($initiative->locale->value, [InitiativeLocale::All->value, $locale], true))
+            ->sortBy(fn (Initiative $initiative): array => [$initiative->sort_order, $initiative->id])
+            ->values()
+            ->map(fn (Initiative $initiative): InitiativeData => new InitiativeData($initiative->locale->value, $initiative->type->value, $initiative->title, $initiative->excerpt, $initiative->body, $initiative->organization, $initiative->url, $initiative->image_path !== null ? asset($initiative->image_path) : null, $initiative->cta_label, $initiative->starts_at?->toImmutable(), $initiative->ends_at?->toImmutable(), $initiative->is_featured, $initiative->sort_order))
             ->all();
     }
 
     private function timer(?CarbonInterface $targetDate, string $locale): CountdownTimerData
     {
-        $estimated = $locale === 'it' ? 'Obiettivo stimato' : 'Estimated target';
-
-        return new CountdownTimerData(
-            target_date: $targetDate?->toImmutable(),
-            estimated_label: $estimated,
-            is_elapsed: $targetDate !== null && $targetDate->isPast(),
-        );
+        return new CountdownTimerData($targetDate?->toImmutable(), $locale === 'it' ? 'Obiettivo stimato' : 'Estimated target', $targetDate !== null && $targetDate->isPast());
     }
 
     /** @param array<string, mixed>|null $value */
@@ -251,15 +345,18 @@ final class CountdownPublicDataService
         return (string) ($value[$locale] ?? $fallback ?? '');
     }
 
-    /**
-     * @param array<string, mixed>|null $value
-     * @return array<int, string>
-     */
+    /** @param array<string, mixed>|null $value @return array<int, string> */
     private function textList(?array $value, string $locale): array
     {
         $localized = $value[$locale] ?? $value['en'] ?? [];
 
         return is_array($localized) ? array_values(array_map('strval', $localized)) : [];
+    }
+
+    /** @return array<int, array<string, mixed>> */
+    private function languageOptionArrays(string $currentLocale, string $currentPath): array
+    {
+        return array_map(fn (LanguageOptionData $option): array => $option->toArray(), $this->languageOptions($currentLocale, $currentPath));
     }
 
     /** @return array<int, LanguageOptionData> */
@@ -270,35 +367,26 @@ final class CountdownPublicDataService
             $path = '/';
         }
 
-        return collect(self::LANGUAGES)
-            ->map(fn (array $language, string $code): LanguageOptionData => new LanguageOptionData(
-                code: $code,
-                label: $language['label'],
-                native_label: $language['native'],
-                flag: $language['flag'],
-                url: $path . '?lang=' . $code,
-                is_current: $code === $currentLocale,
-            ))
-            ->values()
-            ->all();
+        return collect(self::LANGUAGES)->map(fn (array $language, string $code): LanguageOptionData => new LanguageOptionData($code, $language['label'], $language['native'], $language['flag'], $path . '?lang=' . $code, $code === $currentLocale))->values()->all();
+    }
+
+    /** @return array<string, mixed> */
+    private function aboutCopy(string $locale): array
+    {
+        $copy = [
+            'en' => ['title' => 'About the countdowns', 'subtitle' => 'A public monitoring interface for critical global risk scenarios.', 'sections' => [['title' => 'Methodology', 'body' => 'Each countdown is an editorial forecast based on seeded scenario data, trend indicators, and transparent assumptions. Dates are estimated targets, not certainties.'], ['title' => 'Scenario data', 'body' => 'Phase 1 uses curated sample data from the local database. It does not ingest live feeds or external services.'], ['title' => 'Interpretation', 'body' => 'The interface is designed to make risk signals legible. It should be read as a planning and awareness tool, not as a deterministic prediction.']]],
+            'it' => ['title' => 'Informazioni sui countdown', 'subtitle' => 'Un’interfaccia pubblica di monitoraggio per scenari critici globali.', 'sections' => [['title' => 'Metodologia', 'body' => 'Ogni countdown è una previsione editoriale basata su dati scenario, indicatori di tendenza e assunzioni trasparenti. Le date sono obiettivi stimati, non certezze.'], ['title' => 'Dati scenario', 'body' => 'La fase 1 usa dati campione curati dal database locale. Non acquisisce feed live o servizi esterni.'], ['title' => 'Interpretazione', 'body' => 'L’interfaccia rende leggibili i segnali di rischio. Va letta come strumento di pianificazione e consapevolezza, non come previsione deterministica.']]],
+        ];
+
+        return $copy[$locale] ?? $copy['en'];
     }
 
     /** @return array<string, string> */
     private function hero(string $locale): array
     {
         $copy = [
-            'en' => [
-                'headline_prefix' => 'THE CLOCK IS TICKING.',
-                'headline_middle' => 'STAY INFORMED. STAY',
-                'headline_accent' => 'AWARE.',
-                'subtitle' => 'Real-time countdowns to critical global tipping points.',
-            ],
-            'it' => [
-                'headline_prefix' => 'IL TEMPO SCORRE.',
-                'headline_middle' => 'RESTA INFORMATO. RESTA',
-                'headline_accent' => 'VIGILE.',
-                'subtitle' => 'Countdown in tempo reale verso punti critici globali.',
-            ],
+            'en' => ['headline_prefix' => 'THE CLOCK IS TICKING.', 'headline_middle' => 'STAY INFORMED. STAY', 'headline_accent' => 'AWARE.', 'subtitle' => 'Real-time countdowns to critical global tipping points.'],
+            'it' => ['headline_prefix' => 'IL TEMPO SCORRE.', 'headline_middle' => 'RESTA INFORMATO. RESTA', 'headline_accent' => 'VIGILE.', 'subtitle' => 'Countdown in tempo reale verso punti critici globali.'],
         ];
 
         return array_merge($copy[$locale] ?? $copy['en'], [

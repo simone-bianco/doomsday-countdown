@@ -9,16 +9,18 @@ withDefaults(defineProps<{
     readonly languages: readonly LanguageOptionData[];
     readonly currentLocale: string;
     readonly hideMobileHeader?: boolean;
+    readonly hideBackground?: boolean;
     readonly activePage?: 'home' | 'about';
 }>(), {
     hideMobileHeader: false,
+    hideBackground: false,
     activePage: 'home',
 });
 </script>
 
 <template>
-    <div class="relative min-h-screen overflow-x-hidden bg-black text-ui-foreground">
-        <div class="pointer-events-none fixed inset-0 z-0 overflow-hidden">
+    <div class="doomsday-scrollbar relative min-h-screen overflow-x-hidden bg-black text-ui-foreground">
+        <div v-if="!hideBackground" class="pointer-events-none fixed inset-0 z-0 overflow-hidden">
             <picture>
                 <source media="(max-width: 768px)" :srcset="heroMobileBackground" />
                 <img :src="heroDesktopBackground" alt="" class="h-full w-full object-cover object-center opacity-95" />
@@ -31,7 +33,7 @@ withDefaults(defineProps<{
         <div class="relative z-10 min-h-screen">
             <ToastNotification />
             <SiteHeader :class="hideMobileHeader ? 'hidden lg:block' : ''" :languages="languages" :current-locale="currentLocale" :active-page="activePage" />
-            <main>
+            <main :class="hideMobileHeader ? 'lg:pt-[64px]' : 'pt-[64px]'">
                 <slot />
             </main>
         </div>

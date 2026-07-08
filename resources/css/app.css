@@ -50,6 +50,36 @@ html {
     background: #000;
 }
 
+html,
+.doomsday-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 42, 35, 0.72) rgba(255, 255, 255, 0.06);
+}
+
+html::-webkit-scrollbar,
+.doomsday-scrollbar::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+html::-webkit-scrollbar-track,
+.doomsday-scrollbar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 999px;
+}
+
+html::-webkit-scrollbar-thumb,
+.doomsday-scrollbar::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, rgba(255, 42, 35, 0.92), rgba(120, 8, 8, 0.86));
+    border: 2px solid rgba(0, 0, 0, 0.75);
+    border-radius: 999px;
+}
+
+html::-webkit-scrollbar-thumb:hover,
+.doomsday-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgb(255, 42, 35);
+}
+
 body {
     margin: 0;
     overflow-x: hidden;
@@ -81,4 +111,24 @@ body {
 .doomsday-red-text {
     color: rgb(255 42 35);
     text-shadow: 0 0 20px rgba(255, 42, 35, 0.35);
+}
+
+.doomsday-skeleton {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(90deg, rgba(255, 42, 35, 0.08), rgba(255, 255, 255, 0.12), rgba(255, 42, 35, 0.08));
+    background-size: 220% 100%;
+    animation: doomsday-shimmer 1.35s linear infinite;
+    box-shadow: 0 0 22px rgba(255, 42, 35, 0.08);
+}
+
+@keyframes doomsday-shimmer {
+    0% { background-position: 220% 0; }
+    100% { background-position: -220% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .doomsday-skeleton {
+        animation: none;
+    }
 }

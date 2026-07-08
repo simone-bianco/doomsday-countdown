@@ -21,7 +21,7 @@ final class CountdownPageData extends Data
         public readonly array $languages,
         public readonly array $hero,
         public readonly array $countdowns,
-        public readonly ?CountdownDetailData $selected_countdown,
+        public readonly ?CountdownOverviewData $selected_countdown,
     ) {
     }
 }
