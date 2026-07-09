@@ -9,6 +9,7 @@ use App\Enums\CountdownStatus;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
@@ -74,6 +75,13 @@ final class Countdown extends Model
     public function news(): HasMany
     {
         return $this->hasMany(News::class);
+    }
+
+    public function contentSources(): BelongsToMany
+    {
+        return $this->belongsToMany(ContentSource::class)
+            ->withPivot(['keywords', 'excluded_keywords', 'weight', 'is_active'])
+            ->withTimestamps();
     }
 
     public function initiatives(): HasMany

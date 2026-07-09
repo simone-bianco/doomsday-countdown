@@ -16,10 +16,8 @@ final class DoomsdayTaiwanRealDataQaTest extends TestCase
     public function test_fresh_seed_public_state_contains_only_taiwan_countdown_with_readable_asset(): void
     {
         $this->seed(DoomsdaySeeder::class);
-
         $countdowns = Countdown::query()->with(['projections', 'visualizations', 'news', 'initiatives'])->get();
         $this->assertCount(1, $countdowns);
-
         $countdown = $countdowns->first();
         $this->assertNotNull($countdown);
         $this->assertSame('taiwan-invasion', $countdown->slug);
@@ -38,36 +36,29 @@ final class DoomsdayTaiwanRealDataQaTest extends TestCase
     public function test_public_routes_and_json_endpoints_expose_taiwan_payload_integrity(): void
     {
         $this->seed(DoomsdaySeeder::class);
-
         $this->get('/?lang=en')
             ->assertOk()
             ->assertSee('Doomsday Countdown')
             ->assertSee('taiwan-invasion');
-
         $this->get('/countdowns/taiwan-invasion?lang=it')
             ->assertOk()
             ->assertSee('Invasione di Taiwan');
-
         $overview = $this->getJson(route('countdowns.data.overview', ['slug' => 'taiwan-invasion', 'lang' => 'en']));
         $overview->assertOk()
             ->assertJsonPath('data.slug', 'taiwan-invasion')
             ->assertJsonPath('data.image_url', asset('images/doomsday/taiwan_invasion.png'));
-
         $forecasts = $this->getJson(route('countdowns.data.forecasts', ['slug' => 'taiwan-invasion', 'lang' => 'en']))->assertOk()->json('data');
         $statistics = $this->getJson(route('countdowns.data.statistics', ['slug' => 'taiwan-invasion', 'lang' => 'en']))->assertOk()->json('data');
         $news = $this->getJson(route('countdowns.data.news', ['slug' => 'taiwan-invasion', 'lang' => 'en']))->assertOk()->json('data');
         $initiatives = $this->getJson(route('countdowns.data.initiatives', ['slug' => 'taiwan-invasion', 'lang' => 'en']))->assertOk()->json('data');
-
         $this->assertSame('taiwan-invasion', $forecasts['countdown_slug']);
         $this->assertCount(3, $forecasts['projections']);
         $this->assertSame(['optimistic', 'neutral', 'pessimistic'], array_column($forecasts['projections'], 'type'));
-
         $this->assertSame('taiwan-invasion', $statistics['countdown_slug']);
         $visualizationKeys = array_column($statistics['visualizations'], 'key');
         foreach (['key_indicators', 'pla_pressure_trend', 'economic_exposure', 'scenario_gdp_shock', 'energy_resilience'] as $requiredKey) {
             $this->assertContains($requiredKey, $visualizationKeys);
         }
-
         $this->assertSame('taiwan-invasion', $news['countdown_slug']);
         $this->assertGreaterThanOrEqual(6, count($news['news']));
         foreach ($news['news'] as $item) {
@@ -77,7 +68,6 @@ final class DoomsdayTaiwanRealDataQaTest extends TestCase
             $this->assertStringNotContainsString('example.org', $item['source_url']);
             $this->assertDoesNotMatchRegularExpression('/turn\d+/i', $item['source_url']);
         }
-
         $this->assertSame('taiwan-invasion', $initiatives['countdown_slug']);
         $this->assertGreaterThanOrEqual(5, count($initiatives['initiatives']));
         foreach ($initiatives['initiatives'] as $initiative) {
@@ -91,23 +81,23 @@ final class DoomsdayTaiwanRealDataQaTest extends TestCase
     {
         $sources = [
             base_path('database/seeders/DoomsdaySeeder.php'),
+            base_path('database/patches/countdowns/taiwan_invasion/_shared.php'),
+            ...glob(base_path('database/patches/countdowns/taiwan_invasion/*/patch.php')),
+            ...glob(base_path('database/patches/countdowns/taiwan_invasion/*/data.php')),
             base_path('app/Services/Doomsday/CountdownPublicDataService.php'),
             base_path('resources/js/Pages/Doomsday/Home.vue'),
             base_path('resources/js/Pages/Doomsday/About.vue'),
             base_path('resources/js/Components/Doomsday/SidebarCards.vue'),
             base_path('resources/js/Components/Doomsday/NewsSection.vue'),
         ];
-
         $content = '';
         foreach ($sources as $source) {
             $content .= strtolower((string) file_get_contents($source));
         }
-
         foreach (['society-collapse', 'fall-of-europe', 'extreme-heat-breakpoint', 'uninhabitable-earth', 'example.org', 'daily monitor', 'global desk', 'sample data', 'sample scenario', 'dati campione'] as $forbidden) {
             $this->assertStringNotContainsString($forbidden, $content);
         }
         $this->assertDoesNotMatchRegularExpression('/turn\d+/i', $content);
-
         $newsSection = (string) file_get_contents(base_path('resources/js/Components/Doomsday/NewsSection.vue'));
         $this->assertStringContainsString(':href="item.source_url ?? \'#\'"', $newsSection);
         $this->assertStringContainsString('target="_blank"', $newsSection);
@@ -118,13 +108,11 @@ final class DoomsdayTaiwanRealDataQaTest extends TestCase
     {
         $selection = (string) file_get_contents(base_path('resources/js/Composables/useDoomsdaySelection.ts'));
         $lazy = (string) file_get_contents(base_path('resources/js/Composables/useDoomsdayLazySections.ts'));
-        $runtime = $selection . $lazy;
-
+        $runtime = $selection.$lazy;
         $this->assertStringContainsString('axios.get<{ data: CountdownOverviewData }>', $selection);
         $this->assertStringContainsString("route('countdowns.data.overview'", $selection);
         $this->assertStringContainsString('axios.get<{ data: SectionDataByKey[K] }>', $lazy);
         $this->assertStringContainsString('route(sectionRouteByKey[key]', $lazy);
-
         foreach (['router.visit', 'router.reload', 'router.prefetch', 'history.pushState', 'window.location', 'window.fetch'] as $forbidden) {
             $this->assertStringNotContainsString($forbidden, $runtime);
         }

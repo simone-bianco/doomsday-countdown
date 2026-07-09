@@ -15,9 +15,11 @@ final class NewsData extends Data
         public readonly string $locale,
         public readonly string $title,
         public readonly string $excerpt,
+        public readonly string $content_type,
         public readonly ?string $source_name,
         public readonly ?string $source_url,
         public readonly ?string $image_url,
+        public readonly ?string $embed_url,
         public readonly ?CarbonImmutable $published_at,
         public readonly bool $is_featured,
     ) {

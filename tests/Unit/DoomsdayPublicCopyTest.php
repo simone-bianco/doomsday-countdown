@@ -11,26 +11,27 @@ final class DoomsdayPublicCopyTest extends TestCase
     public function test_public_doomsday_sources_do_not_contain_prohibited_visible_copy(): void
     {
         $paths = [
-            __DIR__ . '/../../resources/js/Pages/Doomsday/Home.vue',
-            __DIR__ . '/../../resources/js/Pages/Doomsday/About.vue',
-            __DIR__ . '/../../resources/js/Layouts/PublicLayout.vue',
-            __DIR__ . '/../../resources/js/Components/Doomsday',
-            __DIR__ . '/../../resources/js/i18n/index.ts',
-            __DIR__ . '/../../database/seeders/DoomsdaySeeder.php',
+            __DIR__.'/../../resources/js/Pages/Doomsday/Home.vue',
+            __DIR__.'/../../resources/js/Pages/Doomsday/About.vue',
+            __DIR__.'/../../resources/js/Layouts/PublicLayout.vue',
+            __DIR__.'/../../resources/js/Components/Doomsday',
+            __DIR__.'/../../resources/js/i18n/index.ts',
+            __DIR__.'/../../database/seeders/DoomsdaySeeder.php',
+            __DIR__.'/../../database/patches/countdowns/taiwan_invasion/_shared.php',
+            ...glob(__DIR__.'/../../database/patches/countdowns/taiwan_invasion/*/patch.php'),
+            ...glob(__DIR__.'/../../database/patches/countdowns/taiwan_invasion/*/data.php'),
         ];
-
         $content = '';
         foreach ($paths as $path) {
             if (is_dir($path)) {
-                foreach (glob($path . '/*.vue') ?: [] as $file) {
+                foreach (glob($path.'/*.vue') ?: [] as $file) {
                     $content .= (string) file_get_contents($file);
                 }
+
                 continue;
             }
-
             $content .= (string) file_get_contents($path);
         }
-
         $this->assertStringNotContainsString('Artificial Intelligence', $content);
         $this->assertStringNotContainsString('OpenAI', $content);
         $this->assertStringNotContainsString('AI ', $content);
@@ -48,8 +49,7 @@ final class DoomsdayPublicCopyTest extends TestCase
 
     public function test_public_layout_menu_contains_only_home_and_about_links(): void
     {
-        $layout = (string) file_get_contents(__DIR__ . '/../../resources/js/Components/Doomsday/SiteHeader.vue');
-
+        $layout = (string) file_get_contents(__DIR__.'/../../resources/js/Components/Doomsday/SiteHeader.vue');
         $this->assertStringContainsString('homeUrl', $layout);
         $this->assertStringContainsString('aboutUrl', $layout);
         $this->assertStringContainsString('fixed inset-x-0 top-0', $layout);
@@ -62,31 +62,27 @@ final class DoomsdayPublicCopyTest extends TestCase
 
     public function test_doomsday_components_do_not_pass_string_icons_to_ui_buttons(): void
     {
-        $componentsPath = __DIR__ . '/../../resources/js/Components/Doomsday';
+        $componentsPath = __DIR__.'/../../resources/js/Components/Doomsday';
         $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($componentsPath));
-
         foreach ($iterator as $file) {
             if (! $file->isFile() || $file->getExtension() !== 'vue') {
                 continue;
             }
-
             $content = (string) file_get_contents($file->getPathname());
             $this->assertDoesNotMatchRegularExpression(
                 '/\\sicon="[a-z][a-z0-9-]*"/',
                 $content,
-                'Doomsday component uses a string icon instead of a lucide component binding: ' . $file->getPathname(),
+                'Doomsday component uses a string icon instead of a lucide component binding: '.$file->getPathname(),
             );
         }
     }
 
     public function test_countdown_card_uses_art_only_image_overlay_widget(): void
     {
-        $cardImagePath = __DIR__ . '/../../resources/js/Components/Doomsday/CountdownCardImage.vue';
+        $cardImagePath = __DIR__.'/../../resources/js/Components/Doomsday/CountdownCardImage.vue';
         $this->assertFileExists($cardImagePath);
-
-        $card = (string) file_get_contents(__DIR__ . '/../../resources/js/Components/Doomsday/CountdownCard.vue');
+        $card = (string) file_get_contents(__DIR__.'/../../resources/js/Components/Doomsday/CountdownCard.vue');
         $cardImage = (string) file_get_contents($cardImagePath);
-
         $this->assertStringContainsString("import CountdownCardImage from './CountdownCardImage.vue';", $card);
         $this->assertStringContainsString('<CountdownCardImage', $card);
         $this->assertStringContainsString(':image-url="countdown.image_url"', $card);
@@ -98,7 +94,6 @@ final class DoomsdayPublicCopyTest extends TestCase
         $this->assertDoesNotMatchRegularExpression('/<Image\\b/', $card);
         $this->assertStringNotContainsString('<Link', $card);
         $this->assertStringNotContainsString('prefetch cache-for="2m"', $card);
-
         $this->assertStringContainsString("import { Image } from '@simone-bianco/vue-ui-components';", $cardImage);
         $this->assertStringContainsString('readonly title: string', $cardImage);
         $this->assertStringContainsString('readonly subtitle: string', $cardImage);
@@ -120,16 +115,14 @@ final class DoomsdayPublicCopyTest extends TestCase
 
     public function test_mobile_detail_image_is_in_flow_and_global_background_can_be_hidden(): void
     {
-        $layout = (string) file_get_contents(__DIR__ . '/../../resources/js/Layouts/PublicLayout.vue');
-        $home = (string) file_get_contents(__DIR__ . '/../../resources/js/Pages/Doomsday/Home.vue');
-        $mobileDetail = (string) file_get_contents(__DIR__ . '/../../resources/js/Components/Doomsday/MobileDetailView.vue');
-        $mobileSkeleton = (string) file_get_contents(__DIR__ . '/../../resources/js/Components/Doomsday/MobileDetailSkeleton.vue');
-
+        $layout = (string) file_get_contents(__DIR__.'/../../resources/js/Layouts/PublicLayout.vue');
+        $home = (string) file_get_contents(__DIR__.'/../../resources/js/Pages/Doomsday/Home.vue');
+        $mobileDetail = (string) file_get_contents(__DIR__.'/../../resources/js/Components/Doomsday/MobileDetailView.vue');
+        $mobileSkeleton = (string) file_get_contents(__DIR__.'/../../resources/js/Components/Doomsday/MobileDetailSkeleton.vue');
         $this->assertStringContainsString('readonly hideBackground?: boolean', $layout);
         $this->assertStringContainsString('hideBackground: false', $layout);
         $this->assertStringContainsString('v-if="!hideBackground"', $layout);
         $this->assertStringNotContainsString(':hide-background="selection.detailOpen.value"', $home);
-
         foreach ([$mobileDetail, $mobileSkeleton] as $source) {
             $this->assertStringContainsString('relative h-[220px]', $source);
             $this->assertStringContainsString('sm:h-[260px]', $source);
@@ -137,33 +130,30 @@ final class DoomsdayPublicCopyTest extends TestCase
             $this->assertStringNotContainsString('-mt-8', $source);
             $this->assertDoesNotMatchRegularExpression('/<div class="[^\"]*fixed[^\"]*h-\\[(220|260)px\\]/', $source);
         }
-
         $this->assertStringContainsString('object-cover object-center', $mobileDetail);
     }
 
     public function test_selection_ux_uses_axios_ziggy_local_state_and_stale_section_guard(): void
     {
-        $home = (string) file_get_contents(__DIR__ . '/../../resources/js/Pages/Doomsday/Home.vue');
-        $masterDetail = (string) file_get_contents(__DIR__ . '/../../resources/js/Components/Doomsday/SelectedMasterDetail.vue');
-        $mobileDetail = (string) file_get_contents(__DIR__ . '/../../resources/js/Components/Doomsday/MobileDetailView.vue');
-        $detail = (string) file_get_contents(__DIR__ . '/../../resources/js/Components/Doomsday/DetailPanel.vue');
-        $countdownList = (string) file_get_contents(__DIR__ . '/../../resources/js/Components/Doomsday/CountdownList.vue');
-        $countdownCard = (string) file_get_contents(__DIR__ . '/../../resources/js/Components/Doomsday/CountdownCard.vue');
-        $selection = (string) file_get_contents(__DIR__ . '/../../resources/js/Composables/useDoomsdaySelection.ts');
-        $lazy = (string) file_get_contents(__DIR__ . '/../../resources/js/Composables/useDoomsdayLazySections.ts');
-        $timer = (string) file_get_contents(__DIR__ . '/../../resources/js/Components/Doomsday/CountdownTimer.vue');
-        $cardImage = (string) file_get_contents(__DIR__ . '/../../resources/js/Components/Doomsday/CountdownCardImage.vue');
-        $app = (string) file_get_contents(__DIR__ . '/../../resources/js/app.js');
-        $loader = (string) file_get_contents(__DIR__ . '/../../resources/js/Components/App/AppNavigationLoader.vue');
-        $sidebar = (string) file_get_contents(__DIR__ . '/../../resources/js/Components/Doomsday/SidebarCards.vue');
-
+        $home = (string) file_get_contents(__DIR__.'/../../resources/js/Pages/Doomsday/Home.vue');
+        $masterDetail = (string) file_get_contents(__DIR__.'/../../resources/js/Components/Doomsday/SelectedMasterDetail.vue');
+        $mobileDetail = (string) file_get_contents(__DIR__.'/../../resources/js/Components/Doomsday/MobileDetailView.vue');
+        $detail = (string) file_get_contents(__DIR__.'/../../resources/js/Components/Doomsday/DetailPanel.vue');
+        $countdownList = (string) file_get_contents(__DIR__.'/../../resources/js/Components/Doomsday/CountdownList.vue');
+        $countdownCard = (string) file_get_contents(__DIR__.'/../../resources/js/Components/Doomsday/CountdownCard.vue');
+        $selection = (string) file_get_contents(__DIR__.'/../../resources/js/Composables/useDoomsdaySelection.ts');
+        $lazy = (string) file_get_contents(__DIR__.'/../../resources/js/Composables/useDoomsdayLazySections.ts');
+        $timer = (string) file_get_contents(__DIR__.'/../../resources/js/Components/Doomsday/CountdownTimer.vue');
+        $cardImage = (string) file_get_contents(__DIR__.'/../../resources/js/Components/Doomsday/CountdownCardImage.vue');
+        $app = (string) file_get_contents(__DIR__.'/../../resources/js/app.js');
+        $loader = (string) file_get_contents(__DIR__.'/../../resources/js/Components/App/AppNavigationLoader.vue');
+        $sidebar = (string) file_get_contents(__DIR__.'/../../resources/js/Components/Doomsday/SidebarCards.vue');
         $this->assertStringContainsString('readonly selected_countdown?: CountdownOverviewData | null', $home);
         $this->assertStringContainsString('useDoomsdaySelection', $home);
         $this->assertStringContainsString('selection.selectedCountdown.value', $home);
         $this->assertStringContainsString('MobileDetailSkeleton', $home);
         $this->assertStringContainsString('SelectedMasterDetail', $home);
         $this->assertStringNotContainsString('<DetailPanel', $home);
-
         $this->assertStringContainsString('axios.get<{ data: CountdownOverviewData }>', $selection);
         $this->assertStringContainsString("route('countdowns.data.overview'", $selection);
         $this->assertStringContainsString('activeSelectedSlug.value === countdown.slug', $selection);
@@ -173,7 +163,6 @@ final class DoomsdayPublicCopyTest extends TestCase
         foreach (['router.visit', 'router.reload', 'history.pushState', 'window.location'] as $forbidden) {
             $this->assertStringNotContainsString($forbidden, $selection);
         }
-
         $this->assertStringContainsString('defineEmits', $countdownList);
         $this->assertStringContainsString('@select="emit', $countdownList);
         $this->assertStringContainsString('items-start max-w-[1760px]', $home);
@@ -196,14 +185,12 @@ final class DoomsdayPublicCopyTest extends TestCase
         $this->assertStringNotContainsString('ChevronRight', $countdownCard);
         $this->assertStringNotContainsString('255px', $countdownCard);
         $this->assertStringNotContainsString('countdown.timer.estimated_label', $countdownCard);
-
         $this->assertStringNotContainsString('overflow-hidden', $timer);
         $this->assertStringContainsString('clamp(', $timer);
         $this->assertStringContainsString('SEC', $timer);
         $this->assertStringContainsString('tabular-nums', $timer);
         $this->assertStringContainsString('line-clamp-2', $cardImage);
         $this->assertStringContainsString('font-bold', $cardImage);
-
         $this->assertStringNotContainsString('minmax(500px', $masterDetail);
         $this->assertStringNotContainsString('minmax(720px', $masterDetail);
         $this->assertStringContainsString('grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]', $masterDetail);
@@ -216,17 +203,15 @@ final class DoomsdayPublicCopyTest extends TestCase
         $this->assertStringNotContainsString('sticky top-28', $masterDetail);
         $this->assertStringContainsString(':compact="true"', $masterDetail);
         $this->assertStringContainsString('@close="emit', $masterDetail);
-
         $this->assertStringContainsString('ChevronLeft', $mobileDetail);
         $this->assertStringContainsString('Share2', $mobileDetail);
         $this->assertStringContainsString('CountdownTimer', $mobileDetail);
         $this->assertStringContainsString('DoomsdaySkeletonBlock', $mobileDetail);
         $this->assertStringContainsString('InitiativesSection', $mobileDetail);
         $this->assertStringContainsString('fixed inset-x-0 bottom-0', $mobileDetail);
-
-        $newsSection = (string) file_get_contents(__DIR__ . '/../../resources/js/Components/Doomsday/NewsSection.vue');
-        $initiativesSection = (string) file_get_contents(__DIR__ . '/../../resources/js/Components/Doomsday/InitiativesSection.vue');
-        $chart = (string) file_get_contents(__DIR__ . '/../../resources/js/Components/Doomsday/VisualizationChart.vue');
+        $newsSection = (string) file_get_contents(__DIR__.'/../../resources/js/Components/Doomsday/NewsSection.vue');
+        $initiativesSection = (string) file_get_contents(__DIR__.'/../../resources/js/Components/Doomsday/InitiativesSection.vue');
+        $chart = (string) file_get_contents(__DIR__.'/../../resources/js/Components/Doomsday/VisualizationChart.vue');
         $this->assertStringContainsString(':href="item.source_url ??', $newsSection);
         $this->assertStringContainsString('grid grid-cols-1 gap-4', $newsSection);
         $this->assertStringNotContainsString('sm:grid-cols-2', $newsSection);
@@ -242,7 +227,6 @@ final class DoomsdayPublicCopyTest extends TestCase
         $this->assertStringContainsString('pb-6', $chart);
         $this->assertStringContainsString('paddedMax', $chart);
         $this->assertStringNotContainsString('Math.max(100', $chart);
-
         $this->assertStringNotContainsString('countdown.timer.estimated_label', $detail);
         $this->assertStringNotContainsString('countdown.timer.estimated_label', $mobileDetail);
         $this->assertStringContainsString('All countdowns', $detail);
@@ -267,7 +251,6 @@ final class DoomsdayPublicCopyTest extends TestCase
         $this->assertStringNotContainsString('router.reload', $lazy);
         $this->assertStringNotContainsString('router.prefetch', $lazy);
         $this->assertStringNotContainsString('window.fetch', $lazy);
-
         $this->assertStringContainsString("import { ZiggyVue } from '../../vendor/tightenco/ziggy';", $app);
         $this->assertLessThan(strpos($app, '.use(plugin)'), strpos($app, '.use(ZiggyVue)'));
         $this->assertStringContainsString('h(AppNavigationLoader)', $app);

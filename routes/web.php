@@ -3,16 +3,24 @@
 use App\Http\Controllers\Agent\DemoAgentController;
 use App\Http\Controllers\AuthSessionController;
 use App\Http\Controllers\Backoffice\DashboardController as BackofficeDashboardController;
+use App\Http\Controllers\Backoffice\Doomsday\CountdownController;
+use App\Http\Controllers\Backoffice\Doomsday\InitiativeController;
+use App\Http\Controllers\Backoffice\Doomsday\NewsController;
+use App\Http\Controllers\Backoffice\Doomsday\ProjectionController;
+use App\Http\Controllers\Backoffice\Doomsday\VisualizationController;
 use App\Http\Controllers\Backoffice\OpenAiKeyController;
 use App\Http\Controllers\Backoffice\UserController;
 use App\Http\Controllers\Web\AboutPageController;
 use App\Http\Controllers\Web\CountdownDataController;
 use App\Http\Controllers\Web\CountdownShowPageController;
 use App\Http\Controllers\Web\HomePageController;
+use App\Http\Controllers\Web\LegalPolicyPageController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomePageController::class)->name('home');
 Route::get('/about', AboutPageController::class)->name('about');
+Route::get('/privacy', [LegalPolicyPageController::class, 'privacy'])->name('privacy');
+Route::get('/cookie-policy', [LegalPolicyPageController::class, 'cookies'])->name('cookie-policy');
 Route::get('/countdowns/{slug}', CountdownShowPageController::class)->name('countdowns.show');
 Route::get('/countdowns/{slug}/overview-data', [CountdownDataController::class, 'overview'])->name('countdowns.data.overview');
 Route::get('/countdowns/{slug}/forecasts-data', [CountdownDataController::class, 'forecasts'])->name('countdowns.data.forecasts');
@@ -31,6 +39,22 @@ Route::middleware('auth')
     ->name('backoffice.')
     ->group(function (): void {
         Route::get('/', BackofficeDashboardController::class)->name('index');
+        Route::resource('countdowns', CountdownController::class)->except(['show']);
+        Route::post('/countdowns/{countdown}/projections', [ProjectionController::class, 'store'])->name('countdowns.projections.store');
+        Route::put('/countdowns/{countdown}/projections/{projection}', [ProjectionController::class, 'update'])->name('countdowns.projections.update');
+        Route::delete('/countdowns/{countdown}/projections/{projection}', [ProjectionController::class, 'destroy'])->name('countdowns.projections.destroy');
+        Route::post('/countdowns/{countdown}/visualizations', [VisualizationController::class, 'storeForCountdown'])->name('countdowns.visualizations.store');
+        Route::put('/countdowns/{countdown}/visualizations/{visualization}', [VisualizationController::class, 'updateForCountdown'])->name('countdowns.visualizations.update');
+        Route::delete('/countdowns/{countdown}/visualizations/{visualization}', [VisualizationController::class, 'destroyForCountdown'])->name('countdowns.visualizations.destroy');
+        Route::post('/countdowns/{countdown}/projections/{projection}/visualizations', [VisualizationController::class, 'storeForProjection'])->name('countdowns.projections.visualizations.store');
+        Route::put('/countdowns/{countdown}/projections/{projection}/visualizations/{visualization}', [VisualizationController::class, 'updateForProjection'])->name('countdowns.projections.visualizations.update');
+        Route::delete('/countdowns/{countdown}/projections/{projection}/visualizations/{visualization}', [VisualizationController::class, 'destroyForProjection'])->name('countdowns.projections.visualizations.destroy');
+        Route::post('/countdowns/{countdown}/news', [NewsController::class, 'store'])->name('countdowns.news.store');
+        Route::put('/countdowns/{countdown}/news/{news}', [NewsController::class, 'update'])->name('countdowns.news.update');
+        Route::delete('/countdowns/{countdown}/news/{news}', [NewsController::class, 'destroy'])->name('countdowns.news.destroy');
+        Route::post('/countdowns/{countdown}/initiatives', [InitiativeController::class, 'store'])->name('countdowns.initiatives.store');
+        Route::put('/countdowns/{countdown}/initiatives/{initiative}', [InitiativeController::class, 'update'])->name('countdowns.initiatives.update');
+        Route::delete('/countdowns/{countdown}/initiatives/{initiative}', [InitiativeController::class, 'destroy'])->name('countdowns.initiatives.destroy');
         Route::post('/users', [UserController::class, 'store'])->name('users.store');
         Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
         Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');

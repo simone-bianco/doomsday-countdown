@@ -3,62 +3,45 @@ name: fe-to-be-flow
 description: Use for frontend-backend flow DTOs, validation, requests, and form submission.
 ---
 
+<!-- argument-hint: [topic, chapter, workflow, review, or command] -->
+
 # Frontend-Backend Data Flow
+**Purpose**: DTO-first request/validation/form pipeline from Laravel to Vue | **Chapters**: 4 | **Optimized**: 2026-07-09
 
-When passing data from frontend to backend (POST/PUT/PATCH requests), follow this exact pipeline:
+## Core Mental Models
 
-## Step 1: Define the DTO (Backend)
-Create `app/Data/{Name}Data.php` using Spatie LaravelData:
-```php
-#[TypeScript]
-class CreateChunkData extends Data {
-    public function __construct(
-        #[Required, StringType] public string $document_id,
-        #[Required, StringType, Max(3000)] public string $content,
-        #[Nullable] public ?array $tags,
-    ) {}
-}
-```
-MUST have `#[TypeScript]` attribute. Validation via Spatie attributes.
+- Backend DTO is the contract source.
+- Generated frontend rules/types are derived artifacts.
+- Vue forms use SmartForm and generated rules.
+- Controllers stay thin; services own behavior.
+- No raw `axios`/`fetch` for standard mutations.
 
-## Step 2: Generate Frontend Rules
-```bash
-php artisan form-bridge:generate
-```
-This auto-generates `resources/js/generated/form-rules.ts` from all Data classes.
+## Chapter Index
 
-## Step 3: Create the Form (Frontend)
-```ts
-import { useSmartForm } from '@simone-bianco/vue-form-core'
-import { CreateChunkDataRules } from '@/generated/form-rules'
-import type { CreateChunkData } from '@/types/generated'
+| # | Title | Load When |
+|---|-------|-----------|
+| [ch01](chapters/ch01-dto-contract.md) | DTO Contract | adding or changing request/response data shape |
+| [ch02](chapters/ch02-generation.md) | Generation | after changing any Data class used by frontend/forms |
+| [ch03](chapters/ch03-smartform-submit.md) | Frontend Form Submit | creating Vue form mutation UI |
+| [ch04](chapters/ch04-controller-service.md) | Controller + Service | implementing backend endpoint for the form |
 
-const form = useSmartForm<CreateChunkData>({ ...CreateChunkDataRules })
-form.fill({ document_id: props.documentId, content: '', tags: [] })
-```
+## Topic Index
 
-## Step 4: Create Controller + optional FormRequest (Backend)
-```php
-// app/Http/Controllers/Web/ChunkPageController.php
-public function store(CreateChunkData $data): RedirectResponse {
-    $this->chunkService->create($data);
-    return back()->with('success', 'Chunk created.');
-}
-```
+- **dto** → ch01
+- **validation** → ch01
+- **typescript** → ch02
+- **form-bridge** → ch02
+- **smartform** → ch03
+- **files** → ch03
+- **controller** → ch04
+- **service** → ch04
 
-Use a dedicated `FormRequest` only for HTTP-specific concerns (authorization/pre-validation), not as mandatory default.
+## Supporting Files
 
-## Step 5: Submit from Frontend
-```ts
-form.post(route('chunks.store'), { preserveScroll: true })
-// For file uploads:
-form.transform(data => ({ ...data, image: file.value }))
-    .post(route('chunks.store'), { forceFormData: true })
-```
+- [cheatsheet.md](cheatsheet.md) — fast rules and validation.
+- [patterns.md](patterns.md) — reusable implementation patterns.
+- [glossary.md](glossary.md) — terms only when needed.
 
-## Key Rules
-- DTO FIRST, always. Define validation in one place (Spatie Data).
-- NEVER write manual validation arrays in controllers.
-- NEVER use raw `axios` or `fetch` for form submissions.
-- Controller stays thin — business logic in Services.
-- Run `form-bridge:generate` after ANY Data class change.
+## Scope Limits
+
+Stay within the skill trigger. Verify current code before relying on paths, commands, package APIs, or generated files. Stop on conflicting user instructions, missing contracts, or unrelated working-tree changes.

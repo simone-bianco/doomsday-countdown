@@ -5,77 +5,56 @@ description: Use for forms built with useSmartForm or useStoreForm patterns.
 
 # SmartForm Expert
 
-You know exactly how `useSmartForm` and `useStoreForm` work in this project.
+Use this skill for Vue forms that submit to Laravel routes through generated rules, `useSmartForm`, or `useStoreForm`.
 
-## Key Paths
-- Composable: `packages/simone-bianco/vue-form-core/src/composables/useSmartForm.ts`
-- Types: `packages/simone-bianco/vue-form-core/src/types.ts`
-- Validation engine: `packages/simone-bianco/vue-form-core/src/validation/engine.ts`
-- Generated TS types: `resources/js/types/generated.d.ts`
-- Generated form rules: `resources/js/generated/form-rules.ts`
-- StoreForm composable: `resources/js/composables/useStoreForm.js`
+## Core rules
 
-## useSmartForm — Standard Form
+- Generated rules initialize the form.
+- Always call `fill()` with intended defaults after init.
+- Use package inputs with `v-model`, `:error`, and `form.processing`.
+- Use `transform()` for payload changes/files; submit options do not accept arbitrary `data`.
+- `form.errors` merges client and server errors; server errors win.
+- Use StoreForm only when fields must mirror Pinia state.
+- Do not use raw `axios`/`fetch` for standard backend mutations.
 
-### Init Pattern (ALWAYS use generated rules)
+## Standard form
+
 ```ts
-import { useSmartForm } from '@simone-bianco/vue-form-core'
-import { XxxDataRules } from '@/generated/form-rules'
-import type { XxxData } from '@/types/generated'
-
-const form = useSmartForm<XxxData>({ ...XxxDataRules })
-form.fill({
-    field_a: props.entity?.field_a ?? '',
-    field_b: props.entity?.field_b ?? false,
-    array_field: props.entity?.array_field ?? [],
-})
+const form = useSmartForm<MyData>({ ...MyDataRules })
+form.fill({ title: '' })
+form.post(route('things.store'), { preserveScroll: true })
 ```
 
-### API
-```ts
-form.field_name = newValue     // Direct field access (reactive)
-form.fill({ ... })             // Set multiple fields (chainable)
-form.validate()                // Validate all, returns boolean
-form.validateField('name')     // Validate single field
-form.errors                    // Record<string, string> — merged client + server
-form.processing                // boolean — request in flight
-form.isDirty / form.hasErrors  // State checks
-form.post(url, options?)       // Submit (also .put, .patch, .delete)
-form.transform(data => ({...data, image: file.value}))  // Mutate before send
-form.onSuccess(cb) / form.onError(cb) / form.onFinish(cb)  // Callbacks
-form.reset() / form.clearErrors()  // Reset
-```
+Template pattern:
 
-### Template Binding
 ```vue
-<TextInput v-model="form.field_name" :error="form.errors.field_name" @blur="form.validateField('field_name')" />
-<Button type="submit" :loading="form.processing" :disabled="form.processing" />
+<TextInput
+    v-model="form.title"
+    :error="form.errors.title"
+    :disabled="form.processing"
+    @blur="form.validateField('title')"
+/>
 ```
 
-### File Uploads
+## Files and transforms
+
 ```ts
-const imageFile = ref<File | null>(null)
-form.transform(data => ({ ...data, image: imageFile.value }))
-    .post(route('resource.store'), { forceFormData: true })
+form.transform(data => ({ ...data, image: file.value }))
+form.post(route('profile.avatar'), { forceFormData: true })
 ```
 
-## useStoreForm — Pinia-Synced Form
+Important: `transform()` is persistent until changed/reset. Set it close to the submit that needs it.
 
-For forms that must stay in sync with a Pinia store:
-```ts
-import { useStoreForm } from '@/composables/useStoreForm'
+## StoreForm
 
-const form = useStoreForm(store, 'storeKey', {
-    first_name: { storePath: 'user.name', rules: ['required', 'string', 'min:2'] },
-    email: { storePath: 'email', rules: ['required', 'email'] },
-}, { bidirectional: true })
-```
-Returns standard SmartForm — same API applies.
+Use `useStoreForm(store, key, fieldMap, { bidirectional: true })` only when form state must sync with Pinia store paths. It returns the standard SmartForm API.
 
-## Critical Gotchas
-1. Generated defaults are `null` — ALWAYS `form.fill({})` after init
-2. `data` is NOT a SubmitOption — use `form.transform()` instead
-3. `transform()` is persistent — set just before `.post()`/`.put()`
-4. `nullable` short-circuits ALL other rules for that field
-5. `forceFormData: true` required when payload contains `File` objects
-6. `form.errors` merges client + server (server wins for same field)
+Avoid StoreForm when a local form is enough.
+
+## Gotchas
+
+- generated defaults may be `null`; fill them explicitly;
+- `nullable` short-circuits other rules;
+- server errors override same-field client errors;
+- do not pass arbitrary `data` in submit options;
+- do not use raw `axios/fetch` for normal mutations.

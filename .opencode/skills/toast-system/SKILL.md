@@ -5,49 +5,33 @@ description: Use for implementing global success/error/warning/info toast notifi
 
 # Toast System
 
-Toast notifications are handled globally via `ToastNotification` component in `AppLayout.vue`. No per-page setup needed.
+Use this small skill when adding or reviewing toast notifications.
 
-## Backend (Preferred Method)
-Use Laravel flash messages — `ToastNotification` watches `page.props.flash` automatically.
+## Core rules
+
+- Prefer Laravel flash messages; the layout-level `ToastNotification` watches `page.props.flash` globally.
+- Manual frontend toast is only for frontend-only actions or realtime/local events.
+- Never create a custom toast system or local duplicate toast component.
+- Batch repeated messages to avoid spam.
+
+## Backend preferred
 
 ```php
-// Success
-return back()->with('success', 'Document saved successfully.');
-return redirect()->route('projects.index')->with('success', 'Project created!');
-
-// Error
-return back()->with('error', 'An error occurred during saving.');
-
-// Warning / Info
-return back()->with('warning', 'Rate limit approaching.');
-return back()->with('info', 'Processing started in background.');
+return back()->with('success', 'Saved.');
+return redirect()->route('x.index')->with('error', 'Failed.');
 ```
 
-## Frontend (When Needed)
-For pure frontend actions (axios calls, WebSocket events):
-```javascript
-import { usePage } from '@inertiajs/vue3'
-const page = usePage()
-page.props.flash.success = 'Frontend action completed!'
+Supported types:
+
+```text
+success
+error
+warning
+info
 ```
 
-Alternatively, use the `useToast` composable from `vue-ui-components` for manual toast triggers:
-```javascript
-import { useToast } from '@simone-bianco/vue-ui-components'
-const toast = useToast()
-toast.success('Operation completed!')
-```
+Use `error` for blocking failures, `warning` for non-blocking issues, `info` for neutral status.
 
-## Flash Types
-- `success` — green, operation completed
-- `error` — red, operation failed
-- `warning` — orange, non-blocking alert
-- `info` — blue, informational
+## Frontend only
 
-## Rules
-1. **Prefer backend approach** — `redirect()->with()` or `back()->with()`
-2. **Use correct types** — `error` for failures only, `warning` for non-blocking
-3. **No Vue imports needed** — `AppLayout` handles everything globally
-4. **Never create custom toast implementations** — always use the project's `ToastNotification` system
-5. **Avoid spam** — group batch operations: "10 files deleted" not 10 separate toasts
-6. **Built-in dedupe** — 1000ms window for identical messages
+Use frontend/manual toast only when no backend flash exists, for example a local copy action or realtime event. Prefer the package `useToast` helper if available; do not invent a new global store.

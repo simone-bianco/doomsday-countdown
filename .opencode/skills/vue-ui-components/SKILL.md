@@ -1,60 +1,47 @@
 ---
 name: vue-ui-components
-description: Use for building or refactoring reusable components in vue-ui-components packages.
+description: Use for building, refactoring, selecting, or reviewing reusable components in packages/simone-bianco/vue-ui-components and its testing package.
 ---
 
-# Vue UI Components Creator
+<!-- argument-hint: [component name, catalog, ui prop, export, accessibility, testing] -->
 
-You build strictly typed, accessible, and deeply stylable Vue 3 components for the `vue-ui-components` (basic) or `vue-ui-components-advanced` (advanced) packages.
+# Vue UI Components
+**Purpose**: select, create, export, and review reusable package components | **Chapters**: 5 | **Optimized**: 2026-07-09
 
-## Target Packages
+## Core Mental Models
 
-1. **BASIC** (Atoms/Molecules: Buttons, Inputs, Badges) → `packages/simone-bianco/vue-ui-components/src/components/`
-2. **ADVANCED** (Organisms: DataTables, FileUploaders, Widgets) → `packages/simone-bianco/vue-ui-components-advanced/src/components/`
+- Check the catalog before creating a component; reuse package components before app-local primitives.
+- Package components must be typed, accessible, theme-aware, and stylable with `ui` props where relevant.
+- Component exports live in `packages/simone-bianco/vue-ui-components/src/index.ts`.
+- Demo/test pages live in `packages/simone-bianco/vue-ui-components-testing`.
+- App-specific domain components stay in `resources/js/Components`, not the package.
 
-## Gold Standard (ALL components MUST follow)
+## Chapter Index
 
-### 1. Script Setup + TypeScript
-- `<script setup lang="ts">`
-- Use `interface` for Props and UI definitions
-- NEVER use `any` — define specific types or generics
+| # | Title | Load When |
+|---|-------|-----------|
+| [ch01](chapters/ch01-catalog-core-forms.md) | Catalog: Core & Form Controls | choosing buttons, inputs, labels, toggles, chips, badges |
+| [ch02](chapters/ch02-catalog-data-select-upload.md) | Catalog: Data, Select & Upload | choosing tables, pagination, select, file/image upload |
+| [ch03](chapters/ch03-catalog-layout-feedback-media.md) | Catalog: Layout, Feedback, Media & Navigation | choosing panels, modals, status, nav, media, organisms |
+| [ch04](chapters/ch04-component-creation-contract.md) | Component Creation Contract | creating/refactoring a package component |
+| [ch05](chapters/ch05-testing-package.md) | Testing Package & Demo Pages | validating package components visually/functionally |
 
-### 2. The `ui` Prop Pattern
-```typescript
-// In src/types/ or local file:
-export interface MyComponentUI { root?: string; label?: string; input?: string; }
+## Topic Index
 
-// In component:
-const props = withDefaults(defineProps<{ ui?: MyComponentUI }>(), { ui: () => ({}) })
-```
-Template: `:class="cn('base-classes', ui.root)"` — ALWAYS use `cn()`.
+- **Button/TextInput/Textarea/Checkbox/Toggle/RadioGroup** → ch01
+- **Select/SelectMultiple/DataTable/ServerDataTable/Pagination** → ch02
+- **FileUploader/ImageUploader/AvatarUploader/ImageGallery** → ch02
+- **Modal/Tabs/Card/StatusBadge/ToastNotification/Loader** → ch03
+- **SidebarNavigation/Topbar/NavLink/PageHeader** → ch03
+- **new component/ui prop/export/index.ts** → ch04
+- **demo/test page/vue-ui-components-testing** → ch05
 
-### 3. Icons
-- Source: `lucide-vue-next`
-- Accept as `Component` type (raw object, not strings)
-- Render: `<component :is="icon" />`
+## Supporting Files
 
-### 4. Class Merging
-- `import { cn } from '../utils'` — ALWAYS wrap classes in `cn()` for Tailwind conflict resolution
+- [cheatsheet.md](cheatsheet.md) — fast rules and catalog pointers.
+- [patterns.md](patterns.md) — reusable package component patterns.
+- [glossary.md](glossary.md) — package terms.
 
-### 5. v-model
-- Use `defineModel` — NEVER raw emit pattern
+## Scope Limits
 
-## Creation Workflow (MANDATORY)
-
-1. **Define types** in `src/types/` → `{Component}UI` interface
-2. **Create component** in `src/components/{Component}.vue`
-3. **Accept `ui` prop** with `withDefaults` and default `() => ({})`
-4. **Use `cn()`** for ALL class attributes
-5. **Add ARIA** accessibility attributes
-6. **Export** in `src/index.ts`:
-   ```ts
-   export { default as MyComponent } from './components/MyComponent.vue'
-   export type { MyComponentUI } from './types'
-   ```
-7. **Test page** — delegate to `vue-ui-test-creator` skill
-
-## Reference Components
-- `Button.vue` — prop defaults, variant system, loading state
-- `TextInput.vue` — v-model, error binding, label integration
-- `DataTable.vue` — complex generic component with slots
+Do not create package components for one-off domain UI. Do not use native primitives in app UI when an existing package component covers the need. Verify current exports in `src/index.ts` before claiming a component is available.

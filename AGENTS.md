@@ -16,13 +16,23 @@ Quickstart and guardrails for AI coding agents working in this repository.
 
 ## Read first
 
-Before touching code, read the relevant local skills:
+Before touching code, read the relevant local skills.
 
-- `.opencode/skills/frontend/SKILL.md` — Vue/front-end rules.
-- `.opencode/skills/vue-architect/SKILL.md` — Inertia page/component architecture.
-- `.opencode/skills/vue-ui-components/SKILL.md` — project UI component contracts.
-- `.opencode/skills/laravel-backend/SKILL.md` — Laravel controller/service rules.
-- `.opencode/skills/fe-to-be-flow/SKILL.md` — DTO/generated TypeScript contracts.
+Skill loading protocol:
+
+1. Read the selected skill `SKILL.md` first.
+2. Load only the chapter(s) matching the task; normally 1 or 2 chapters, but feel free to read more if necessary.
+3. Use `cheatsheet.md` only for final checks.
+4. Use `patterns.md` only when designing/refactoring.
+5. Use `glossary.md` only for unclear terms.
+6. Do not bulk-read an entire skill directory unless explicitly reviewing the skill itself.
+
+Skill maintenance rule:
+
+- Treat skills as living project knowledge. Update the relevant skill when the project adds packages, changes architecture/contracts/workflows, introduces new reusable patterns, or removes old conventions.
+- Update skills when an AI agent makes a mistake because required project knowledge was missing, stale, ambiguous, or buried in the wrong place.
+- Keep updates narrow and evidence-based: record current file paths, commands, contracts, stop conditions, and anti-patterns that would have prevented the mistake or helped future work.
+- Do not dump task-specific implementation notes into skills; extract only durable rules, reusable patterns, catalog updates, or review/QA checks.
 
 ## Public Doomsday architecture
 

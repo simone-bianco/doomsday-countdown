@@ -22,7 +22,10 @@ defineProps<{
             >
                 <Image v-if="item.image_url" :src="item.image_url" :alt="item.title" aspect-ratio="72%" rounded="md" :ui="{ root: 'min-w-0', image: 'h-full w-full object-cover' }" />
                 <div class="min-w-0">
-                    <h4 class="text-base font-semibold leading-snug text-white">{{ item.title }}</h4>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <span v-if="item.content_type === 'youtube_video'" class="rounded-full border border-red-400/40 bg-red-500/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-red-200">Video</span>
+                        <h4 class="text-base font-semibold leading-snug text-white">{{ item.title }}</h4>
+                    </div>
                     <p class="mt-2 text-sm leading-relaxed text-ui-muted-foreground">{{ item.excerpt }}</p>
                     <p class="mt-3 text-xs text-ui-primary">{{ item.source_name ?? 'Source' }}</p>
                 </div>

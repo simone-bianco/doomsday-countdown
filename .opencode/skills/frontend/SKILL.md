@@ -3,53 +3,45 @@ name: frontend
 description: Use for Vue frontend implementation across pages, components, and UI flows.
 ---
 
-# Frontend Development Guidelines
+<!-- argument-hint: [topic, chapter, workflow, review, or command] -->
 
-## Component Hierarchy (STRICT)
+# Frontend Development
+**Purpose**: Vue/Inertia implementation rules across pages, components, and UI flows | **Chapters**: 4 | **Optimized**: 2026-07-09
 
-1. **Base components** → `packages/simone-bianco/vue-ui-components` (Button, TextInput, Modal, Card, DataTable, Select, etc.)
-   - If needed component doesn't exist, create it following the `vue-ui-components` skill guidelines
-2. **Advanced components** → `packages/simone-bianco/vue-ui-components-advanced` (TagsManager, FiltersWidget, MagicTextarea, UserWidget)
-   - If needed component doesn't exist, create it following the `vue-ui-components` skill guidelines
-3. **Domain components** → `resources/js/Components/{Domain}/` (project-specific business logic)
-   - Create here for components only used in this application
+## Core Mental Models
 
-## Rules (ALWAYS)
+- Component hierarchy: package base → package advanced → app domain components.
+- Pages orchestrate; components render behavior.
+- Use SmartForm for mutations and generated rules.
+- Use `cn()`, Tailwind CSS variables, `defineModel`, lucide component icons.
+- Guard stale realtime/Inertia payloads.
 
-1. **Use library components** — NEVER native HTML (`<button>`, `<input>`, `<select>`)
-2. **Keep files small** — Pages < 100 lines, break into sub-components
-3. **Use SmartForm** for all form interactions — `useSmartForm` from `@simone-bianco/vue-form-core`
-4. **Import validation rules** from `@/generated/form-rules` — NEVER write manual rules
-5. **Use `cn()`** for all class attributes (clsx + twMerge)
-6. **Use `defineModel`** for v-model bindings — never raw emit pattern
-7. **Icons from `lucide-vue-next`** — accept as `Component` type
-8. **Styling via `ui` prop pattern** — `ui?: Partial<{Component}UI>` for deep class injection
-9. **Tailwind CSS variables** — `ui-background`, `ui-primary`, `ui-foreground`, `ui-border`, etc.
+## Chapter Index
 
-## Page Pattern
-```vue
-<script setup>
-import { Head, Deferred } from '@inertiajs/vue3'
-import AppLayout from '@/Layouts/AppLayout.vue'
-// Pinia store
-const store = useStore()
-store.init(props)
-watch(() => props, (p) => store.init(p), { deep: true })
-onUnmounted(() => store.$reset())
-</script>
+| # | Title | Load When |
+|---|-------|-----------|
+| [ch01](chapters/ch01-component-hierarchy.md) | Component Hierarchy | deciding where a component belongs or whether to reuse a package component |
+| [ch02](chapters/ch02-page-pattern.md) | Inertia Page Pattern | building or refactoring page files |
+| [ch03](chapters/ch03-forms-and-state.md) | Forms & State | connecting forms, Pinia, Inertia props, and realtime updates |
+| [ch04](chapters/ch04-styling-icons.md) | Styling & Icons | styling components and binding icons |
 
-<template>
-  <Head :title="title" />
-  <AppLayout>
-    <Deferred data="asyncData">
-      <template #fallback><Skeleton /></template>
-      <!-- Sub-components, NOT inline logic -->
-    </Deferred>
-  </AppLayout>
-</template>
-```
+## Topic Index
 
-## State Management
-- Inertia props → Pinia store (single source of truth) → Components
-- Reverb events → Store handlers → Reactive UI updates
-- Guard pattern for Reverb + Inertia coexistence (see `reverb-websocket` skill)
+- **component** → ch01
+- **page** → ch02
+- **inertia** → ch02
+- **form** → ch03
+- **pinia** → ch03
+- **reverb** → ch03
+- **cn** → ch04
+- **icons** → ch04
+
+## Supporting Files
+
+- [cheatsheet.md](cheatsheet.md) — fast rules and validation.
+- [patterns.md](patterns.md) — reusable implementation patterns.
+- [glossary.md](glossary.md) — terms only when needed.
+
+## Scope Limits
+
+Stay within the skill trigger. Verify current code before relying on paths, commands, package APIs, or generated files. Stop on conflicting user instructions, missing contracts, or unrelated working-tree changes.

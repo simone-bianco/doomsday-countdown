@@ -1,0 +1,8 @@
+# Skip heavy/generated directories during discovery
+vendor/
+node_modules/
+storage/framework/
+storage/logs/
+bootstrap/cache/
+public/build/
+.git/

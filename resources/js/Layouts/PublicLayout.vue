@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ToastNotification } from '@simone-bianco/vue-ui-components';
+import CookieConsentBanner from '@/Components/Consent/CookieConsentBanner.vue';
 import SiteHeader from '@/Components/Doomsday/SiteHeader.vue';
 import heroDesktopBackground from '@/assets/doomsday/doomsday_hero_background_desktop.png';
 import heroMobileBackground from '@/assets/doomsday/doomsday_hero_background_mobile.png';
@@ -36,6 +37,7 @@ withDefaults(defineProps<{
             <main :class="hideMobileHeader ? 'lg:pt-[64px]' : 'pt-[64px]'">
                 <slot />
             </main>
+            <CookieConsentBanner :current-locale="currentLocale" />
         </div>
     </div>
 </template>

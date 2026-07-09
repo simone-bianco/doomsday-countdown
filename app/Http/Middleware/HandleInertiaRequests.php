@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
+use App\Services\Backoffice\Doomsday\BackofficeDashboardService;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -25,9 +26,25 @@ final class HandleInertiaRequests extends Middleware
                 'error' => fn () => $request->session()->get('error'),
             ],
             'app' => [
-                'name' => config('app.name'),
+                'name' => 'Doomsday Countdown',
                 'backoffice_path' => '/' . config('ai-starter.backoffice_path'),
+                'backoffice_counts' => fn (): ?array => $this->backofficeCounts($request),
             ],
         ]);
+    }
+
+    /** @return array<string, int>|null */
+    private function backofficeCounts(Request $request): ?array
+    {
+        if ($request->user() === null) {
+            return null;
+        }
+
+        $backofficePath = trim((string) config('ai-starter.backoffice_path'), '/');
+        if ($backofficePath === '' || (! $request->is($backofficePath) && ! $request->is($backofficePath . '/*'))) {
+            return null;
+        }
+
+        return app(BackofficeDashboardService::class)->counts();
     }
 }

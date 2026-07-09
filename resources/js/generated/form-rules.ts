@@ -16,6 +16,74 @@ export const AgentPromptDataRules: FormRuleMap = {
   message: { default: null, rules: [{ name: 'required' }, { name: 'string' }, { name: 'max', params: { max: 4000 } }] },
 };
 
+export const SaveCountdownDataRules: FormRuleMap = {
+  slug: { default: null, rules: [{ name: 'required' }, { name: 'string' }, { name: 'max', params: { max: 140 } }, { name: 'regex', params: { pattern: '/^[a-z0-9]+(?:-[a-z0-9]+)*$/' } }] },
+  title: { default: [], rules: [{ name: 'required' }, { name: 'array' }, { name: 'required_array_keys', params: { param0: 'en' } }] },
+  summary: { default: [], rules: [{ name: 'required' }, { name: 'array' }, { name: 'required_array_keys', params: { param0: 'en' } }] },
+  description: { default: [], rules: [{ name: 'nullable' }, { name: 'array' }] },
+  causes: { default: [], rules: [{ name: 'nullable' }, { name: 'array' }] },
+  consequences: { default: [], rules: [{ name: 'nullable' }, { name: 'array' }] },
+  recommended_actions: { default: [], rules: [{ name: 'nullable' }, { name: 'array' }] },
+  icon: { default: null, rules: [{ name: 'required' }, { name: 'string' }, { name: 'max', params: { max: 80 } }] },
+  severity: { default: null, rules: [{ name: 'string' }, { name: 'required' }] },
+  status: { default: null, rules: [{ name: 'string' }, { name: 'required' }] },
+  target_date: { default: null, rules: [{ name: 'string' }, { name: 'nullable' }, { name: 'date' }] },
+  image_path: { default: null, rules: [{ name: 'required' }, { name: 'string' }, { name: 'max', params: { max: 255 } }] },
+  accent_color: { default: null, rules: [{ name: 'required' }, { name: 'string' }, { name: 'max', params: { max: 7 } }, { name: 'regex', params: { pattern: '/^#[0-9A-Fa-f]{6}$/' } }] },
+  sort_order: { default: null, rules: [{ name: 'numeric' }, { name: 'required' }, { name: 'integer' }, { name: 'min', params: { min: 0 } }] },
+  is_published: { default: null, rules: [{ name: 'required' }, { name: 'boolean' }] },
+};
+
+export const SaveInitiativeDataRules: FormRuleMap = {
+  locale: { default: null, rules: [{ name: 'string' }, { name: 'required' }] },
+  type: { default: null, rules: [{ name: 'string' }, { name: 'required' }] },
+  title: { default: null, rules: [{ name: 'required' }, { name: 'string' }, { name: 'max', params: { max: 255 } }] },
+  excerpt: { default: null, rules: [{ name: 'required' }, { name: 'string' }, { name: 'max', params: { max: 1000 } }] },
+  body: { default: null, rules: [{ name: 'nullable' }, { name: 'string' }] },
+  organization: { default: null, rules: [{ name: 'nullable' }, { name: 'string' }, { name: 'max', params: { max: 255 } }] },
+  url: { default: null, rules: [{ name: 'required' }, { name: 'string' }, { name: 'max', params: { max: 500 } }] },
+  image_path: { default: null, rules: [{ name: 'nullable' }, { name: 'string' }, { name: 'max', params: { max: 255 } }] },
+  cta_label: { default: null, rules: [{ name: 'nullable' }, { name: 'string' }, { name: 'max', params: { max: 80 } }] },
+  starts_at: { default: null, rules: [{ name: 'string' }, { name: 'nullable' }, { name: 'date' }] },
+  ends_at: { default: null, rules: [{ name: 'string' }, { name: 'nullable' }, { name: 'date' }] },
+  sort_order: { default: null, rules: [{ name: 'numeric' }, { name: 'required' }, { name: 'integer' }, { name: 'min', params: { min: 0 } }] },
+  is_featured: { default: null, rules: [{ name: 'required' }, { name: 'boolean' }] },
+};
+
+export const SaveNewsDataRules: FormRuleMap = {
+  locale: { default: null, rules: [{ name: 'string' }, { name: 'required' }] },
+  title: { default: null, rules: [{ name: 'required' }, { name: 'string' }, { name: 'max', params: { max: 255 } }] },
+  excerpt: { default: null, rules: [{ name: 'required' }, { name: 'string' }, { name: 'max', params: { max: 1000 } }] },
+  source_name: { default: null, rules: [{ name: 'nullable' }, { name: 'string' }, { name: 'max', params: { max: 255 } }] },
+  source_url: { default: null, rules: [{ name: 'nullable' }, { name: 'string' }, { name: 'max', params: { max: 2000 } }] },
+  image_path: { default: null, rules: [{ name: 'nullable' }, { name: 'string' }, { name: 'max', params: { max: 255 } }] },
+  published_at: { default: null, rules: [{ name: 'string' }, { name: 'nullable' }, { name: 'date' }] },
+  sort_order: { default: null, rules: [{ name: 'numeric' }, { name: 'required' }, { name: 'integer' }, { name: 'min', params: { min: 0 } }] },
+  is_featured: { default: null, rules: [{ name: 'required' }, { name: 'boolean' }] },
+};
+
+export const SaveProjectionDataRules: FormRuleMap = {
+  type: { default: null, rules: [{ name: 'string' }, { name: 'required' }] },
+  target_date: { default: null, rules: [{ name: 'string' }, { name: 'nullable' }, { name: 'date' }] },
+  title: { default: [], rules: [{ name: 'required' }, { name: 'array' }, { name: 'required_array_keys', params: { param0: 'en' } }] },
+  summary: { default: [], rules: [{ name: 'nullable' }, { name: 'array' }] },
+  confidence_score: { default: null, rules: [{ name: 'numeric' }, { name: 'required' }, { name: 'integer' }, { name: 'min', params: { min: 0 } }, { name: 'max', params: { max: 100 } }] },
+  probability_score: { default: null, rules: [{ name: 'numeric' }, { name: 'required' }, { name: 'integer' }, { name: 'min', params: { min: 0 } }, { name: 'max', params: { max: 100 } }] },
+  trend: { default: null, rules: [{ name: 'required' }, { name: 'string' }, { name: 'max', params: { max: 80 } }] },
+  methodology: { default: [], rules: [{ name: 'nullable' }, { name: 'array' }] },
+  sort_order: { default: null, rules: [{ name: 'numeric' }, { name: 'required' }, { name: 'integer' }, { name: 'min', params: { min: 0 } }] },
+};
+
+export const SaveVisualizationDataRules: FormRuleMap = {
+  key: { default: null, rules: [{ name: 'required' }, { name: 'string' }, { name: 'max', params: { max: 120 } }, { name: 'regex', params: { pattern: '/^[a-z0-9]+(?:[_-][a-z0-9]+)*$/' } }] },
+  type: { default: null, rules: [{ name: 'string' }, { name: 'required' }] },
+  title: { default: [], rules: [{ name: 'required' }, { name: 'array' }, { name: 'required_array_keys', params: { param0: 'en' } }] },
+  description: { default: [], rules: [{ name: 'nullable' }, { name: 'array' }] },
+  payload: { default: [], rules: [{ name: 'required' }, { name: 'array' }] },
+  schema_version: { default: null, rules: [{ name: 'numeric' }, { name: 'required' }, { name: 'integer' }, { name: 'min', params: { min: 1 } }] },
+  sort_order: { default: null, rules: [{ name: 'numeric' }, { name: 'required' }, { name: 'integer' }, { name: 'min', params: { min: 0 } }] },
+};
+
 export const AboutPageDataRules: FormRuleMap = {
   app_name: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
   current_locale: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
@@ -156,9 +224,11 @@ export const NewsDataRules: FormRuleMap = {
   locale: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
   title: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
   excerpt: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  content_type: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
   source_name: { default: null, rules: [{ name: 'nullable' }, { name: 'string' }] },
   source_url: { default: null, rules: [{ name: 'nullable' }, { name: 'string' }] },
   image_url: { default: null, rules: [{ name: 'nullable' }, { name: 'string' }] },
+  embed_url: { default: null, rules: [{ name: 'nullable' }, { name: 'string' }] },
   published_at: { default: null, rules: [{ name: 'nullable' }] },
   is_featured: { default: null, rules: [{ name: 'required' }, { name: 'boolean' }] },
 };

@@ -139,9 +139,11 @@ export type NewsData = {
 locale: string;
 title: string;
 excerpt: string;
+content_type: string;
 source_name: string | null;
 source_url: string | null;
 image_url: string | null;
+embed_url: string | null;
 published_at: string | null;
 is_featured: boolean;
 };
@@ -176,6 +178,49 @@ created_at: string | null;
 updated_at: string | null;
 last_used_at: string | null;
 };
+export type SaveCountdownData = {
+slug: string;
+title: Array<any>;
+summary: Array<any>;
+description: Array<any> | null;
+causes: Array<any> | null;
+consequences: Array<any> | null;
+recommended_actions: Array<any> | null;
+icon: string;
+severity: string;
+status: string;
+target_date: string | null;
+image_path: string;
+accent_color: string;
+sort_order: number;
+is_published: boolean;
+};
+export type SaveInitiativeData = {
+locale: string;
+type: string;
+title: string;
+excerpt: string;
+body: string | null;
+organization: string | null;
+url: string;
+image_path: string | null;
+cta_label: string | null;
+starts_at: string | null;
+ends_at: string | null;
+sort_order: number;
+is_featured: boolean;
+};
+export type SaveNewsData = {
+locale: string;
+title: string;
+excerpt: string;
+source_name: string | null;
+source_url: string | null;
+image_path: string | null;
+published_at: string | null;
+sort_order: number;
+is_featured: boolean;
+};
 export type SaveOpenAiKeyData = {
 label: string | null;
 key: string | null;
@@ -185,10 +230,30 @@ free_limit_type: string;
 max_free_usage: number | null;
 is_active: boolean;
 };
+export type SaveProjectionData = {
+type: string;
+target_date: string | null;
+title: Array<any>;
+summary: Array<any> | null;
+confidence_score: number;
+probability_score: number;
+trend: string;
+methodology: Array<any> | null;
+sort_order: number;
+};
 export type SaveUserData = {
 name: string;
 email: string;
 password: string | null;
+};
+export type SaveVisualizationData = {
+key: string;
+type: string;
+title: Array<any>;
+description: Array<any> | null;
+payload: Array<any>;
+schema_version: number;
+sort_order: number;
 };
 export type VisualizationData = {
 key: string;

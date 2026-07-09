@@ -329,7 +329,22 @@ final class CountdownPublicDataService
             ->filter(fn (News $news): bool => in_array($news->locale->value, [NewsLocale::All->value, $locale], true))
             ->sortByDesc(fn (News $news): string => (string) $news->published_at)
             ->values()
-            ->map(fn (News $news): NewsData => new NewsData($news->locale->value, $news->title, $news->excerpt, $news->source_name, $news->source_url, $news->image_path !== null ? asset($news->image_path) : null, $news->published_at?->toImmutable(), $news->is_featured))
+            ->map(function (News $news): NewsData {
+                $imageUrl = $news->preview_image_url ?: ($news->image_path !== null ? asset($news->image_path) : null);
+
+                return new NewsData(
+                    $news->locale->value,
+                    $news->title,
+                    $news->excerpt,
+                    $news->content_type ?: 'article',
+                    $news->source_name,
+                    $news->source_url,
+                    $imageUrl,
+                    $news->embed_url,
+                    $news->published_at?->toImmutable(),
+                    $news->is_featured,
+                );
+            })
             ->all();
     }
 
