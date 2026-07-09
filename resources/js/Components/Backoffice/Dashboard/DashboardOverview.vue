@@ -63,37 +63,34 @@ function visit(url: string): void {
         </div>
 
         <div class="grid gap-4 xl:grid-cols-[minmax(0,1fr)_22rem]">
-            <Card :ui="{ body: 'p-0' }">
-                <template #header>Recent countdowns</template>
-                <DataTable v-if="rows.length > 0" :items="rows" :columns="columns" item-key="id" density="comfortable">
-                    <template #cell-countdown="{ item }">
-                        <div class="flex items-center gap-3">
-                            <UiImage v-if="item.image_path" :src="String(item.image_path)" :alt="String(item.slug)" aspect-ratio="1/1" rounded="lg" :ui="{ root: 'h-12 w-12 overflow-hidden' }" />
-                            <div v-else class="flex h-12 w-12 items-center justify-center rounded-lg bg-ui-muted text-ui-muted-foreground">
-                                <Target class="h-5 w-5" />
-                            </div>
-                            <div class="min-w-0">
-                                <p class="truncate font-medium">{{ item.title?.en ?? item.slug }}</p>
-                                <p class="truncate text-sm text-ui-muted-foreground">{{ item.slug }}</p>
-                            </div>
+            <DataTable v-if="rows.length > 0" :items="rows" :columns="columns" item-key="id" density="comfortable">
+                <template #cell-countdown="{ item }">
+                    <div class="flex items-center gap-3">
+                        <UiImage v-if="item.image_path" :src="String(item.image_path)" :alt="String(item.slug)" aspect-ratio="1/1" rounded="lg" :ui="{ root: 'h-12 w-12 overflow-hidden' }" />
+                        <div v-else class="flex h-12 w-12 items-center justify-center rounded-lg bg-ui-muted text-ui-muted-foreground">
+                            <Target class="h-5 w-5" />
                         </div>
-                    </template>
-                    <template #cell-status="{ item }">
-                        <div class="space-y-1">
-                            <Badge :label="String(item.status)" variant="soft" />
-                            <Badge :label="item.is_published ? 'published' : 'draft'" :color="item.is_published ? 'success' : 'secondary'" variant="soft" />
+                        <div class="min-w-0">
+                            <p class="truncate font-medium">{{ item.title?.en ?? item.slug }}</p>
+                            <p class="truncate text-sm text-ui-muted-foreground">{{ item.slug }}</p>
                         </div>
-                    </template>
-                    <template #cell-relations="{ item }">
-                        <div class="space-y-1 text-sm text-ui-muted-foreground">
-                            <p>{{ item.projections_count }} projections</p>
-                            <p>{{ item.visualizations_count }} visualizations</p>
-                            <p>{{ item.news_count }} news · {{ item.initiatives_count }} initiatives</p>
-                        </div>
-                    </template>
-                </DataTable>
-                <div v-else class="p-6 text-sm text-ui-muted-foreground">No recent countdowns are available yet.</div>
-            </Card>
+                    </div>
+                </template>
+                <template #cell-status="{ item }">
+                    <div class="space-y-1">
+                        <Badge :label="String(item.status)" variant="soft" />
+                        <Badge :label="item.is_published ? 'published' : 'draft'" :color="item.is_published ? 'success' : 'secondary'" variant="soft" />
+                    </div>
+                </template>
+                <template #cell-relations="{ item }">
+                    <div class="space-y-1 text-sm text-ui-muted-foreground">
+                        <p>{{ item.projections_count }} projections</p>
+                        <p>{{ item.visualizations_count }} visualizations</p>
+                        <p>{{ item.news_count }} news · {{ item.initiatives_count }} initiatives</p>
+                    </div>
+                </template>
+            </DataTable>
+            <div v-else class="p-6 text-sm text-ui-muted-foreground">No recent countdowns are available yet.</div>
 
             <div class="space-y-4">
                 <Card :ui="{ body: 'space-y-3 p-5' }">
@@ -104,7 +101,7 @@ function visit(url: string): void {
                 <Card :ui="{ body: 'space-y-3 p-5' }">
                     <Badge label="API keys" :icon="KeyRound" :color="metrics.activeApiKeys > 0 ? 'success' : 'warning'" variant="soft" />
                     <p class="text-sm text-ui-muted-foreground">{{ metrics.activeApiKeys }} of {{ metrics.apiKeys }} OpenAI keys are active.</p>
-                    <Button variant="secondary" :icon="Clock3" @click="visit(`${normalizedBackofficePath}?section=openai-keys`)">Manage keys</Button>
+                    <Button variant="secondary" :icon="Clock3" @click="visit(`${normalizedBackofficePath}/openai-keys`)">Manage keys</Button>
                 </Card>
             </div>
         </div>

@@ -8,13 +8,29 @@ use App\Data\Backoffice\Doomsday\SaveProjectionData;
 use App\Http\Controllers\Controller;
 use App\Models\Countdown;
 use App\Models\Projection;
+use App\Services\Backoffice\Doomsday\BackofficeCountdownService;
 use App\Services\Backoffice\Doomsday\BackofficeProjectionService;
 use Illuminate\Http\RedirectResponse;
+use Inertia\Inertia;
+use Inertia\Response;
 
 final class ProjectionController extends Controller
 {
-    public function __construct(private readonly BackofficeProjectionService $projections)
+    public function __construct(
+        private readonly BackofficeProjectionService $projections,
+        private readonly BackofficeCountdownService $countdowns,
+    ) {}
+
+    public function create(Countdown $countdown): Response
     {
+        return Inertia::render('Backoffice/Countdowns/Projections/Create', $this->countdowns->projectionForm($countdown));
+    }
+
+    public function edit(Countdown $countdown, Projection $projection): Response
+    {
+        $this->projections->assertBelongsToCountdown($countdown, $projection);
+
+        return Inertia::render('Backoffice/Countdowns/Projections/Edit', $this->countdowns->projectionForm($countdown, $projection));
     }
 
     public function store(SaveProjectionData $data, Countdown $countdown): RedirectResponse

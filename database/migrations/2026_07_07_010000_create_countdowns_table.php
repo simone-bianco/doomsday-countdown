@@ -19,7 +19,6 @@ return new class extends Migration
             $table->json('causes')->nullable();
             $table->json('consequences')->nullable();
             $table->json('recommended_actions')->nullable();
-            $table->string('icon')->default('alert');
             $table->string('severity')->default('high');
             $table->string('status')->default('active');
             $table->timestamp('target_date')->nullable();

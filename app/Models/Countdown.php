@@ -29,7 +29,6 @@ final class Countdown extends Model
         'causes',
         'consequences',
         'recommended_actions',
-        'icon',
         'severity',
         'status',
         'target_date',
@@ -54,7 +53,7 @@ final class Countdown extends Model
     ];
 
     /**
-     * @param Builder<Countdown> $query
+     * @param  Builder<Countdown>  $query
      * @return Builder<Countdown>
      */
     public function scopePublished(Builder $query): Builder

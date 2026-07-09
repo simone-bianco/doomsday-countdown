@@ -29,3 +29,7 @@ Thumbs.db
 /.artifacts/
 /z-docs/images/
 /%SystemDrive%/
+
+.agent/
+/.playwright-mcp/
+/.omo/

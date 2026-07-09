@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "532d7a5a1fb51f4e29f26d6f950cad8d",
+    "content-hash": "8b823ff73da58790785d784a35533824",
     "packages": [
         {
             "name": "brick/math",
@@ -4173,67 +4173,12 @@
             "time": "2026-05-08T10:56:05+00:00"
         },
         {
-            "name": "simone-bianco/laravel-ai-agents",
-            "version": "1.0.0",
-            "dist": {
-                "type": "path",
-                "url": "packages/simone-bianco/laravel-ai-agents",
-                "reference": "497d2148bcc17f6ebf806d39d7ad4fc3f1f17cfc"
-            },
-            "require": {
-                "illuminate/console": "^12.0|^13.0",
-                "illuminate/database": "^12.0|^13.0",
-                "illuminate/http": "^12.0|^13.0",
-                "illuminate/support": "^12.0|^13.0",
-                "maestroerror/laragent": "*",
-                "php": ">=8.3",
-                "simone-bianco/laravel-fill-variables": "*",
-                "simone-bianco/laravel-key-rotator": "*",
-                "spatie/laravel-data": "^4.0",
-                "spatie/laravel-package-tools": "^1.92"
-            },
-            "suggest": {
-                "simone-bianco/laravel-page-chat": "Required if you use PageChatStorageDriver for conversation history"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "SimoneBianco\\LaravelAiAgents\\LaravelAiAgentsServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "SimoneBianco\\LaravelAiAgents\\": "src/"
-                }
-            },
-            "autoload-dev": {
-                "psr-4": {
-                    "SimoneBianco\\LaravelAiAgents\\Tests\\": "tests/"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Simone Bianco"
-                }
-            ],
-            "description": "Domain-agnostic DB-driven AI agents for Laravel, built on LarAgent.",
-            "transport-options": {
-                "symlink": true,
-                "relative": true
-            }
-        },
-        {
             "name": "simone-bianco/laravel-fill-variables",
             "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/simone-bianco/laravel-fill-variables",
-                "reference": "6f7b30603d8a04bd12cb0252160776393dfe4a0a"
+                "reference": "a3db3783a6d3c7347ed483bc8cf22a848220e4bf"
             },
             "require": {
                 "illuminate/cache": "^12.0|^13.0",
@@ -4291,7 +4236,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/simone-bianco/laravel-form-bridge",
-                "reference": "95afbd3da90c8156d6f012dcfd67af94a12d14e3"
+                "reference": "63ec64d6bc5b1d3aa2b57595064b347097591ab2"
             },
             "require": {
                 "illuminate/http": "^12.0|^13.0",
@@ -4341,7 +4286,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/simone-bianco/laravel-key-rotator",
-                "reference": "71209d25e52b04a2d3b9ba9d875ba01277eefe4a"
+                "reference": "a82b71269dfb95cadce79dc63a6cb6dee0cddb52"
             },
             "require": {
                 "illuminate/cache": "^12.0|^13.0",
@@ -4401,7 +4346,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/simone-bianco/laravel-patches",
-                "reference": "39fa0fedc710f00ec2776938338a3bf62d196b21"
+                "reference": "3691bfdc53a98553a2a6be35df3be7a4b703ee6c"
             },
             "require": {
                 "illuminate/cache": "^12.0|^13.0",
@@ -9688,7 +9633,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/simone-bianco/vue-ui-components-testing",
-                "reference": "9256dfddae1da6680ff5208a4414c3a6404d5421"
+                "reference": "73bd58175a748c5773a26c1f55fa7aaa936481a2"
             },
             "require": {
                 "illuminate/routing": "^10.0|^11.0|^12.0|^13.0",
@@ -9982,7 +9927,6 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "simone-bianco/laravel-ai-agents": 20,
         "simone-bianco/laravel-fill-variables": 20,
         "simone-bianco/laravel-form-bridge": 20,
         "simone-bianco/laravel-key-rotator": 20,

@@ -10,6 +10,7 @@ use App\Models\News;
 use App\Models\Projection;
 use App\Models\User;
 use App\Models\Visualization;
+use Illuminate\Database\Eloquent\Builder;
 use SimoneBianco\LaravelKeyRotator\Models\RotableApiKey;
 
 final class BackofficeDashboardService
@@ -18,13 +19,31 @@ final class BackofficeDashboardService
     public function dashboard(): array
     {
         return [
-            'backofficePath' => '/' . config('ai-starter.backoffice_path'),
-            'users' => $this->users(),
-            'apiKeys' => $this->apiKeys(),
+            'backofficePath' => $this->backofficePath(),
             'counts' => $this->counts(),
             'metrics' => $this->metrics(),
             'recentCountdowns' => $this->recentCountdowns(),
             'health' => $this->health(),
+        ];
+    }
+
+    /** @return array<string, mixed> */
+    public function usersIndex(): array
+    {
+        return [
+            'backofficePath' => $this->backofficePath(),
+            'counts' => $this->counts(),
+            'users' => $this->users(),
+        ];
+    }
+
+    /** @return array<string, mixed> */
+    public function openAiKeysIndex(): array
+    {
+        return [
+            'backofficePath' => $this->backofficePath(),
+            'counts' => $this->counts(),
+            'apiKeys' => $this->apiKeys(),
         ];
     }
 
@@ -125,15 +144,20 @@ final class BackofficeDashboardService
 
         return [
             ['label' => 'CRUD status', 'value' => 'CRUD ready'],
-            ['label' => 'Published coverage', 'value' => $metrics['published'] . ' published countdowns'],
-            ['label' => 'API keys', 'value' => $metrics['activeApiKeys'] . ' active OpenAI keys'],
+            ['label' => 'Published coverage', 'value' => $metrics['published'].' published countdowns'],
+            ['label' => 'API keys', 'value' => $metrics['activeApiKeys'].' active OpenAI keys'],
         ];
     }
 
-    /** @return \Illuminate\Database\Eloquent\Builder<RotableApiKey> */
-    private function openAiKeys(): \Illuminate\Database\Eloquent\Builder
+    /** @return Builder<RotableApiKey> */
+    private function openAiKeys(): Builder
     {
         return RotableApiKey::query()->where('service', 'openai');
+    }
+
+    private function backofficePath(): string
+    {
+        return '/'.trim((string) config('ai-starter.backoffice_path'), '/');
     }
 
     private function mask(string $key): string
@@ -142,6 +166,6 @@ final class BackofficeDashboardService
             return 'empty';
         }
 
-        return substr($key, 0, 7) . '…' . substr($key, -4);
+        return substr($key, 0, 7).'…'.substr($key, -4);
     }
 }

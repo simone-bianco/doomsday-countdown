@@ -15,9 +15,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 final class BackofficeVisualizationService
 {
-    public function __construct(private readonly BackofficeDoomsdayInputNormalizer $normalizer)
-    {
-    }
+    public function __construct(private readonly BackofficeDoomsdayInputNormalizer $normalizer) {}
 
     public function create(Countdown|Projection $visualizable, SaveVisualizationData $data): Visualization
     {
@@ -55,14 +53,14 @@ final class BackofficeVisualizationService
         ];
     }
 
-    private function assertBelongsToVisualizable(Model $visualizable, Visualization $visualization): void
+    public function assertBelongsToVisualizable(Model $visualizable, Visualization $visualization): void
     {
         if ((int) $visualization->visualizable_id !== (int) $visualizable->getKey()) {
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException;
         }
 
         if ($visualization->visualizable_type !== $visualizable->getMorphClass()) {
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException;
         }
     }
 
@@ -94,6 +92,7 @@ final class BackofficeVisualizationService
 
         if ($this->isNumericList($series)) {
             $this->assertSeriesLength($series, $labelCount);
+
             return;
         }
 

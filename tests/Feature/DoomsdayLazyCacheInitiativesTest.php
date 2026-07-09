@@ -11,10 +11,6 @@ use App\Enums\InitiativeType;
 use App\Enums\ProjectionType;
 use App\Enums\VisualizationType;
 use App\Models\Countdown;
-use App\Models\Initiative;
-use App\Models\News;
-use App\Models\Projection;
-use App\Models\Visualization;
 use App\Services\Doomsday\Cache\CountdownCache;
 use App\Services\Doomsday\Cache\DoomsdayCacheKeys;
 use Database\Seeders\DoomsdaySeeder;
@@ -205,7 +201,6 @@ final class DoomsdayLazyCacheInitiativesTest extends TestCase
             'title' => ['en' => 'Sample'],
             'summary' => ['en' => 'Sample summary'],
             'description' => ['en' => 'Sample description'],
-            'icon' => 'users',
             'severity' => CountdownSeverity::High,
             'status' => CountdownStatus::Active,
             'target_date' => now()->addYear(),
@@ -237,7 +232,7 @@ final class DoomsdayLazyCacheInitiativesTest extends TestCase
             'locale' => InitiativeLocale::All,
             'type' => InitiativeType::Campaign,
             'title' => $title,
-            'excerpt' => $title . ' excerpt',
+            'excerpt' => $title.' excerpt',
             'organization' => 'Test Org',
             'url' => 'https://example.org/test',
             'sort_order' => 1,

@@ -52,10 +52,16 @@ function submit(): void {
 
 <template>
     <form class="space-y-4" @submit.prevent="submit">
-        <div class="grid gap-4 md:grid-cols-3">
+        <div class="grid gap-4 md:grid-cols-4">
             <BackofficeSelectField label="Locale" :model-value="form.locale" :options="optionItems(options.initiative_locales)" :clearable="false" @update:model-value="chooseLocale" />
             <BackofficeSelectField label="Type" :model-value="form.type" :options="optionItems(options.initiative_types)" :clearable="false" @update:model-value="chooseType" />
-            <NumberInput v-model="form.sort_order" label="Sort order" :min="0" :error="form.errors.sort_order" />
+            <div>
+                <NumberInput v-model="form.sort_order" label="Sort order" :min="0" :error="form.errors.sort_order" />
+                <p class="mt-1 text-xs text-ui-muted-foreground">Lower numbers appear first.</p>
+            </div>
+            <div class="pt-6">
+                <Toggle v-model="form.is_featured" label="Featured" description="Prioritizes and highlights this initiative in public surfaces." />
+            </div>
         </div>
 
         <TextInput v-model="form.title" label="Title" :error="form.errors.title" />
@@ -63,23 +69,20 @@ function submit(): void {
         <Textarea v-model="form.body" label="Body" :rows="4" :error="form.errors.body" />
 
         <div class="grid gap-4 md:grid-cols-3">
-            <TextInput v-model="form.organization" label="Organization" :error="form.errors.organization" />
-            <TextInput v-model="form.url" label="URL" :error="form.errors.url" />
-            <TextInput v-model="form.cta_label" label="CTA label" :error="form.errors.cta_label" />
+            <TextInput v-model="form.organization" label="Organization" helper-text="Organization or partner responsible for the initiative." :error="form.errors.organization" />
+            <TextInput v-model="form.url" label="URL" helper-text="Destination opened from the public initiative link." :error="form.errors.url" />
+            <TextInput v-model="form.cta_label" label="CTA label" helper-text="Public button text, for example Learn more or Sign up." :error="form.errors.cta_label" />
         </div>
 
         <div class="grid gap-4 md:grid-cols-3">
-            <TextInput v-model="form.image_path" label="Image path" :error="form.errors.image_path" />
+            <TextInput v-model="form.image_path" label="Image path" helper-text="Optional public image path or URL." :error="form.errors.image_path" />
             <TextInput v-model="form.starts_at" label="Starts at" type="date" :error="form.errors.starts_at" />
             <TextInput v-model="form.ends_at" label="Ends at" type="date" :error="form.errors.ends_at" />
         </div>
 
         <FormActions compact>
             <Button type="submit" :loading="form.processing">{{ submitLabel }}</Button>
-            <Button variant="secondary" @click="emit('cancel')">Cancel</Button>
-            <template #aside>
-                <Toggle v-model="form.is_featured" label="Featured" />
-            </template>
+            <Button type="button" variant="secondary" @click="emit('cancel')">Cancel</Button>
         </FormActions>
     </form>
 </template>

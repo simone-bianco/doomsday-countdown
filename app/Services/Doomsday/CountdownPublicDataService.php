@@ -31,9 +31,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 final class CountdownPublicDataService
 {
-    public function __construct(private readonly AboutPageCopy $aboutPageCopy)
-    {
-    }
+    public function __construct(private readonly AboutPageCopy $aboutPageCopy) {}
 
     /** @var array<string, array{label: string, native: string, flag: string}> */
     private const LANGUAGES = [
@@ -254,13 +252,12 @@ final class CountdownPublicDataService
             title: $this->text($countdown->title, $locale),
             summary: $this->text($countdown->summary, $locale),
             image_url: asset($countdown->image_path),
-            icon: $countdown->icon,
             status: $countdown->status->value,
             severity: $countdown->severity->value,
             sort_order: $countdown->sort_order,
             timer: $this->timer($mainProjection?->target_date ?? $countdown->target_date, $locale),
             main_projection: $mainProjection instanceof Projection ? $this->toProjection($mainProjection, $locale, false) : null,
-            url: '/countdowns/' . $countdown->slug . '?lang=' . $locale,
+            url: '/countdowns/'.$countdown->slug.'?lang='.$locale,
             is_selected: $isSelected,
         );
     }
@@ -277,7 +274,6 @@ final class CountdownPublicDataService
             summary: $this->text($countdown->summary, $locale),
             description: $this->text($countdown->description, $locale),
             image_url: asset($countdown->image_path),
-            icon: $countdown->icon,
             severity: $countdown->severity->value,
             timer: $this->timer($mainProjection?->target_date ?? $countdown->target_date, $locale),
             main_projection: $mainProjection instanceof Projection ? $this->toProjection($mainProjection, $locale, false) : null,
@@ -393,12 +389,12 @@ final class CountdownPublicDataService
     /** @return array<int, LanguageOptionData> */
     private function languageOptions(string $currentLocale, string $currentPath): array
     {
-        $path = '/' . ltrim($currentPath, '/');
+        $path = '/'.ltrim($currentPath, '/');
         if ($path === '/') {
             $path = '/';
         }
 
-        return collect(self::LANGUAGES)->map(fn (array $language, string $code): LanguageOptionData => new LanguageOptionData($code, $language['label'], $language['native'], $language['flag'], $path . '?lang=' . $code, $code === $currentLocale))->values()->all();
+        return collect(self::LANGUAGES)->map(fn (array $language, string $code): LanguageOptionData => new LanguageOptionData($code, $language['label'], $language['native'], $language['flag'], $path.'?lang='.$code, $code === $currentLocale))->values()->all();
     }
 
     /** @return array<string, mixed> */

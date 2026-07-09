@@ -25,12 +25,12 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 final class SaveCountdownData extends Data
 {
     /**
-     * @param array<string, string> $title
-     * @param array<string, string> $summary
-     * @param array<string, string>|null $description
-     * @param array<string, array<int, string>>|null $causes
-     * @param array<string, array<int, string>>|null $consequences
-     * @param array<string, array<int, string>>|null $recommended_actions
+     * @param  array<string, string>  $title
+     * @param  array<string, string>  $summary
+     * @param  array<string, string>|null  $description
+     * @param  array<string, array<int, string>>|null  $causes
+     * @param  array<string, array<int, string>>|null  $consequences
+     * @param  array<string, array<int, string>>|null  $recommended_actions
      */
     public function __construct(
         #[Required, StringType, Max(140), Regex('/^[a-z0-9]+(?:-[a-z0-9]+)*$/')]
@@ -47,8 +47,6 @@ final class SaveCountdownData extends Data
         public readonly ?array $consequences,
         #[Nullable, ArrayType]
         public readonly ?array $recommended_actions,
-        #[Required, StringType, Max(80)]
-        public readonly string $icon,
         #[Required, Enum(CountdownSeverity::class)]
         public readonly string $severity,
         #[Required, Enum(CountdownStatus::class)]
@@ -63,6 +61,5 @@ final class SaveCountdownData extends Data
         public readonly int $sort_order,
         #[BooleanType]
         public readonly bool $is_published,
-    ) {
-    }
+    ) {}
 }

@@ -1,0 +1,21 @@
+{
+  "mcp": {
+    "local-gpt": {
+      "type": "local",
+      "command": [
+        "C:\\Users\\simon\\AppData\\Local\\local-gpt\\portable\\2.0.0\\mcp\\local-gpt-mcp.exe"
+      ],
+      "environment": {
+        "LOCAL_GPT_BASE_URL": "http://127.0.0.1:9001",
+        "LOCAL_GPT_BEARER_TOKEN": "",
+        "LOCAL_GPT_TIMEOUT": "30"
+      },
+      "enabled": true
+    }
+  },
+  "$schema": "https://opencode.ai/config.json",
+  "plugin": [
+    "oh-my-openagent",
+    "C:\\Users\\simon\\AppData\\Local\\local-gpt\\portable\\2.0.0\\cli\\_internal\\plugins\\local-gpt-listener"
+  ]
+}

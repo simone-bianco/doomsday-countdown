@@ -46,27 +46,30 @@ function submit(): void {
 
 <template>
     <form class="space-y-4" @submit.prevent="submit">
-        <div class="grid gap-4 md:grid-cols-3">
+        <div class="grid gap-4 md:grid-cols-4">
             <BackofficeSelectField label="Locale" :model-value="form.locale" :options="optionItems(options.news_locales)" :clearable="false" @update:model-value="chooseLocale" />
-            <TextInput v-model="form.published_at" label="Published at" type="date" :error="form.errors.published_at" />
-            <NumberInput v-model="form.sort_order" label="Sort order" :min="0" :error="form.errors.sort_order" />
+            <TextInput v-model="form.published_at" label="Published at" type="date" helper-text="Optional publication date shown in backoffice without microseconds." :error="form.errors.published_at" />
+            <div>
+                <NumberInput v-model="form.sort_order" label="Sort order" :min="0" :error="form.errors.sort_order" />
+                <p class="mt-1 text-xs text-ui-muted-foreground">Lower numbers appear first after publication date ordering.</p>
+            </div>
+            <div class="pt-6">
+                <Toggle v-model="form.is_featured" label="Featured" description="Prioritizes and highlights this news item in public surfaces." />
+            </div>
         </div>
 
         <TextInput v-model="form.title" label="Title" :error="form.errors.title" />
         <Textarea v-model="form.excerpt" label="Excerpt" :rows="3" :error="form.errors.excerpt" />
 
         <div class="grid gap-4 md:grid-cols-3">
-            <TextInput v-model="form.source_name" label="Source name" :error="form.errors.source_name" />
-            <TextInput v-model="form.source_url" label="Source URL" :error="form.errors.source_url" />
-            <TextInput v-model="form.image_path" label="Image path" :error="form.errors.image_path" />
+            <TextInput v-model="form.source_name" label="Source name" helper-text="Publisher or outlet shown with the article." :error="form.errors.source_name" />
+            <TextInput v-model="form.source_url" label="Source URL" helper-text="External article link used for attribution." :error="form.errors.source_url" />
+            <TextInput v-model="form.image_path" label="Image path" helper-text="Optional preview image path or URL." :error="form.errors.image_path" />
         </div>
 
         <FormActions compact>
             <Button type="submit" :loading="form.processing">{{ submitLabel }}</Button>
-            <Button variant="secondary" @click="emit('cancel')">Cancel</Button>
-            <template #aside>
-                <Toggle v-model="form.is_featured" label="Featured" />
-            </template>
+            <Button type="button" variant="secondary" @click="emit('cancel')">Cancel</Button>
         </FormActions>
     </form>
 </template>

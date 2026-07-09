@@ -40,12 +40,18 @@ Route::middleware('auth')
     ->group(function (): void {
         Route::get('/', BackofficeDashboardController::class)->name('index');
         Route::resource('countdowns', CountdownController::class)->except(['show']);
+        Route::get('/countdowns/{countdown}/projections/create', [ProjectionController::class, 'create'])->name('countdowns.projections.create');
+        Route::get('/countdowns/{countdown}/projections/{projection}/edit', [ProjectionController::class, 'edit'])->name('countdowns.projections.edit');
         Route::post('/countdowns/{countdown}/projections', [ProjectionController::class, 'store'])->name('countdowns.projections.store');
         Route::put('/countdowns/{countdown}/projections/{projection}', [ProjectionController::class, 'update'])->name('countdowns.projections.update');
         Route::delete('/countdowns/{countdown}/projections/{projection}', [ProjectionController::class, 'destroy'])->name('countdowns.projections.destroy');
+        Route::get('/countdowns/{countdown}/visualizations/create', [VisualizationController::class, 'createForCountdown'])->name('countdowns.visualizations.create');
+        Route::get('/countdowns/{countdown}/visualizations/{visualization}/edit', [VisualizationController::class, 'editForCountdown'])->name('countdowns.visualizations.edit');
         Route::post('/countdowns/{countdown}/visualizations', [VisualizationController::class, 'storeForCountdown'])->name('countdowns.visualizations.store');
         Route::put('/countdowns/{countdown}/visualizations/{visualization}', [VisualizationController::class, 'updateForCountdown'])->name('countdowns.visualizations.update');
         Route::delete('/countdowns/{countdown}/visualizations/{visualization}', [VisualizationController::class, 'destroyForCountdown'])->name('countdowns.visualizations.destroy');
+        Route::get('/countdowns/{countdown}/projections/{projection}/visualizations/create', [VisualizationController::class, 'createForProjection'])->name('countdowns.projections.visualizations.create');
+        Route::get('/countdowns/{countdown}/projections/{projection}/visualizations/{visualization}/edit', [VisualizationController::class, 'editForProjection'])->name('countdowns.projections.visualizations.edit');
         Route::post('/countdowns/{countdown}/projections/{projection}/visualizations', [VisualizationController::class, 'storeForProjection'])->name('countdowns.projections.visualizations.store');
         Route::put('/countdowns/{countdown}/projections/{projection}/visualizations/{visualization}', [VisualizationController::class, 'updateForProjection'])->name('countdowns.projections.visualizations.update');
         Route::delete('/countdowns/{countdown}/projections/{projection}/visualizations/{visualization}', [VisualizationController::class, 'destroyForProjection'])->name('countdowns.projections.visualizations.destroy');
@@ -55,9 +61,11 @@ Route::middleware('auth')
         Route::post('/countdowns/{countdown}/initiatives', [InitiativeController::class, 'store'])->name('countdowns.initiatives.store');
         Route::put('/countdowns/{countdown}/initiatives/{initiative}', [InitiativeController::class, 'update'])->name('countdowns.initiatives.update');
         Route::delete('/countdowns/{countdown}/initiatives/{initiative}', [InitiativeController::class, 'destroy'])->name('countdowns.initiatives.destroy');
+        Route::get('/users', [UserController::class, 'index'])->name('users.index');
         Route::post('/users', [UserController::class, 'store'])->name('users.store');
         Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
         Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+        Route::get('/openai-keys', [OpenAiKeyController::class, 'index'])->name('openai-keys.index');
         Route::post('/openai-keys', [OpenAiKeyController::class, 'store'])->name('openai-keys.store');
         Route::put('/openai-keys/{openAiKey}', [OpenAiKeyController::class, 'update'])->name('openai-keys.update');
         Route::delete('/openai-keys/{openAiKey}', [OpenAiKeyController::class, 'destroy'])->name('openai-keys.destroy');

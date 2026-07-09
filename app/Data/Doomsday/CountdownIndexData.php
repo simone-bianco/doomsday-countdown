@@ -16,7 +16,6 @@ final class CountdownIndexData extends Data
         public readonly string $title,
         public readonly string $summary,
         public readonly string $image_url,
-        public readonly string $icon,
         public readonly string $status,
         public readonly string $severity,
         public readonly int $sort_order,
@@ -24,6 +23,5 @@ final class CountdownIndexData extends Data
         public readonly ?ProjectionData $main_projection,
         public readonly string $url,
         public readonly bool $is_selected,
-    ) {
-    }
+    ) {}
 }

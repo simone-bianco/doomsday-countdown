@@ -12,13 +12,17 @@ import type { SaveVisualizationData } from '@/types/generated';
 
 type SaveVisualizationForm = SaveVisualizationData & Record<string, unknown>;
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
     readonly options: BackofficeOptions;
     readonly submitUrl: string;
     readonly method: 'post' | 'put';
     readonly submitLabel: string;
     readonly visualization?: VisualizationRecord;
-}>();
+    readonly showTopActions?: boolean;
+}>(), {
+    visualization: undefined,
+    showTopActions: false,
+});
 
 const emit = defineEmits<{ (event: 'saved'): void; (event: 'cancel'): void }>();
 const form = useSmartForm<SaveVisualizationForm>({ ...SaveVisualizationDataRules });
@@ -62,11 +66,25 @@ function submit(): void {
 
 <template>
     <form class="space-y-5" @submit.prevent="submit">
+        <div v-if="showTopActions" class="flex flex-wrap items-center justify-end gap-2 border-b border-ui-border/60 pb-4">
+            <Button type="submit" :loading="form.processing" :disabled="submitDisabled">{{ submitLabel }}</Button>
+            <Button type="button" variant="secondary" @click="emit('cancel')">Cancel</Button>
+        </div>
+
         <div class="grid gap-4 md:grid-cols-4">
-            <TextInput v-model="form.key" label="Key" :error="form.errors.key" />
-            <BackofficeSelectField label="Type" :model-value="form.type" :options="supportedOptions" :clearable="false" @update:model-value="chooseType" />
-            <NumberInput v-model="form.schema_version" label="Schema version" :min="1" :error="form.errors.schema_version" />
-            <NumberInput v-model="form.sort_order" label="Sort order" :min="0" :error="form.errors.sort_order" />
+            <TextInput v-model="form.key" label="Key" helper-text="Stable identifier used by frontend chart integrations." :error="form.errors.key" />
+            <div>
+                <BackofficeSelectField label="Type" :model-value="form.type" :options="supportedOptions" :clearable="false" @update:model-value="chooseType" />
+                <p class="mt-1 text-xs text-ui-muted-foreground">Controls which payload editor and public visualization are used.</p>
+            </div>
+            <div>
+                <NumberInput v-model="form.schema_version" label="Schema version" :min="1" :error="form.errors.schema_version" />
+                <p class="mt-1 text-xs text-ui-muted-foreground">Increment only when the payload shape intentionally changes.</p>
+            </div>
+            <div>
+                <NumberInput v-model="form.sort_order" label="Sort order" :min="0" :error="form.errors.sort_order" />
+                <p class="mt-1 text-xs text-ui-muted-foreground">Lower numbers appear first.</p>
+            </div>
         </div>
 
         <div class="grid gap-4 md:grid-cols-2">
@@ -78,7 +96,7 @@ function submit(): void {
 
         <FormActions compact>
             <Button type="submit" :loading="form.processing" :disabled="submitDisabled">{{ submitLabel }}</Button>
-            <Button variant="secondary" @click="emit('cancel')">Cancel</Button>
+            <Button type="button" variant="secondary" @click="emit('cancel')">Cancel</Button>
         </FormActions>
     </form>
 </template>

@@ -13,8 +13,8 @@ const props = defineProps<{
 
 const normalizedBackofficePath = computed(() => props.backofficePath.replace(/\/+$/g, ''));
 const dashboardPath = computed(() => normalizedBackofficePath.value);
-const usersPath = computed(() => `${normalizedBackofficePath.value}?section=users`);
-const openAiKeysPath = computed(() => `${normalizedBackofficePath.value}?section=openai-keys`);
+const usersPath = computed(() => `${normalizedBackofficePath.value}/users`);
+const openAiKeysPath = computed(() => `${normalizedBackofficePath.value}/openai-keys`);
 const countdownsPath = computed(() => `${normalizedBackofficePath.value}/countdowns`);
 
 const groups = computed(() => [
@@ -79,7 +79,7 @@ const groups = computed(() => [
             <span class="hidden" aria-hidden="true" />
         </template>
         <template #top>
-            <Link href="/" class="group flex items-center justify-between rounded-xl border border-ui-primary/25 bg-ui-primary/10 px-3 py-2 text-sm font-semibold text-ui-primary transition hover:border-ui-primary/50 hover:bg-ui-primary/15 hover:text-ui-primary-hover">
+            <Link href="/" target="_blank" rel="noopener noreferrer" class="group flex items-center justify-between rounded-xl border border-ui-primary/25 bg-ui-primary/10 px-3 py-2 text-sm font-semibold text-ui-primary transition hover:border-ui-primary/50 hover:bg-ui-primary/15 hover:text-ui-primary-hover">
                 <span>Visit site</span>
                 <ExternalLink class="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
             </Link>

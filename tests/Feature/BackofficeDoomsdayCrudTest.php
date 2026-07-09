@@ -35,7 +35,129 @@ final class BackofficeDoomsdayCrudTest extends TestCase
             ->assertOk()
             ->assertInertia(fn ($page) => $page
                 ->component('Backoffice/Countdowns/Index')
-                ->where('countdowns.0.image_path', 'images/doomsday/test.png'));
+                ->where('countdowns.data.0.image_path', 'images/doomsday/test.png'));
+    }
+
+    public function test_countdown_index_filters_and_paginates_with_server_shape(): void
+    {
+        $admin = User::factory()->create();
+        Countdown::query()->create($this->countdownModelAttributes([
+            'slug' => 'alpha-risk',
+            'title' => ['en' => 'Alpha risk'],
+            'summary' => ['en' => 'Alpha summary.'],
+            'sort_order' => 1,
+        ]));
+        Countdown::query()->create($this->countdownModelAttributes([
+            'slug' => 'beta-risk',
+            'title' => ['en' => 'Beta risk'],
+            'summary' => ['en' => 'Beta summary.'],
+            'sort_order' => 2,
+        ]));
+
+        $this->actingAs($admin)
+            ->get(route('backoffice.countdowns.index', ['search' => 'beta']))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->component('Backoffice/Countdowns/Index')
+                ->where('countdowns.filters.search', 'beta')
+                ->where('countdowns.filters.sort', 'sort_order')
+                ->where('countdowns.filters.direction', 'asc')
+                ->where('countdowns.meta.total', 1)
+                ->where('countdowns.data.0.slug', 'beta-risk'));
+    }
+
+    public function test_countdown_index_sorts_by_id_title_and_sort_order(): void
+    {
+        $admin = User::factory()->create();
+        $alpha = Countdown::query()->create($this->countdownModelAttributes([
+            'slug' => 'alpha-risk',
+            'title' => ['en' => 'Alpha risk'],
+            'summary' => ['en' => 'Alpha summary.'],
+            'sort_order' => 30,
+        ]));
+        $beta = Countdown::query()->create($this->countdownModelAttributes([
+            'slug' => 'beta-risk',
+            'title' => ['en' => 'Beta risk'],
+            'summary' => ['en' => 'Beta summary.'],
+            'sort_order' => 10,
+        ]));
+
+        $this->actingAs($admin)
+            ->get(route('backoffice.countdowns.index', ['sort' => 'id', 'direction' => 'desc']))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->where('countdowns.filters.sort', 'id')
+                ->where('countdowns.filters.direction', 'desc')
+                ->where('countdowns.data.0.id', $beta->id));
+
+        $this->actingAs($admin)
+            ->get(route('backoffice.countdowns.index', ['sort' => 'title', 'direction' => 'desc']))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->where('countdowns.filters.sort', 'title')
+                ->where('countdowns.filters.direction', 'desc')
+                ->where('countdowns.data.0.slug', 'beta-risk'));
+
+        $this->actingAs($admin)
+            ->get(route('backoffice.countdowns.index', ['sort' => 'sort_order', 'direction' => 'asc']))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->where('countdowns.filters.sort', 'sort_order')
+                ->where('countdowns.filters.direction', 'asc')
+                ->where('countdowns.data.0.id', $beta->id)
+                ->where('countdowns.data.1.id', $alpha->id));
+    }
+
+    public function test_countdown_edit_exposes_namespaced_relation_search_paginators(): void
+    {
+        $admin = User::factory()->create();
+        $countdown = Countdown::query()->create($this->countdownModelAttributes());
+        $projection = $countdown->projections()->create($this->projectionPayload([
+            'title' => ['en' => 'Alpha scenario'],
+            'summary' => ['en' => 'Projection alpha summary'],
+        ]));
+        $countdown->projections()->create($this->projectionPayload([
+            'title' => ['en' => 'Beta scenario'],
+            'summary' => ['en' => 'Projection beta summary'],
+            'sort_order' => 2,
+        ]));
+        $visualization = $countdown->visualizations()->create($this->visualizationPayload([
+            'key' => 'alpha_chart',
+            'title' => ['en' => 'Alpha chart'],
+        ]));
+        $countdown->visualizations()->create($this->visualizationPayload([
+            'key' => 'beta_chart',
+            'title' => ['en' => 'Beta chart'],
+            'sort_order' => 2,
+        ]));
+        $news = $countdown->news()->create($this->newsPayload(['title' => 'Alpha bulletin', 'source_url' => 'https://example.com/news-alpha']));
+        $countdown->news()->create($this->newsPayload(['title' => 'Beta bulletin', 'source_url' => 'https://example.com/news-beta', 'sort_order' => 2]));
+        $initiative = $countdown->initiatives()->create($this->initiativePayload(['title' => 'Alpha initiative']));
+        $countdown->initiatives()->create($this->initiativePayload(['title' => 'Beta initiative', 'sort_order' => 2]));
+
+        $this->actingAs($admin)
+            ->get(route('backoffice.countdowns.edit', [
+                'countdown' => $countdown,
+                'projections_search' => 'alpha',
+                'visualizations_search' => 'alpha',
+                'news_search' => 'alpha',
+                'initiatives_search' => 'alpha',
+            ]))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->component('Backoffice/Countdowns/Edit')
+                ->where('countdown.projections.filters.search', 'alpha')
+                ->where('countdown.projections.meta.total', 1)
+                ->where('countdown.projections.data.0.id', $projection->id)
+                ->where('countdown.visualizations.filters.search', 'alpha')
+                ->where('countdown.visualizations.meta.total', 1)
+                ->where('countdown.visualizations.data.0.id', $visualization->id)
+                ->where('countdown.news.filters.search', 'alpha')
+                ->where('countdown.news.meta.total', 1)
+                ->where('countdown.news.data.0.id', $news->id)
+                ->where('countdown.initiatives.filters.search', 'alpha')
+                ->where('countdown.initiatives.meta.total', 1)
+                ->where('countdown.initiatives.data.0.id', $initiative->id));
     }
 
     public function test_authenticated_user_can_manage_countdowns_projections_and_visualizations_with_cleanup(): void
@@ -257,7 +379,6 @@ final class BackofficeDoomsdayCrudTest extends TestCase
             'causes' => ['en' => ['Cause one']],
             'consequences' => ['en' => ['Consequence one']],
             'recommended_actions' => ['en' => ['Action one']],
-            'icon' => 'alert-triangle',
             'severity' => 'high',
             'status' => 'active',
             'target_date' => '2030-01-01 00:00:00',

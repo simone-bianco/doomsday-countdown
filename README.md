@@ -27,11 +27,10 @@ Windows helpers:
 
 ## Included local packages
 
-- `simone-bianco/laravel-ai-agents`
 - `simone-bianco/laravel-form-bridge`
 - `simone-bianco/laravel-key-rotator`
 - `simone-bianco/laravel-patches`
-- `simone-bianco/laravel-fill-variables` (transitive dependency of AI agents)
+- `simone-bianco/laravel-fill-variables`
 - `@simone-bianco/vue-form-core`
 - `@simone-bianco/vue-ui-components`
 - `simone-bianco/vue-ui-components-testing`
@@ -39,7 +38,7 @@ Windows helpers:
 ## Runtime surfaces
 
 - `/` public Vue home with i18next language switcher and agent debug panel.
-- `POST /agent/demo` demo agent endpoint. It uses `laravel-ai-agents` for the agent definition and `laravel-key-rotator` for OpenAI key selection/usage tracking.
+- `POST /agent/demo` demo agent endpoint. It wraps a classic LarAgent class under `app/Ai/Agents` and uses `laravel-key-rotator` for OpenAI key selection/usage tracking.
 - `/{AI_STARTER_BACKOFFICE_PATH}` authenticated backoffice. Default: `/backoffice`.
 - `/test-components` from `vue-ui-components-testing` when the package routes are enabled.
 

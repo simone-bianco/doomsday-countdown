@@ -205,7 +205,6 @@ return new class($shared)
                     'Oddzielać ryzyko inwazji od scenariuszy blokady, kwarantanny i presji przymusowej.',
                 ],
             ),
-            'icon' => 'shield',
             'severity' => CountdownSeverity::Critical,
             'status' => CountdownStatus::Active,
             'target_date' => CarbonImmutable::parse('2027-10-01 00:00:00', 'UTC'),

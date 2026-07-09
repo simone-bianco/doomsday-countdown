@@ -11,12 +11,12 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 final class CountdownDetailData extends Data
 {
     /**
-     * @param array<int, string> $causes
-     * @param array<int, string> $consequences
-     * @param array<int, string> $recommended_actions
-     * @param array<int, ProjectionData> $projections
-     * @param array<int, VisualizationData> $visualizations
-     * @param array<int, NewsData> $news
+     * @param  array<int, string>  $causes
+     * @param  array<int, string>  $consequences
+     * @param  array<int, string>  $recommended_actions
+     * @param  array<int, ProjectionData>  $projections
+     * @param  array<int, VisualizationData>  $visualizations
+     * @param  array<int, NewsData>  $news
      */
     public function __construct(
         public readonly int $id,
@@ -25,7 +25,6 @@ final class CountdownDetailData extends Data
         public readonly string $summary,
         public readonly string $description,
         public readonly string $image_url,
-        public readonly string $icon,
         public readonly string $severity,
         public readonly CountdownTimerData $timer,
         public readonly ?ProjectionData $main_projection,
@@ -35,6 +34,5 @@ final class CountdownDetailData extends Data
         public readonly array $projections,
         public readonly array $visualizations,
         public readonly array $news,
-    ) {
-    }
+    ) {}
 }

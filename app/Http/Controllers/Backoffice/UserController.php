@@ -7,11 +7,21 @@ namespace App\Http\Controllers\Backoffice;
 use App\Data\SaveUserData;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\Backoffice\Doomsday\BackofficeDashboardService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Hash;
+use Inertia\Inertia;
+use Inertia\Response;
 
 final class UserController extends Controller
 {
+    public function __construct(private readonly BackofficeDashboardService $dashboard) {}
+
+    public function index(): Response
+    {
+        return Inertia::render('Backoffice/Users/Index', $this->dashboard->usersIndex());
+    }
+
     public function store(SaveUserData $data): RedirectResponse
     {
         if ($data->password === null || $data->password === '') {

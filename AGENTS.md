@@ -114,6 +114,7 @@ If package dependencies change, keep `package.json` and `package-lock.json` cons
 
 - Do not commit or push unless explicitly asked.
 - Do not use Opencode or browser automation unless explicitly allowed by the user.
+- Do not poll background tasks or Oracle reviews; completion messages arrive automatically.
 - Do not introduce JSON endpoints for mutations.
 - Do not bypass `CountdownCache` for Doomsday public data.
 - Do not remove direct `/countdowns/{slug}` page support.

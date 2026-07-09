@@ -1,3 +1,5 @@
+import type { PaginationLink, PaginationMeta } from '@simone-bianco/vue-ui-components';
+
 export type BackofficeOptions = {
     readonly countdown_severities: readonly string[];
     readonly countdown_statuses: readonly string[];
@@ -8,6 +10,19 @@ export type BackofficeOptions = {
     readonly initiative_types: readonly string[];
     readonly localized_fields: readonly string[];
 };
+
+export type BackofficePaginatedCollection<T> = {
+    readonly data: readonly T[];
+    readonly links?: readonly PaginationLink[];
+    readonly meta: PaginationMeta;
+    readonly filters?: {
+        readonly search?: string | null;
+        readonly sort?: string | null;
+        readonly direction?: string | null;
+    };
+};
+
+export type BackofficeRelationCollection<T> = readonly T[] | BackofficePaginatedCollection<T>;
 
 export type LocalizedText = Record<string, string>;
 export type LocalizedList = Record<string, string[]>;
@@ -106,12 +121,11 @@ export type CountdownDetail = CountdownSummary & {
     readonly causes: LocalizedList | null;
     readonly consequences: LocalizedList | null;
     readonly recommended_actions: LocalizedList | null;
-    readonly icon: string;
     readonly target_date: string | null;
     readonly image_path: string;
     readonly accent_color: string;
-    readonly projections: readonly ProjectionRecord[];
-    readonly visualizations: readonly VisualizationRecord[];
-    readonly news: readonly NewsRecord[];
-    readonly initiatives: readonly InitiativeRecord[];
+    readonly projections: BackofficeRelationCollection<ProjectionRecord>;
+    readonly visualizations: BackofficeRelationCollection<VisualizationRecord>;
+    readonly news: BackofficeRelationCollection<NewsRecord>;
+    readonly initiatives: BackofficeRelationCollection<InitiativeRecord>;
 };

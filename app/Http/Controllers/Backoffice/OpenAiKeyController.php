@@ -6,11 +6,21 @@ namespace App\Http\Controllers\Backoffice;
 
 use App\Data\SaveOpenAiKeyData;
 use App\Http\Controllers\Controller;
+use App\Services\Backoffice\Doomsday\BackofficeDashboardService;
 use Illuminate\Http\RedirectResponse;
+use Inertia\Inertia;
+use Inertia\Response;
 use SimoneBianco\LaravelKeyRotator\Models\RotableApiKey;
 
 final class OpenAiKeyController extends Controller
 {
+    public function __construct(private readonly BackofficeDashboardService $dashboard) {}
+
+    public function index(): Response
+    {
+        return Inertia::render('Backoffice/OpenAiKeys/Index', $this->dashboard->openAiKeysIndex());
+    }
+
     public function store(SaveOpenAiKeyData $data): RedirectResponse
     {
         if ($data->key === null || $data->key === '') {

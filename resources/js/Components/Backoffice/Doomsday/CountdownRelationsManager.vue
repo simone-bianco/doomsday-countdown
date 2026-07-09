@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { Activity, BarChart3, Megaphone, Newspaper, Settings2 } from 'lucide-vue-next';
 import { Card, TabPanel, Tabs } from '@simone-bianco/vue-ui-components';
 import CountdownForm from '@/Components/Backoffice/Doomsday/CountdownForm.vue';
@@ -18,7 +18,6 @@ const props = defineProps<{
     readonly submitLabel: string;
 }>();
 
-const activeTab = ref('main');
 const tabs = [
     { value: 'main', label: 'Main', icon: Settings2 },
     { value: 'projections', label: 'Projections', icon: Activity },
@@ -26,11 +25,35 @@ const tabs = [
     { value: 'news', label: 'News', icon: Newspaper },
     { value: 'initiatives', label: 'Initiatives', icon: Megaphone },
 ];
+
+function initialTab(): string {
+    if (typeof window === 'undefined') {
+        return 'main';
+    }
+
+    const queryTab = new URLSearchParams(window.location.search).get('tab');
+
+    return queryTab !== null && tabs.some((tab) => tab.value === queryTab) ? queryTab : 'main';
+}
+
+function replaceTabQuery(tab: string): void {
+    if (typeof window === 'undefined') {
+        return;
+    }
+
+    const url = new URL(window.location.href);
+    url.searchParams.set('tab', tab);
+    window.history.replaceState(window.history.state, '', `${url.pathname}${url.search}${url.hash}`);
+}
+
+const activeTab = ref(initialTab());
+
+watch(activeTab, (tab) => replaceTabQuery(tab));
 </script>
 
 <template>
-    <Card :ui="{ body: 'space-y-5 p-6' }">
-        <Tabs v-model="activeTab" :items="tabs" variant="pills" :ui="{ panels: 'pt-5' }">
+    <Tabs v-model="activeTab" :items="tabs" variant="bordered" :ui="{ panels: 'pt-5' }">
+        <Card :ui="{ body: 'space-y-5 p-6' }">
             <TabPanel value="main">
                 <CountdownForm
                     :options="options"
@@ -53,6 +76,6 @@ const tabs = [
             <TabPanel value="initiatives">
                 <InitiativeManager :base-path="basePath" :countdown-id="countdown.id" :initiatives="countdown.initiatives" :options="options" />
             </TabPanel>
-        </Tabs>
-    </Card>
+        </Card>
+    </Tabs>
 </template>
