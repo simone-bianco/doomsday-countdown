@@ -13,10 +13,14 @@ final class ContentSource extends Model
     use HasFactory;
 
     public const TYPE_YOUTUBE_CHANNEL = 'youtube_channel';
+
     public const TYPE_RSS_FEED = 'rss_feed';
+
     public const TYPE_WEBSITE = 'website';
 
     public const PROVIDER_YOUTUBE = 'youtube';
+
+    public const PROVIDER_GOOGLE_NEWS = 'google_news';
 
     protected $fillable = [
         'type',
@@ -25,6 +29,7 @@ final class ContentSource extends Model
         'external_id',
         'source_url',
         'feed_url',
+        'language',
         'topics',
         'keywords',
         'metadata',

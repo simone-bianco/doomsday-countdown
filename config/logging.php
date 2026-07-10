@@ -123,6 +123,20 @@ return [
             'handler' => NullHandler::class,
         ],
 
+        'news_retrieval' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/news-retrieval.log'),
+            'level' => env('NEWS_RETRIEVAL_LOG_LEVEL', env('LOG_LEVEL', 'debug')),
+            'replace_placeholders' => true,
+        ],
+
+        'content_source_agent' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/content-source-agent.log'),
+            'level' => env('CONTENT_SOURCE_AGENT_LOG_LEVEL', env('LOG_LEVEL', 'debug')),
+            'replace_placeholders' => true,
+        ],
+
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],

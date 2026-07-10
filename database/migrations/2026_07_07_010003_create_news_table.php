@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('external_id')->nullable();
             $table->text('source_url')->nullable();
             $table->text('feed_url')->nullable();
+            $table->string('language', 8)->nullable()->index();
             $table->json('topics')->nullable();
             $table->json('keywords')->nullable();
             $table->json('metadata')->nullable();
