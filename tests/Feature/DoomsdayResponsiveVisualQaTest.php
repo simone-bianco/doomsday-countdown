@@ -145,7 +145,7 @@ final class DoomsdayResponsiveVisualQaTest extends TestCase
         $this->assertStringContainsString("'name' => 'Neutral'", $seed);
         $this->assertStringContainsString("'color' => '#38bdf8'", $seed);
         $this->assertStringContainsString('grid grid-cols-1 gap-4', $news);
-        $this->assertStringContainsString(':href="item.source_url ??', $news);
+        $this->assertStringContainsString(':href="item.source_url"', $news);
         $this->assertStringNotContainsString('sm:grid-cols-2', $news);
         $this->assertStringContainsString('grid grid-cols-1 gap-4', $initiatives);
         $this->assertStringContainsString(':href="item.url"', $initiatives);

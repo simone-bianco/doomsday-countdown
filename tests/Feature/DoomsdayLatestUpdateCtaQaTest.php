@@ -40,7 +40,7 @@ final class DoomsdayLatestUpdateCtaQaTest extends TestCase
         $sidebar = (string) file_get_contents(base_path('resources/js/Components/Doomsday/SidebarCards.vue'));
 
         foreach (['icon="chevron-right"', 'icon="arrow-right"', 'router.visit', 'router.reload', 'router.prefetch', 'history.pushState', 'window.location', 'window.fetch', 'prefetch cache-for="2m"'] as $forbidden) {
-            $this->assertStringNotContainsString($forbidden, $sidebar, 'Sidebar CTA regression: ' . $forbidden);
+            $this->assertStringNotContainsString($forbidden, $sidebar, 'Sidebar CTA regression: '.$forbidden);
         }
 
         $linkOffset = strpos($sidebar, '<Link :href="featured.url" class="block w-full sm:w-fit">');
@@ -77,7 +77,7 @@ final class DoomsdayLatestUpdateCtaQaTest extends TestCase
         $this->assertStringContainsString('overflow-y-auto overscroll-contain', $detail);
         $this->assertStringContainsString('h-[22rem] min-w-[600px] w-full', $chart);
         $this->assertStringNotContainsString('h-72', $chart);
-        $this->assertStringContainsString(':href="item.source_url ??', $news);
+        $this->assertStringContainsString(':href="item.source_url"', $news);
         $this->assertStringContainsString(':href="item.url"', $initiatives);
     }
 
@@ -85,7 +85,7 @@ final class DoomsdayLatestUpdateCtaQaTest extends TestCase
     {
         $selection = (string) file_get_contents(base_path('resources/js/Composables/useDoomsdaySelection.ts'));
         $lazy = (string) file_get_contents(base_path('resources/js/Composables/useDoomsdayLazySections.ts'));
-        $runtime = $selection . $lazy;
+        $runtime = $selection.$lazy;
 
         $this->assertStringContainsString('axios.get<{ data: CountdownOverviewData }>', $selection);
         $this->assertStringContainsString("route('countdowns.data.overview'", $selection);
@@ -99,4 +99,3 @@ final class DoomsdayLatestUpdateCtaQaTest extends TestCase
         }
     }
 }
-

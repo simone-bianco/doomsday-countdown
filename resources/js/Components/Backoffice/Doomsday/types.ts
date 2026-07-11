@@ -27,10 +27,18 @@ export type BackofficeRelationCollection<T> = readonly T[] | BackofficePaginated
 export type LocalizedText = Record<string, string>;
 export type LocalizedList = Record<string, string[]>;
 
+export type ChartXAxisType = 'temporal' | 'ordinal' | 'category';
+export type ChartYAxisFormat = 'integer' | 'decimal' | 'percent' | 'currency';
+
 export type ChartPayload = {
     readonly labels: string[];
-    readonly unit?: string;
     readonly series: number[] | Array<{ readonly name: string; readonly color?: string; readonly values: number[] }>;
+    readonly axes: {
+        readonly x: { readonly label: string; readonly type: ChartXAxisType };
+        readonly y: { readonly label: string; readonly unit: string; readonly format: ChartYAxisFormat };
+    };
+    readonly sources: string[];
+    readonly note?: string;
 };
 
 export type KpiPayload = {
@@ -108,6 +116,11 @@ export type InitiativeRecord = {
     readonly body?: string | null;
     readonly organization: string | null;
     readonly url: string;
+    readonly content_type?: string | null;
+    readonly preview_image_url?: string | null;
+    readonly embed_url?: string | null;
+    readonly external_provider?: string | null;
+    readonly external_id?: string | null;
     readonly image_path?: string | null;
     readonly cta_label?: string | null;
     readonly starts_at: string | null;

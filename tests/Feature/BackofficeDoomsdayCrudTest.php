@@ -196,6 +196,7 @@ final class BackofficeDoomsdayCrudTest extends TestCase
                 'key' => 'projection_kpis',
                 'type' => 'kpi',
                 'payload' => ['items' => [['label' => 'Confidence', 'value' => '70%']]],
+                'schema_version' => 1,
             ]))
             ->assertRedirect()
             ->assertSessionHas('success', 'Visualization created.');
@@ -279,11 +280,52 @@ final class BackofficeDoomsdayCrudTest extends TestCase
 
         $this->actingAs($admin)
             ->post(route('backoffice.countdowns.visualizations.store', $countdown), $this->visualizationPayload([
-                'payload' => ['labels' => ['A', 'B'], 'series' => [1]],
+                'payload' => ['labels' => ['A', 'B'], 'series' => [1, 2]],
+                'schema_version' => 1,
+            ]))
+            ->assertSessionHasErrors('schema_version');
+
+        $this->actingAs($admin)
+            ->post(route('backoffice.countdowns.visualizations.store', $countdown), $this->visualizationPayload([
+                'payload' => array_replace_recursive($this->visualizationPayload()['payload'], ['series' => [1]]),
             ]))
             ->assertSessionHasErrors('payload.series');
 
-        $this->assertSame(0, Visualization::query()->count());
+        $this->actingAs($admin)
+            ->post(route('backoffice.countdowns.visualizations.store', $countdown), $this->visualizationPayload([
+                'type' => 'bar',
+                'payload' => array_replace_recursive($this->visualizationPayload()['payload'], ['axes' => ['x' => ['type' => 'ordinal']]]),
+            ]))
+            ->assertSessionHasErrors('payload.axes.x.type');
+
+        $this->actingAs($admin)
+            ->post(route('backoffice.countdowns.visualizations.store', $countdown), $this->visualizationPayload([
+                'payload' => array_replace_recursive($this->visualizationPayload()['payload'], [
+                    'series' => [['name' => 'Mixed', 'values' => [1, 2], 'unit' => 'days']],
+                ]),
+            ]))
+            ->assertSessionHasErrors('payload.series');
+
+        $this->actingAs($admin)
+            ->post(route('backoffice.countdowns.visualizations.store', $countdown), $this->visualizationPayload([
+                'type' => 'bar',
+                'key' => 'categorical_bar',
+                'payload' => [
+                    'labels' => ['A', 'B'],
+                    'series' => [['name' => 'Exposure', 'values' => [1.2, 2.4]]],
+                    'axes' => [
+                        'x' => ['label' => 'Category', 'type' => 'category'],
+                        'y' => ['label' => 'Exposure', 'unit' => 'US$ trillion', 'format' => 'currency'],
+                    ],
+                    'sources' => ['https://example.com/source'],
+                    'note' => 'Scenario comparison.',
+                ],
+            ]))
+            ->assertRedirect()
+            ->assertSessionHas('success', 'Visualization created.');
+
+        $this->assertDatabaseHas('visualizations', ['key' => 'categorical_bar', 'type' => 'bar', 'schema_version' => 2]);
+        $this->assertSame(1, Visualization::query()->count());
     }
 
     public function test_nested_backoffice_mutations_reject_records_from_another_countdown(): void
@@ -413,8 +455,16 @@ final class BackofficeDoomsdayCrudTest extends TestCase
             'type' => 'line',
             'title' => ['en' => 'Projection curve'],
             'description' => ['en' => 'Projection chart.'],
-            'payload' => ['labels' => ['2026', '2027'], 'series' => [10, 20]],
-            'schema_version' => 1,
+            'payload' => [
+                'labels' => ['2026', '2027'],
+                'series' => [['name' => 'Risk', 'values' => [10, 20]]],
+                'axes' => [
+                    'x' => ['label' => 'Year', 'type' => 'temporal'],
+                    'y' => ['label' => 'Risk', 'unit' => '%', 'format' => 'percent'],
+                ],
+                'sources' => ['https://example.com/source'],
+            ],
+            'schema_version' => 2,
             'sort_order' => 1,
         ], $overrides);
     }

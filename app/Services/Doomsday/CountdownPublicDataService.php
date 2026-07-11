@@ -28,6 +28,7 @@ use App\Models\Visualization;
 use App\Services\Doomsday\Copy\AboutPageCopy;
 use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Str;
 
 final class CountdownPublicDataService
 {
@@ -325,18 +326,17 @@ final class CountdownPublicDataService
             ->filter(fn (News $news): bool => in_array($news->locale->value, [NewsLocale::All->value, $locale], true))
             ->sortByDesc(fn (News $news): string => (string) $news->published_at)
             ->values()
-            ->map(function (News $news): NewsData {
-                $imageUrl = $news->preview_image_url ?: ($news->image_path !== null ? asset($news->image_path) : null);
-
+            ->map(function (News $news) use ($countdown): NewsData {
                 return new NewsData(
                     $news->locale->value,
                     $news->title,
-                    $news->excerpt,
+                    $this->previewExcerpt($news->excerpt),
                     $news->content_type ?: 'article',
                     $news->source_name,
                     $news->source_url,
-                    $imageUrl,
+                    $this->resolvedPreviewImageUrl($news->preview_image_url, $news->image_path, $countdown->image_path),
                     $news->embed_url,
+                    $news->external_provider,
                     $news->published_at?->toImmutable(),
                     $news->is_featured,
                 );
@@ -351,8 +351,62 @@ final class CountdownPublicDataService
             ->filter(fn (Initiative $initiative): bool => in_array($initiative->locale->value, [InitiativeLocale::All->value, $locale], true))
             ->sortBy(fn (Initiative $initiative): array => [$initiative->sort_order, $initiative->id])
             ->values()
-            ->map(fn (Initiative $initiative): InitiativeData => new InitiativeData($initiative->locale->value, $initiative->type->value, $initiative->title, $initiative->excerpt, $initiative->body, $initiative->organization, $initiative->url, $initiative->image_path !== null ? asset($initiative->image_path) : null, $initiative->cta_label, $initiative->starts_at?->toImmutable(), $initiative->ends_at?->toImmutable(), $initiative->is_featured, $initiative->sort_order))
+            ->map(function (Initiative $initiative) use ($countdown): InitiativeData {
+                return new InitiativeData(
+                    $initiative->locale->value,
+                    $initiative->type->value,
+                    $initiative->title,
+                    $this->previewExcerpt($initiative->excerpt, $initiative->body),
+                    $initiative->body,
+                    $initiative->organization,
+                    $initiative->url,
+                    $initiative->content_type ?: 'article',
+                    $this->resolvedPreviewImageUrl($initiative->preview_image_url, $initiative->image_path, $countdown->image_path),
+                    $initiative->embed_url,
+                    $initiative->external_provider,
+                    $initiative->cta_label,
+                    $initiative->starts_at?->toImmutable(),
+                    $initiative->ends_at?->toImmutable(),
+                    $initiative->is_featured,
+                    $initiative->sort_order,
+                );
+            })
             ->all();
+    }
+
+    private function previewExcerpt(?string $excerpt, ?string $fallback = null): string
+    {
+        $source = trim((string) $excerpt);
+        if ($source === '') {
+            $source = trim((string) $fallback);
+        }
+
+        $configuredLimit = config('doomsday.content.preview_excerpt_limit', 220);
+        $limit = is_numeric($configuredLimit) && (int) $configuredLimit > 0 ? (int) $configuredLimit : 220;
+
+        return Str::limit($source, $limit, '…');
+    }
+
+    private function resolvedPreviewImageUrl(?string $previewImageUrl, ?string $imagePath, string $fallbackPath): string
+    {
+        $previewImageUrl = trim((string) $previewImageUrl);
+        if ($this->isHttpsUrl($previewImageUrl)) {
+            return $previewImageUrl;
+        }
+
+        $imagePath = trim((string) $imagePath);
+        if ($imagePath !== '' && parse_url($imagePath, PHP_URL_SCHEME) === null && ! str_starts_with($imagePath, '//')) {
+            return asset($imagePath);
+        }
+
+        return asset($fallbackPath);
+    }
+
+    private function isHttpsUrl(string $url): bool
+    {
+        return $url !== ''
+            && filter_var($url, FILTER_VALIDATE_URL) !== false
+            && strtolower((string) parse_url($url, PHP_URL_SCHEME)) === 'https';
     }
 
     private function timer(?CarbonInterface $targetDate, string $locale): CountdownTimerData

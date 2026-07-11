@@ -19,13 +19,19 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{ (event: 'saved'): void; (event: 'cancel'): void }>();
+const mediaTypeOptions = optionItems(['article', 'youtube_video']);
 const form = useSmartForm<SaveNewsForm>({ ...SaveNewsDataRules });
 form.fill({
     locale: props.news?.locale ?? first(props.options.news_locales, 'en'),
     title: props.news?.title ?? '',
     excerpt: props.news?.excerpt ?? '',
+    content_type: props.news?.content_type ?? 'article',
     source_name: props.news?.source_name ?? null,
     source_url: props.news?.source_url ?? null,
+    preview_image_url: props.news?.preview_image_url ?? null,
+    embed_url: props.news?.embed_url ?? null,
+    external_provider: props.news?.external_provider ?? null,
+    external_id: props.news?.external_id ?? null,
     image_path: props.news?.image_path ?? null,
     published_at: isoDate(props.news?.published_at),
     sort_order: props.news?.sort_order ?? 0,
@@ -38,6 +44,12 @@ function chooseLocale(value: string | number | null): void {
     }
 }
 
+function chooseContentType(value: string | number | null): void {
+    if (typeof value === 'string') {
+        form.content_type = value;
+    }
+}
+
 function submit(): void {
     const method = props.method === 'post' ? form.post : form.put;
     method(props.submitUrl, { preserveScroll: true, onSuccess: () => emit('saved') });
@@ -46,8 +58,9 @@ function submit(): void {
 
 <template>
     <form class="space-y-4" @submit.prevent="submit">
-        <div class="grid gap-4 md:grid-cols-4">
+        <div class="grid gap-4 md:grid-cols-5">
             <BackofficeSelectField label="Locale" :model-value="form.locale" :options="optionItems(options.news_locales)" :clearable="false" @update:model-value="chooseLocale" />
+            <BackofficeSelectField label="Content type" :model-value="form.content_type" :options="mediaTypeOptions" :clearable="false" :error="form.errors.content_type" @update:model-value="chooseContentType" />
             <TextInput v-model="form.published_at" label="Published at" type="date" helper-text="Optional publication date shown in backoffice without microseconds." :error="form.errors.published_at" />
             <div>
                 <NumberInput v-model="form.sort_order" label="Sort order" :min="0" :error="form.errors.sort_order" />
@@ -59,13 +72,21 @@ function submit(): void {
         </div>
 
         <TextInput v-model="form.title" label="Title" :error="form.errors.title" />
-        <Textarea v-model="form.excerpt" label="Excerpt" :rows="3" :error="form.errors.excerpt" />
+        <Textarea v-model="form.excerpt" label="Excerpt" :rows="3" helper-text="Public previews are truncated by the configured content limit; the stored text remains complete." :error="form.errors.excerpt" />
 
         <div class="grid gap-4 md:grid-cols-3">
             <TextInput v-model="form.source_name" label="Source name" helper-text="Publisher or outlet shown with the article." :error="form.errors.source_name" />
-            <TextInput v-model="form.source_url" label="Source URL" helper-text="External article link used for attribution." :error="form.errors.source_url" />
-            <TextInput v-model="form.image_path" label="Image path" helper-text="Optional preview image path or URL." :error="form.errors.image_path" />
+            <TextInput v-model="form.source_url" label="Source URL" helper-text="Use an HTTPS article URL or YouTube video URL." :error="form.errors.source_url" />
+            <TextInput v-model="form.preview_image_url" label="Preview image URL" helper-text="Optional HTTPS image. YouTube thumbnails are derived when omitted." :error="form.errors.preview_image_url" />
         </div>
+
+        <div class="grid gap-4 md:grid-cols-3">
+            <TextInput v-model="form.image_path" label="Local image path" helper-text="Local fallback path used when the remote preview is missing or invalid." :error="form.errors.image_path" />
+            <TextInput v-model="form.external_provider" label="External provider" :disabled="form.content_type === 'youtube_video'" helper-text="Derived as youtube for video content." :error="form.errors.external_provider" />
+            <TextInput v-model="form.external_id" label="External ID" :disabled="form.content_type === 'youtube_video'" helper-text="Derived from the YouTube URL for video content." :error="form.errors.external_id" />
+        </div>
+
+        <TextInput v-model="form.embed_url" label="Embed URL" :disabled="form.content_type === 'youtube_video'" helper-text="Persisted for future use, but never rendered inline on the public page. Derived for YouTube videos." :error="form.errors.embed_url" />
 
         <FormActions compact>
             <Button type="submit" :loading="form.processing">{{ submitLabel }}</Button>

@@ -19,12 +19,14 @@ final class InitiativeData extends Data
         public readonly ?string $body,
         public readonly ?string $organization,
         public readonly string $url,
-        public readonly ?string $image_url,
+        public readonly string $content_type,
+        public readonly string $image_url,
+        public readonly ?string $embed_url,
+        public readonly ?string $external_provider,
         public readonly ?string $cta_label,
         public readonly ?CarbonImmutable $starts_at,
         public readonly ?CarbonImmutable $ends_at,
         public readonly bool $is_featured,
         public readonly int $sort_order,
-    ) {
-    }
+    ) {}
 }

@@ -2,41 +2,126 @@
 import { computed, ref, watch } from 'vue';
 import { AlertTriangle } from 'lucide-vue-next';
 import { Badge, Card, Textarea, TextInput } from '@simone-bianco/vue-ui-components';
+import BackofficeSelectField from '@/Components/Backoffice/Shared/BackofficeSelectField.vue';
 import VisualizationPreview from '@/Components/Backoffice/Doomsday/VisualizationPreview.vue';
-import { chartText, defaultPayload, isRecord, kpiText, parseChartPayload, parseKpiPayload } from '@/Components/Backoffice/Doomsday/formHelpers';
-import type { VisualizationPayload } from '@/Components/Backoffice/Doomsday/types';
+import { chartText, chartXAxisTypes, chartYAxisFormats, defaultPayload, isRecord, kpiText, optionItems, parseChartPayload, parseKpiPayload } from '@/Components/Backoffice/Doomsday/formHelpers';
+import type { ChartXAxisType, ChartYAxisFormat, VisualizationPayload } from '@/Components/Backoffice/Doomsday/types';
 
 const typeModel = defineModel<string>('type', { required: true });
 const payloadModel = defineModel<VisualizationPayload>('payload', { required: true });
 const validModel = defineModel<boolean>('valid', { default: true });
 
 const labelsText = ref('');
-const unitText = ref('');
+const xLabelText = ref('');
+const xTypeValue = ref<ChartXAxisType>('ordinal');
+const yLabelText = ref('');
+const yUnitText = ref('');
+const yFormatValue = ref<ChartYAxisFormat>('percent');
+const sourcesText = ref('');
+const noteText = ref('');
 const seriesText = ref('');
 const itemsText = ref('');
 const isHydrating = ref(false);
 
-const isChart = computed(() => ['line', 'area'].includes(typeModel.value));
+const xTypeOptions = optionItems(chartXAxisTypes);
+const yFormatOptions = optionItems(chartYAxisFormats);
+const isChart = computed(() => ['line', 'area', 'bar'].includes(typeModel.value));
 const isKpi = computed(() => typeModel.value === 'kpi');
 const isSupported = computed(() => isChart.value || isKpi.value);
+
+function isHttpsUrl(value: unknown): boolean {
+    if (typeof value !== 'string') {
+        return false;
+    }
+
+    try {
+        return new URL(value).protocol === 'https:';
+    } catch {
+        return false;
+    }
+}
+
+function chartErrors(): string[] {
+    const payload = payloadModel.value as unknown;
+    if (!isRecord(payload)) {
+        return ['Chart payload must be an object.'];
+    }
+
+    const errors: string[] = [];
+    const labels = Array.isArray(payload.labels) ? payload.labels : [];
+    if (labels.length === 0 || labels.some((label) => typeof label !== 'string' || label.trim() === '')) {
+        errors.push('Add at least one non-empty chart label.');
+    }
+
+    const series = Array.isArray(payload.series) ? payload.series : [];
+    if (series.length === 0) {
+        errors.push('Add at least one numeric series.');
+    } else if (series.every((value) => typeof value === 'number' && Number.isFinite(value))) {
+        if (series.length !== labels.length) {
+            errors.push('Series values must have the same length as labels.');
+        }
+    } else {
+        for (const item of series) {
+            if (!isRecord(item) || typeof item.name !== 'string' || item.name.trim() === '' || !Array.isArray(item.values)) {
+                errors.push('Each series requires a name and numeric values.');
+                break;
+            }
+            if ('unit' in item || 'format' in item) {
+                errors.push('Series must share the y-axis unit and format.');
+                break;
+            }
+            if (item.values.length !== labels.length || item.values.some((value) => typeof value !== 'number' || !Number.isFinite(value))) {
+                errors.push('Every series must contain one numeric value per label.');
+                break;
+            }
+        }
+    }
+
+    const axes = isRecord(payload.axes) ? payload.axes : null;
+    const xAxis = axes && isRecord(axes.x) ? axes.x : null;
+    const yAxis = axes && isRecord(axes.y) ? axes.y : null;
+    if (!xAxis || typeof xAxis.label !== 'string' || xAxis.label.trim() === '') {
+        errors.push('Add an x-axis label.');
+    }
+    if (!xAxis || typeof xAxis.type !== 'string' || !chartXAxisTypes.includes(xAxis.type as ChartXAxisType)) {
+        errors.push('Choose a valid x-axis type.');
+    } else if (typeModel.value === 'bar' && xAxis.type !== 'category') {
+        errors.push('Bar charts require a category x-axis.');
+    } else if (['line', 'area'].includes(typeModel.value) && xAxis.type === 'category') {
+        errors.push('Line and area charts require a temporal or ordinal x-axis.');
+    }
+    if (!yAxis || typeof yAxis.label !== 'string' || yAxis.label.trim() === '') {
+        errors.push('Add a y-axis label.');
+    }
+    if (!yAxis || typeof yAxis.unit !== 'string' || yAxis.unit.trim() === '') {
+        errors.push('Add the shared y-axis unit.');
+    }
+    if (!yAxis || typeof yAxis.format !== 'string' || !chartYAxisFormats.includes(yAxis.format as ChartYAxisFormat)) {
+        errors.push('Choose a valid y-axis format.');
+    }
+
+    const sources = Array.isArray(payload.sources) ? payload.sources : [];
+    if (sources.length === 0 || sources.some((source) => !isHttpsUrl(source))) {
+        errors.push('Add at least one valid HTTPS source.');
+    }
+    if ('note' in payload && payload.note !== undefined && (typeof payload.note !== 'string' || payload.note.trim() === '')) {
+        errors.push('The optional note must contain text.');
+    }
+
+    return errors;
+}
+
 const errors = computed(() => {
     if (!isSupported.value) {
-        return ['Live editing is available only for line, area and KPI visualizations.'];
+        return ['Live editing is available only for line, area, bar and KPI visualizations.'];
     }
 
     if (isChart.value) {
-        const payload = payloadModel.value;
-        if (!isRecord(payload) || !Array.isArray(payload.labels) || payload.labels.length === 0) {
-            return ['Add at least one chart label.'];
-        }
-        const series = Array.isArray(payload.series) ? payload.series : [];
-        if (series.length === 0) {
-            return ['Add at least one numeric series.'];
-        }
+        return chartErrors();
     }
 
     if (isKpi.value) {
-        const payload = payloadModel.value;
+        const payload = payloadModel.value as unknown;
         if (!isRecord(payload) || !Array.isArray(payload.items) || payload.items.length === 0) {
             return ['Add at least one KPI item.'];
         }
@@ -51,7 +136,7 @@ const previewVisualization = computed(() => ({
     title: { en: 'Draft preview' },
     description: { en: 'Live preview before saving' },
     payload: payloadModel.value,
-    schema_version: 1,
+    schema_version: isChart.value ? 2 : 1,
     sort_order: 0,
 }));
 
@@ -59,7 +144,13 @@ function hydrateText(payload: unknown): void {
     isHydrating.value = true;
     const chart = chartText(payload);
     labelsText.value = chart.labels;
-    unitText.value = chart.unit;
+    xLabelText.value = chart.xLabel;
+    xTypeValue.value = chart.xType;
+    yLabelText.value = chart.yLabel;
+    yUnitText.value = chart.yUnit;
+    yFormatValue.value = chart.yFormat;
+    sourcesText.value = chart.sources;
+    noteText.value = chart.note;
     seriesText.value = chart.series;
     itemsText.value = kpiText(payload);
     isHydrating.value = false;
@@ -71,9 +162,31 @@ function syncPayload(): void {
     }
 
     if (isChart.value) {
-        payloadModel.value = parseChartPayload(labelsText.value, unitText.value, seriesText.value);
+        payloadModel.value = parseChartPayload({
+            labels: labelsText.value,
+            xLabel: xLabelText.value,
+            xType: xTypeValue.value,
+            yLabel: yLabelText.value,
+            yUnit: yUnitText.value,
+            yFormat: yFormatValue.value,
+            sources: sourcesText.value,
+            note: noteText.value,
+            series: seriesText.value,
+        });
     } else if (isKpi.value) {
         payloadModel.value = parseKpiPayload(itemsText.value);
+    }
+}
+
+function chooseXType(value: string | number | null): void {
+    if (typeof value === 'string' && chartXAxisTypes.includes(value as ChartXAxisType)) {
+        xTypeValue.value = value as ChartXAxisType;
+    }
+}
+
+function chooseYFormat(value: string | number | null): void {
+    if (typeof value === 'string' && chartYAxisFormats.includes(value as ChartYAxisFormat)) {
+        yFormatValue.value = value as ChartYAxisFormat;
     }
 }
 
@@ -92,7 +205,7 @@ watch(errors, () => {
     validModel.value = !hasErrors.value;
 }, { immediate: true });
 
-watch([labelsText, unitText, seriesText, itemsText], syncPayload, { flush: 'sync' });
+watch([labelsText, xLabelText, xTypeValue, yLabelText, yUnitText, yFormatValue, sourcesText, noteText, seriesText, itemsText], syncPayload, { flush: 'sync' });
 </script>
 
 <template>
@@ -100,15 +213,23 @@ watch([labelsText, unitText, seriesText, itemsText], syncPayload, { flush: 'sync
         <div class="flex flex-wrap items-center justify-between gap-3">
             <div>
                 <p class="font-semibold">Payload editor</p>
-                <p class="text-sm text-ui-muted-foreground">Structured payload with live pre-save preview.</p>
+                <p class="text-sm text-ui-muted-foreground">Schema v2 chart payload with live pre-save preview.</p>
             </div>
             <Badge :label="typeModel" :color="isSupported ? 'success' : 'warning'" variant="soft" />
         </div>
 
         <div v-if="isChart" class="space-y-4">
-            <TextInput v-model="labelsText" label="Labels" helper-text="Comma-separated labels, for example: Now, 2030, 2050" />
-            <TextInput v-model="unitText" label="Unit" helper-text="Optional chart unit, for example % or ppm." />
+            <TextInput v-model="labelsText" label="Labels" helper-text="Comma-separated ordered values or categories." />
+            <div class="grid gap-4 md:grid-cols-2">
+                <TextInput v-model="xLabelText" label="X-axis label" helper-text="Describe the time, sequence or category dimension." />
+                <BackofficeSelectField label="X-axis type" :model-value="xTypeValue" :options="xTypeOptions" :clearable="false" @update:model-value="chooseXType" />
+                <TextInput v-model="yLabelText" label="Y-axis label" helper-text="Describe the measured quantity." />
+                <TextInput v-model="yUnitText" label="Y-axis unit" helper-text="One shared unit for every series." />
+                <BackofficeSelectField label="Y-axis format" :model-value="yFormatValue" :options="yFormatOptions" :clearable="false" @update:model-value="chooseYFormat" />
+            </div>
             <Textarea v-model="seriesText" label="Series" :rows="4" helper-text="One series per line: Scenario: 20, 42, 64" />
+            <Textarea v-model="sourcesText" label="Sources" :rows="3" helper-text="One HTTPS source URL per line." />
+            <Textarea v-model="noteText" label="Note" :rows="2" helper-text="Optional methodological or interpretation note." />
         </div>
 
         <div v-else-if="isKpi" class="space-y-4">
@@ -117,7 +238,7 @@ watch([labelsText, unitText, seriesText, itemsText], syncPayload, { flush: 'sync
 
         <div v-else class="rounded-lg border border-dashed border-ui-border p-4 text-sm text-ui-muted-foreground">
             <Badge label="Unsupported editor" :icon="AlertTriangle" color="warning" variant="soft" />
-            <p class="mt-3">Select line, area or KPI to save with a structured live preview.</p>
+            <p class="mt-3">Select line, area, bar or KPI to save with a structured live preview.</p>
         </div>
 
         <div v-if="hasErrors" class="rounded-lg border border-ui-warning/40 bg-ui-warning/10 p-3 text-sm text-ui-muted-foreground">

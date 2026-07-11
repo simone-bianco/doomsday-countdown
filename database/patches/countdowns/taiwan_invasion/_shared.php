@@ -52,21 +52,51 @@ return new class
         return compact('en', 'it', 'fr', 'de', 'es', 'nl', 'sv', 'pl');
     }
 
-    /** @param array<string, string> $title @param array<string, string> $description @param array<int, string> $labels @param array<int, int|float> $series @param array<int, string> $sources @return array<string, mixed> */
-    public function lineVisualization(string $key, array $title, array $description, array $labels, array $series, string $unit, array $sources, int $sortOrder): array
-    {
+    /**
+     * @param array<string, string> $title
+     * @param array<string, string> $description
+     * @param array<int, string> $labels
+     * @param array<int, int|float|array<string, mixed>> $series
+     * @param array<int, string> $sources
+     * @return array<string, mixed>
+     */
+    public function chartVisualization(
+        string $key,
+        VisualizationType $type,
+        array $title,
+        array $description,
+        array $labels,
+        array $series,
+        string $xLabel,
+        string $xType,
+        string $yLabel,
+        string $yUnit,
+        string $yFormat,
+        array $sources,
+        int $sortOrder,
+        ?string $note = null,
+    ): array {
+        $payload = [
+            'labels' => $labels,
+            'series' => $series,
+            'axes' => [
+                'x' => ['label' => $xLabel, 'type' => $xType],
+                'y' => ['label' => $yLabel, 'unit' => $yUnit, 'format' => $yFormat],
+            ],
+            'sources' => $sources,
+        ];
+
+        if ($note !== null) {
+            $payload['note'] = $note;
+        }
+
         return [
             'key' => $key,
-            'type' => VisualizationType::Line,
+            'type' => $type,
             'title' => $title,
             'description' => $description,
-            'payload' => [
-                'labels' => $labels,
-                'series' => $series,
-                'unit' => $unit,
-                'sources' => $sources,
-            ],
-            'schema_version' => 1,
+            'payload' => $payload,
+            'schema_version' => 2,
             'sort_order' => $sortOrder,
         ];
     }

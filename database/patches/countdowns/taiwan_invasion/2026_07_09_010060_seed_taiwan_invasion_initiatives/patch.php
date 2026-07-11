@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 use App\Models\Countdown;
 use SimoneBianco\Patches\Patch;
 
@@ -25,11 +26,12 @@ return new class extends Patch
             ->delete();
 
         foreach ($seedInitiatives as $index => $initiative) {
-            $countdown->initiatives()->create(array_merge($initiative, [
+            $countdown->initiatives()->create(array_merge([
+                'content_type' => 'article',
                 'image_path' => self::IMAGE_PATH,
                 'sort_order' => $index + 1,
                 'is_featured' => $index === 0,
-            ]));
+            ], $initiative));
         }
     }
 

@@ -53,7 +53,7 @@ final class DoomsdaySelectedCardAccentQaTest extends TestCase
         $this->assertStringContainsString(':pending-slug="selection.pendingSelectedSlug.value"', $home);
 
         foreach (['grid-cols-[minmax(0,1fr)_minmax(', 'sm:grid-cols-[', 'xl:grid-cols-[', '2xl:grid-cols-[', 'border-l', 'ChevronRight', '<Link', 'prefetch cache-for="2m"', 'router.visit', 'router.reload', 'router.prefetch', 'history.pushState', 'window.location', 'window.fetch', 'countdown.icon', 'countdown.timer.estimated_label', 'icon="'] as $forbidden) {
-            $this->assertStringNotContainsString($forbidden, $card, 'CountdownCard regression: ' . $forbidden);
+            $this->assertStringNotContainsString($forbidden, $card, 'CountdownCard regression: '.$forbidden);
         }
     }
 
@@ -76,6 +76,7 @@ final class DoomsdaySelectedCardAccentQaTest extends TestCase
         $chart = (string) file_get_contents(base_path('resources/js/Components/Doomsday/VisualizationChart.vue'));
         $news = (string) file_get_contents(base_path('resources/js/Components/Doomsday/NewsSection.vue'));
         $initiatives = (string) file_get_contents(base_path('resources/js/Components/Doomsday/InitiativesSection.vue'));
+        $previewCard = (string) file_get_contents(base_path('resources/js/Components/Doomsday/ContentPreviewCard.vue'));
 
         $this->assertStringContainsString('flex h-full min-h-0 flex-col overflow-hidden', $detail);
         $this->assertStringContainsString('auto-rows-max', $detail);
@@ -85,19 +86,20 @@ final class DoomsdaySelectedCardAccentQaTest extends TestCase
         $this->assertStringContainsString('pb-6', $chart);
         $this->assertStringNotContainsString('h-72', $chart);
         $this->assertStringNotContainsString('min-w-[620px]', $chart);
-        $this->assertStringContainsString(':href="item.source_url ??', $news);
-        $this->assertStringContainsString('target="_blank"', $news);
-        $this->assertStringContainsString('rel="noopener noreferrer"', $news);
+        $this->assertStringContainsString(':href="item.source_url"', $news);
         $this->assertStringContainsString(':href="item.url"', $initiatives);
-        $this->assertStringContainsString('ExternalLink', $initiatives);
-        $this->assertStringNotContainsString('sm:grid-cols-2', $news . $initiatives);
+        $this->assertStringContainsString(':href="href || undefined"', $previewCard);
+        $this->assertStringContainsString(":target=\"href ? '_blank' : undefined\"", $previewCard);
+        $this->assertStringContainsString(":rel=\"href ? 'noopener noreferrer' : undefined\"", $previewCard);
+        $this->assertStringContainsString('ExternalLink', $previewCard);
+        $this->assertStringNotContainsString('sm:grid-cols-2', $news.$initiatives);
     }
 
     public function test_selected_card_accent_fix_preserves_no_url_selection_runtime_contract(): void
     {
         $selection = (string) file_get_contents(base_path('resources/js/Composables/useDoomsdaySelection.ts'));
         $lazy = (string) file_get_contents(base_path('resources/js/Composables/useDoomsdayLazySections.ts'));
-        $runtime = $selection . $lazy;
+        $runtime = $selection.$lazy;
 
         $this->assertStringContainsString('axios.get<{ data: CountdownOverviewData }>', $selection);
         $this->assertStringContainsString("route('countdowns.data.overview'", $selection);

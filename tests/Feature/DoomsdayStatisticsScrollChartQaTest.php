@@ -85,20 +85,20 @@ final class DoomsdayStatisticsScrollChartQaTest extends TestCase
 
         $news = (string) file_get_contents(base_path('resources/js/Components/Doomsday/NewsSection.vue'));
         $initiatives = (string) file_get_contents(base_path('resources/js/Components/Doomsday/InitiativesSection.vue'));
+        $previewCard = (string) file_get_contents(base_path('resources/js/Components/Doomsday/ContentPreviewCard.vue'));
         $skeleton = (string) file_get_contents(base_path('resources/js/Components/Doomsday/DoomsdaySkeletonBlock.vue'));
 
         $this->assertStringContainsString('grid grid-cols-1 gap-4', $news);
-        $this->assertStringContainsString(':href="item.source_url ??', $news);
-        $this->assertStringContainsString('target="_blank"', $news);
-        $this->assertStringContainsString('rel="noopener noreferrer"', $news);
+        $this->assertStringContainsString(':href="item.source_url"', $news);
         $this->assertStringNotContainsString('sm:grid-cols-2', $news);
 
         $this->assertStringContainsString('grid grid-cols-1 gap-4', $initiatives);
         $this->assertStringContainsString(':href="item.url"', $initiatives);
-        $this->assertStringContainsString('ExternalLink', $initiatives);
-        $this->assertStringContainsString('target="_blank"', $initiatives);
-        $this->assertStringContainsString('rel="noopener noreferrer"', $initiatives);
         $this->assertStringNotContainsString('sm:grid-cols-2', $initiatives);
+        $this->assertStringContainsString(':href="href || undefined"', $previewCard);
+        $this->assertStringContainsString(":target=\"href ? '_blank' : undefined\"", $previewCard);
+        $this->assertStringContainsString(":rel=\"href ? 'noopener noreferrer' : undefined\"", $previewCard);
+        $this->assertStringContainsString('ExternalLink', $previewCard);
         $this->assertStringContainsString("variant === 'initiatives'", $skeleton);
         $this->assertStringContainsString('grid grid-cols-1 gap-4', $skeleton);
     }
@@ -107,7 +107,7 @@ final class DoomsdayStatisticsScrollChartQaTest extends TestCase
     {
         $selection = (string) file_get_contents(base_path('resources/js/Composables/useDoomsdaySelection.ts'));
         $lazy = (string) file_get_contents(base_path('resources/js/Composables/useDoomsdayLazySections.ts'));
-        $runtime = $selection . $lazy;
+        $runtime = $selection.$lazy;
 
         $this->assertStringContainsString('axios.get<{ data: CountdownOverviewData }>', $selection);
         $this->assertStringContainsString("route('countdowns.data.overview'", $selection);

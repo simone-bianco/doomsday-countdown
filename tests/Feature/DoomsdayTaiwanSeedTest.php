@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Enums\ProjectionType;
+use App\Enums\VisualizationType;
 use App\Models\Countdown;
 use Database\Seeders\DoomsdaySeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -41,9 +42,38 @@ final class DoomsdayTaiwanSeedTest extends TestCase
             ->flatMap(fn ($projection) => $projection->visualizations)
             ->firstWhere('key', 'projection_curve');
         $this->assertNotNull($projectionChart);
+        $this->assertSame(2, $projectionChart->schema_version);
+        $this->assertSame('temporal', $projectionChart->payload['axes']['x']['type']);
+        $this->assertSame('%', $projectionChart->payload['axes']['y']['unit']);
         $this->assertSame(['Pessimistic', 'Optimistic', 'Neutral'], collect($projectionChart->payload['series'])->pluck('name')->all());
         $this->assertSame(['#ff2a23', '#22c55e', '#38bdf8'], collect($projectionChart->payload['series'])->pluck('color')->all());
         $this->assertGreaterThanOrEqual(6, $countdown->visualizations->count());
+
+        foreach ($countdown->visualizations as $visualization) {
+            if (! in_array($visualization->type, [VisualizationType::Line, VisualizationType::Area, VisualizationType::Bar], true)) {
+                continue;
+            }
+
+            $this->assertSame(2, $visualization->schema_version, $visualization->key);
+            $this->assertArrayHasKey('axes', $visualization->payload, $visualization->key);
+            $this->assertArrayHasKey('sources', $visualization->payload, $visualization->key);
+            $this->assertNotEmpty($visualization->payload['sources'], $visualization->key);
+            foreach ($visualization->payload['sources'] as $source) {
+                $this->assertStringStartsWith('https://', $source, $visualization->key);
+            }
+            foreach ($visualization->payload['series'] as $series) {
+                if (is_array($series)) {
+                    $this->assertArrayNotHasKey('unit', $series, $visualization->key);
+                    $this->assertArrayNotHasKey('format', $series, $visualization->key);
+                }
+            }
+        }
+
+        $this->assertSame(VisualizationType::Bar, $countdown->visualizations->firstWhere('key', 'economic_exposure')?->type);
+        $this->assertSame(VisualizationType::Bar, $countdown->visualizations->firstWhere('key', 'scenario_gdp_shock')?->type);
+        $energyResilience = $countdown->visualizations->firstWhere('key', 'energy_resilience');
+        $this->assertSame(VisualizationType::Kpi, $energyResilience?->type);
+        $this->assertSame(['95%', '99%', '12 days'], collect($energyResilience?->payload['items'] ?? [])->pluck('value')->all());
         $this->assertGreaterThanOrEqual(6, $countdown->news->whereNotNull('source_url')->count());
         $this->assertGreaterThanOrEqual(5, $countdown->initiatives->count());
         foreach ($countdown->news as $news) {

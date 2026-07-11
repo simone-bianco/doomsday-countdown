@@ -19,7 +19,12 @@ return new class extends Migration
             $table->text('excerpt');
             $table->text('body')->nullable();
             $table->string('organization')->nullable();
-            $table->string('url');
+            $table->string('url', 500);
+            $table->string('content_type')->default('article');
+            $table->text('preview_image_url')->nullable();
+            $table->text('embed_url')->nullable();
+            $table->string('external_provider')->nullable();
+            $table->string('external_id')->nullable();
             $table->string('image_path')->nullable();
             $table->string('cta_label')->nullable();
             $table->timestamp('starts_at')->nullable();
@@ -29,6 +34,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->index(['countdown_id', 'locale', 'sort_order']);
+            $table->index(['content_type', 'sort_order']);
         });
     }
 

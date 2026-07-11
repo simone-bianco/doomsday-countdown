@@ -8,6 +8,7 @@ use App\Enums\NewsLocale;
 use Spatie\LaravelData\Attributes\Validation\BooleanType;
 use Spatie\LaravelData\Attributes\Validation\Date;
 use Spatie\LaravelData\Attributes\Validation\Enum;
+use Spatie\LaravelData\Attributes\Validation\In;
 use Spatie\LaravelData\Attributes\Validation\IntegerType;
 use Spatie\LaravelData\Attributes\Validation\Max;
 use Spatie\LaravelData\Attributes\Validation\Min;
@@ -40,6 +41,15 @@ final class SaveNewsData extends Data
         public readonly int $sort_order,
         #[BooleanType]
         public readonly bool $is_featured,
-    ) {
-    }
+        #[Nullable, In('article', 'youtube_video')]
+        public readonly ?string $content_type = null,
+        #[Nullable, StringType, Url, Max(2000)]
+        public readonly ?string $preview_image_url = null,
+        #[Nullable, StringType, Url, Max(2000)]
+        public readonly ?string $embed_url = null,
+        #[Nullable, StringType, Max(80)]
+        public readonly ?string $external_provider = null,
+        #[Nullable, StringType, Max(255)]
+        public readonly ?string $external_id = null,
+    ) {}
 }

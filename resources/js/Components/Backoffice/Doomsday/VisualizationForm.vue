@@ -7,10 +7,16 @@ import FormActions from '@/Components/Backoffice/Shared/FormActions.vue';
 import { SaveVisualizationDataRules } from '@/generated/form-rules';
 import VisualizationPayloadEditor from '@/Components/Backoffice/Doomsday/VisualizationPayloadEditor.vue';
 import { defaultPayload, first, localizedText, optionItems } from '@/Components/Backoffice/Doomsday/formHelpers';
-import type { BackofficeOptions, VisualizationPayload, VisualizationRecord } from '@/Components/Backoffice/Doomsday/types';
+import type { BackofficeOptions, LocalizedText, VisualizationPayload, VisualizationRecord } from '@/Components/Backoffice/Doomsday/types';
 import type { SaveVisualizationData } from '@/types/generated';
 
-type SaveVisualizationForm = SaveVisualizationData & Record<string, unknown>;
+type SaveVisualizationForm = Omit<SaveVisualizationData, 'title' | 'description' | 'payload'> & {
+    title: LocalizedText;
+    description: LocalizedText;
+    payload: VisualizationPayload;
+} & Record<string, unknown>;
+
+const editableTypes = ['line', 'area', 'bar', 'kpi'] as const;
 
 const props = withDefaults(defineProps<{
     readonly options: BackofficeOptions;
@@ -24,20 +30,30 @@ const props = withDefaults(defineProps<{
     showTopActions: false,
 });
 
+function isChartType(type: string): boolean {
+    return ['line', 'area', 'bar'].includes(type);
+}
+
+function schemaVersion(type: string): number {
+    return isChartType(type) ? 2 : 1;
+}
+
+const initialType = props.visualization?.type ?? first(props.options.visualization_types.filter((type) => editableTypes.includes(type as typeof editableTypes[number])), 'line');
+const initialPayload = (props.visualization?.payload as VisualizationPayload | undefined) ?? defaultPayload(initialType);
 const emit = defineEmits<{ (event: 'saved'): void; (event: 'cancel'): void }>();
 const form = useSmartForm<SaveVisualizationForm>({ ...SaveVisualizationDataRules });
-const payloadDraft = ref<VisualizationPayload>((props.visualization?.payload as VisualizationPayload | undefined) ?? defaultPayload(props.visualization?.type ?? 'line'));
+const payloadDraft = ref<VisualizationPayload>(initialPayload);
 const payloadIsValid = ref(true);
-const supportedOptions = computed(() => optionItems(props.options.visualization_types.filter((type) => ['line', 'area', 'kpi'].includes(type))));
+const supportedOptions = computed(() => optionItems(props.options.visualization_types.filter((type) => editableTypes.includes(type as typeof editableTypes[number]))));
 const submitDisabled = computed(() => form.processing || !payloadIsValid.value);
 
 form.fill({
     key: props.visualization?.key ?? '',
-    type: props.visualization?.type ?? first(props.options.visualization_types.filter((type) => ['line', 'area', 'kpi'].includes(type)), 'line'),
+    type: initialType,
     title: localizedText(props.visualization?.title.en ?? ''),
     description: localizedText(props.visualization?.description?.en ?? ''),
-    payload: ((props.visualization?.payload as Array<unknown> | undefined) ?? defaultPayload('line') as Array<unknown>),
-    schema_version: props.visualization?.schema_version ?? 1,
+    payload: initialPayload,
+    schema_version: schemaVersion(initialType),
     sort_order: props.visualization?.sort_order ?? 0,
 });
 
@@ -48,9 +64,12 @@ function chooseType(value: string | number | null): void {
 }
 
 watch(() => form.type, (type) => {
-    if (!['line', 'area', 'kpi'].includes(type)) {
+    if (!editableTypes.includes(type as typeof editableTypes[number])) {
         form.type = 'line';
+        return;
     }
+
+    form.schema_version = schemaVersion(type);
 });
 
 function submit(): void {
@@ -58,7 +77,7 @@ function submit(): void {
         return;
     }
 
-    form.payload = payloadDraft.value as unknown as Array<unknown>;
+    form.payload = payloadDraft.value;
     const method = props.method === 'post' ? form.post : form.put;
     method(props.submitUrl, { preserveScroll: true, onSuccess: () => emit('saved') });
 }
@@ -75,11 +94,11 @@ function submit(): void {
             <TextInput v-model="form.key" label="Key" helper-text="Stable identifier used by frontend chart integrations." :error="form.errors.key" />
             <div>
                 <BackofficeSelectField label="Type" :model-value="form.type" :options="supportedOptions" :clearable="false" @update:model-value="chooseType" />
-                <p class="mt-1 text-xs text-ui-muted-foreground">Controls which payload editor and public visualization are used.</p>
+                <p class="mt-1 text-xs text-ui-muted-foreground">Line and area are ordered series; bar is for categorical comparisons.</p>
             </div>
             <div>
-                <NumberInput v-model="form.schema_version" label="Schema version" :min="1" :error="form.errors.schema_version" />
-                <p class="mt-1 text-xs text-ui-muted-foreground">Increment only when the payload shape intentionally changes.</p>
+                <NumberInput v-model="form.schema_version" label="Schema version" :min="isChartType(form.type) ? 2 : 1" :error="form.errors.schema_version" />
+                <p class="mt-1 text-xs text-ui-muted-foreground">Line, area and bar use schema v2; KPI keeps its distinct payload contract.</p>
             </div>
             <div>
                 <NumberInput v-model="form.sort_order" label="Sort order" :min="0" :error="form.errors.sort_order" />

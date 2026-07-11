@@ -13,10 +13,10 @@ return new class($shared)
     /** @return array<string, mixed> */
     public function projectionCurveVisualization(): array
     {
-        return [
-            'key' => 'projection_curve',
-            'type' => VisualizationType::Line,
-            'title' => $this->shared->t(
+        return $this->shared->chartVisualization(
+            key: 'projection_curve',
+            type: VisualizationType::Line,
+            title: $this->shared->t(
                 en: 'Risk window curve',
                 it: 'Curva della finestra di rischio',
                 fr: 'Courbe de la fenêtre de risque',
@@ -26,7 +26,7 @@ return new class($shared)
                 sv: 'Kurva för riskfönstret',
                 pl: 'Krzywa okna ryzyka',
             ),
-            'description' => $this->shared->t(
+            description: $this->shared->t(
                 en: 'Editorial probability curve for invasion risk, separating full invasion from blockade and quarantine scenarios.',
                 it: 'Curva editoriale di probabilità del rischio invasione, distinta dagli scenari di blocco e quarantena.',
                 fr: 'Courbe éditoriale de probabilité du risque d’invasion, séparant l’invasion totale des scénarios de blocus et de quarantaine.',
@@ -36,19 +36,20 @@ return new class($shared)
                 sv: 'Redaktionell sannolikhetskurva för invasionsrisk, skild från blockad- och karantänscenarier.',
                 pl: 'Redakcyjna krzywa prawdopodobieństwa ryzyka inwazji, oddzielająca pełną inwazję od scenariuszy blokady i kwarantanny.',
             ),
-            'payload' => [
-                'unit' => '% invasion probability',
-                'labels' => ['2026-Q3', '2027-Q1', '2027-Q4', '2028-Q4', '2029-Q1'],
-                'series' => [
-                    ['name' => 'Pessimistic', 'color' => '#ff2a23', 'values' => [18, 24, 28, 24, 20]],
-                    ['name' => 'Optimistic', 'color' => '#22c55e', 'values' => [8, 10, 12, 10, 8]],
-                    ['name' => 'Neutral', 'color' => '#38bdf8', 'values' => [12, 16, 18, 16, 12]],
-                ],
-                'sources' => [$this->shared->sources()['dod'], $this->shared->sources()['reuters_status_quo']],
+            labels: ['2026-Q3', '2027-Q1', '2027-Q4', '2028-Q4', '2029-Q1'],
+            series: [
+                ['name' => 'Pessimistic', 'color' => '#ff2a23', 'values' => [18, 24, 28, 24, 20]],
+                ['name' => 'Optimistic', 'color' => '#22c55e', 'values' => [8, 10, 12, 10, 8]],
+                ['name' => 'Neutral', 'color' => '#38bdf8', 'values' => [12, 16, 18, 16, 12]],
             ],
-            'schema_version' => 1,
-            'sort_order' => 1,
-        ];
+            xLabel: 'Risk window',
+            xType: 'temporal',
+            yLabel: 'Invasion probability',
+            yUnit: '%',
+            yFormat: 'percent',
+            sources: [$this->shared->sources()['dod'], $this->shared->sources()['reuters_status_quo']],
+            sortOrder: 1,
+        );
     }
 
     /** @return array<int, array<string, mixed>> */
@@ -90,9 +91,10 @@ return new class($shared)
                 'schema_version' => 1,
                 'sort_order' => 1,
             ],
-            $this->shared->lineVisualization(
-                'pla_pressure_trend',
-                $this->shared->t(
+            $this->shared->chartVisualization(
+                key: 'pla_pressure_trend',
+                type: VisualizationType::Line,
+                title: $this->shared->t(
                     en: 'PLA pressure trend',
                     it: 'Trend pressione PLA',
                     fr: 'Tendance de pression de l’APL',
@@ -102,7 +104,7 @@ return new class($shared)
                     sv: 'Trend för PLA-tryck',
                     pl: 'Trend presji PLA',
                 ),
-                $this->shared->t(
+                description: $this->shared->t(
                     en: 'Annual Taiwan ADIZ activity reported in the China Military Power Report.',
                     it: 'Attività annuale ADIZ di Taiwan riportata nel China Military Power Report.',
                     fr: 'Activité annuelle de l’ADIZ de Taïwan rapportée dans le China Military Power Report.',
@@ -112,15 +114,20 @@ return new class($shared)
                     sv: 'Årlig taiwanesisk ADIZ-aktivitet rapporterad i China Military Power Report.',
                     pl: 'Roczna aktywność ADIZ Tajwanu raportowana w China Military Power Report.',
                 ),
-                ['2021', '2022', '2023', '2024'],
-                [972, 1733, 1703, 2771],
-                'activity count',
-                [$this->shared->sources()['dod']],
-                2,
+                labels: ['2021', '2022', '2023', '2024'],
+                series: [972, 1733, 1703, 2771],
+                xLabel: 'Year',
+                xType: 'temporal',
+                yLabel: 'PLA ADIZ activity',
+                yUnit: 'events',
+                yFormat: 'integer',
+                sources: [$this->shared->sources()['dod']],
+                sortOrder: 2,
             ),
-            $this->shared->lineVisualization(
-                'naval_pressure_2026',
-                $this->shared->t(
+            $this->shared->chartVisualization(
+                key: 'naval_pressure_2026',
+                type: VisualizationType::Bar,
+                title: $this->shared->t(
                     en: 'Naval pressure 2026',
                     it: 'Pressione navale 2026',
                     fr: 'Pression navale 2026',
@@ -130,7 +137,7 @@ return new class($shared)
                     sv: 'Marint tryck 2026',
                     pl: 'Presja morska 2026',
                 ),
-                $this->shared->t(
+                description: $this->shared->t(
                     en: 'Display baseline versus July 2026 reports of more than 110 military and coast guard ships in the region.',
                     it: 'Baseline espositiva contro i report di luglio 2026 su oltre 110 navi militari e della guardia costiera nella regione.',
                     fr: 'Référence visuelle comparée aux rapports de juillet 2026 signalant plus de 110 navires militaires et garde-côtes dans la région.',
@@ -140,15 +147,20 @@ return new class($shared)
                     sv: 'Visningsbaslinje jämfört med rapporter från juli 2026 om fler än 110 militära och kustbevakningsfartyg i regionen.',
                     pl: 'Bazowy poziom prezentacji wobec raportów z lipca 2026 r. o ponad 110 okrętach wojskowych i straży przybrzeżnej w regionie.',
                 ),
-                ['Baseline', 'July 2026'],
-                [50, 110],
-                'ships',
-                [$this->shared->sources()['reuters_naval']],
-                3,
+                labels: ['Display baseline', 'July 2026 report'],
+                series: [50, 110],
+                xLabel: 'Observation',
+                xType: 'category',
+                yLabel: 'Military and coast guard ships',
+                yUnit: 'ships',
+                yFormat: 'integer',
+                sources: [$this->shared->sources()['reuters_naval']],
+                sortOrder: 3,
             ),
-            $this->shared->lineVisualization(
-                'economic_exposure',
-                $this->shared->t(
+            $this->shared->chartVisualization(
+                key: 'economic_exposure',
+                type: VisualizationType::Bar,
+                title: $this->shared->t(
                     en: 'Economic exposure',
                     it: 'Esposizione economica',
                     fr: 'Exposition économique',
@@ -158,7 +170,7 @@ return new class($shared)
                     sv: 'Ekonomisk exponering',
                     pl: 'Ekspozycja gospodarcza',
                 ),
-                $this->shared->t(
+                description: $this->shared->t(
                     en: 'Trade, annual activity and sanctions shock ranges exposed by Taiwan Strait disruption.',
                     it: 'Commercio, attività annuale e shock da sanzioni esposti a una crisi nello Stretto di Taiwan.',
                     fr: 'Commerce, activité annuelle et fourchettes de choc de sanctions exposés par une perturbation du détroit de Taïwan.',
@@ -168,15 +180,20 @@ return new class($shared)
                     sv: 'Handel, årlig aktivitet och sanktionschockintervall som exponeras av en störning i Taiwansundet.',
                     pl: 'Handel, roczna aktywność i zakresy szoku sankcyjnego narażone przez zakłócenia w Cieśninie Tajwańskiej.',
                 ),
-                ['Strait trade', 'Annual activity at risk', 'Max sanctions shock'],
-                [2.45, 2.0, 3.0],
-                'US$ trillion',
-                [$this->shared->sources()['csis_trade'], $this->shared->sources()['rhodium_disruptions']],
-                4,
+                labels: ['Strait trade', 'Annual activity at risk', 'Max sanctions shock'],
+                series: [2.45, 2.0, 3.0],
+                xLabel: 'Exposure category',
+                xType: 'category',
+                yLabel: 'Economic value exposed',
+                yUnit: 'US$ trillion',
+                yFormat: 'currency',
+                sources: [$this->shared->sources()['csis_trade'], $this->shared->sources()['rhodium_disruptions']],
+                sortOrder: 4,
             ),
-            $this->shared->lineVisualization(
-                'scenario_gdp_shock',
-                $this->shared->t(
+            $this->shared->chartVisualization(
+                key: 'scenario_gdp_shock',
+                type: VisualizationType::Bar,
+                title: $this->shared->t(
                     en: 'Scenario GDP shock',
                     it: 'Shock PIL per scenario',
                     fr: 'Choc de PIB par scénario',
@@ -186,7 +203,7 @@ return new class($shared)
                     sv: 'BNP-chock per scenario',
                     pl: 'Szok PKB według scenariusza',
                 ),
-                $this->shared->t(
+                description: $this->shared->t(
                     en: 'Editorial midpoint estimates for first-year Taiwan GDP shock by scenario.',
                     it: 'Stime editoriali mediane dello shock sul PIL taiwanese nel primo anno per scenario.',
                     fr: 'Estimations éditoriales médianes du choc sur le PIB taïwanais la première année par scénario.',
@@ -196,15 +213,20 @@ return new class($shared)
                     sv: 'Redaktionella mittpunktsestimat för Taiwans BNP-chock under första året per scenario.',
                     pl: 'Redakcyjne szacunki punktu środkowego szoku PKB Tajwanu w pierwszym roku według scenariusza.',
                 ),
-                ['Optimistic', 'Neutral', 'Pessimistic'],
-                [15, 32, 45],
-                '% Taiwan GDP',
-                [$this->shared->sources()['rhodium_disruptions']],
-                5,
+                labels: ['Optimistic', 'Neutral', 'Pessimistic'],
+                series: [15, 32, 45],
+                xLabel: 'Scenario',
+                xType: 'category',
+                yLabel: 'First-year Taiwan GDP shock',
+                yUnit: '%',
+                yFormat: 'percent',
+                sources: [$this->shared->sources()['rhodium_disruptions']],
+                sortOrder: 5,
             ),
-            $this->shared->lineVisualization(
-                'energy_resilience',
-                $this->shared->t(
+            [
+                'key' => 'energy_resilience',
+                'type' => VisualizationType::Kpi,
+                'title' => $this->shared->t(
                     en: 'Energy resilience',
                     it: 'Resilienza energetica',
                     fr: 'Résilience énergétique',
@@ -214,7 +236,7 @@ return new class($shared)
                     sv: 'Energiresiliens',
                     pl: 'Odporność energetyczna',
                 ),
-                $this->shared->t(
+                'description' => $this->shared->t(
                     en: 'Energy import dependence, oil and gas dependence, and displayed LNG reserve days.',
                     it: 'Dipendenza energetica, dipendenza da petrolio e gas e giorni di riserva LNG visualizzati.',
                     fr: 'Dépendance aux importations d’énergie, dépendance au pétrole et au gaz, et jours de réserve GNL affichés.',
@@ -224,12 +246,16 @@ return new class($shared)
                     sv: 'Energimportberoende, olje- och gasberoende samt visade LNG-reservdagar.',
                     pl: 'Zależność od importu energii, ropy i gazu oraz prezentowane dni rezerw LNG.',
                 ),
-                ['Energy import dependence', 'Oil/gas import dependence', 'LNG reserve days'],
-                [95, 99, 12],
-                'value',
-                [$this->shared->sources()['energy_resilience']],
-                6,
-            ),
+                'payload' => [
+                    'items' => [
+                        ['label' => 'Energy import dependence', 'value' => '95%', 'source' => $this->shared->sources()['energy_resilience']],
+                        ['label' => 'Oil and gas import dependence', 'value' => '99%', 'source' => $this->shared->sources()['energy_resilience']],
+                        ['label' => 'Displayed LNG reserve', 'value' => '12 days', 'source' => $this->shared->sources()['energy_resilience']],
+                    ],
+                ],
+                'schema_version' => 1,
+                'sort_order' => 6,
+            ],
         ];
     }
 };
