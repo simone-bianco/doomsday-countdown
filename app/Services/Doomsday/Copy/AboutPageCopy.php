@@ -36,7 +36,7 @@ final class AboutPageCopy
         return [
             'en' => $this->page(
                 title: 'Why this clock exists',
-                subtitle: 'Doomsday Countdown was created to turn scattered signals of collapse into a readable public interface: not prophecy, not panic, but a brutally clear map of risk.',
+                subtitle: 'Doomsday Clock was created to turn scattered signals of collapse into a readable public interface: not prophecy, not panic, but a brutally clear map of risk.',
                 eyebrow: 'A warning system for a fragile century',
                 heroBadge: 'Civilization risk desk',
                 intro: [
@@ -70,7 +70,7 @@ final class AboutPageCopy
             ),
             'it' => $this->page(
                 title: 'Perché questo orologio esiste',
-                subtitle: 'Doomsday Countdown nasce per trasformare segnali sparsi di collasso in un’interfaccia pubblica leggibile: non profezia, non panico, ma una mappa brutale e chiara del rischio.',
+                subtitle: 'Doomsday Clock nasce per trasformare segnali sparsi di collasso in un’interfaccia pubblica leggibile: non profezia, non panico, ma una mappa brutale e chiara del rischio.',
                 eyebrow: 'Un sistema di allerta per un secolo fragile',
                 heroBadge: 'Osservatorio rischio civiltà',
                 intro: [
@@ -104,7 +104,7 @@ final class AboutPageCopy
             ),
             'fr' => $this->page(
                 title: 'Pourquoi cette horloge existe',
-                subtitle: 'Doomsday Countdown transforme des signaux dispersés d’effondrement en interface publique lisible : pas une prophétie, pas une panique, mais une carte brutalement claire du risque.',
+                subtitle: 'Doomsday Clock transforme des signaux dispersés d’effondrement en interface publique lisible : pas une prophétie, pas une panique, mais une carte brutalement claire du risque.',
                 eyebrow: 'Un système d’alerte pour un siècle fragile',
                 heroBadge: 'Observatoire du risque civilisationnel',
                 intro: [
@@ -138,7 +138,7 @@ final class AboutPageCopy
             ),
             'de' => $this->page(
                 title: 'Warum diese Uhr existiert',
-                subtitle: 'Doomsday Countdown macht verstreute Kollapssignale als öffentliche Oberfläche lesbar: keine Prophezeiung, keine Panik, sondern eine brutal klare Risikokarte.',
+                subtitle: 'Doomsday Clock macht verstreute Kollapssignale als öffentliche Oberfläche lesbar: keine Prophezeiung, keine Panik, sondern eine brutal klare Risikokarte.',
                 eyebrow: 'Ein Warnsystem für ein fragiles Jahrhundert',
                 heroBadge: 'Zivilisationsrisiko-Desk',
                 intro: [
@@ -172,7 +172,7 @@ final class AboutPageCopy
             ),
             'es' => $this->page(
                 title: 'Por qué existe este reloj',
-                subtitle: 'Doomsday Countdown convierte señales dispersas de colapso en una interfaz pública legible: no profecía, no pánico, sino un mapa brutalmente claro del riesgo.',
+                subtitle: 'Doomsday Clock convierte señales dispersas de colapso en una interfaz pública legible: no profecía, no pánico, sino un mapa brutalmente claro del riesgo.',
                 eyebrow: 'Un sistema de alerta para un siglo frágil',
                 heroBadge: 'Mesa de riesgo civilizatorio',
                 intro: [
@@ -206,7 +206,7 @@ final class AboutPageCopy
             ),
             'nl' => $this->page(
                 title: 'Waarom deze klok bestaat',
-                subtitle: 'Doomsday Countdown vertaalt losse signalen van instorting naar een leesbare publieke interface: geen profetie, geen paniek, maar een genadeloos heldere risicokaart.',
+                subtitle: 'Doomsday Clock vertaalt losse signalen van instorting naar een leesbare publieke interface: geen profetie, geen paniek, maar een genadeloos heldere risicokaart.',
                 eyebrow: 'Een waarschuwingssysteem voor een fragiele eeuw',
                 heroBadge: 'Civilisatierisico-desk',
                 intro: [
@@ -240,7 +240,7 @@ final class AboutPageCopy
             ),
             'sv' => $this->page(
                 title: 'Varför denna klocka finns',
-                subtitle: 'Doomsday Countdown gör spridda kollapssignaler till ett läsbart offentligt gränssnitt: inte profetia, inte panik, utan en brutalt tydlig riskkarta.',
+                subtitle: 'Doomsday Clock gör spridda kollapssignaler till ett läsbart offentligt gränssnitt: inte profetia, inte panik, utan en brutalt tydlig riskkarta.',
                 eyebrow: 'Ett varningssystem för ett skört århundrade',
                 heroBadge: 'Desk för civilisationsrisk',
                 intro: [
@@ -274,7 +274,7 @@ final class AboutPageCopy
             ),
             'pl' => $this->page(
                 title: 'Dlaczego ten zegar istnieje',
-                subtitle: 'Doomsday Countdown zamienia rozproszone sygnały rozpadu w czytelny publiczny interfejs: nie proroctwo, nie panikę, lecz brutalnie jasną mapę ryzyka.',
+                subtitle: 'Doomsday Clock zamienia rozproszone sygnały rozpadu w czytelny publiczny interfejs: nie proroctwo, nie panikę, lecz brutalnie jasną mapę ryzyka.',
                 eyebrow: 'System ostrzegania dla kruchego stulecia',
                 heroBadge: 'Pulpit ryzyka cywilizacyjnego',
                 intro: [

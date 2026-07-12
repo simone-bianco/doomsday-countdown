@@ -15,7 +15,7 @@ final class BackofficeCrudTest extends TestCase
 
     public function test_authenticated_user_can_create_update_and_delete_backoffice_users(): void
     {
-        $admin = User::factory()->create();
+        $admin = User::factory()->admin()->create();
 
         $this->actingAs($admin)
             ->post('/backoffice/users', [
@@ -54,7 +54,7 @@ final class BackofficeCrudTest extends TestCase
     public function test_authenticated_user_can_create_update_and_delete_openai_keys(): void
     {
         config(['laravel-key-rotator.encrypt_keys' => true]);
-        $admin = User::factory()->create();
+        $admin = User::factory()->admin()->create();
 
         $this->actingAs($admin)
             ->post('/backoffice/openai-keys', [

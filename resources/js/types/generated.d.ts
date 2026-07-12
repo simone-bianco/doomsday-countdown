@@ -297,6 +297,46 @@ payload: Array<any>;
 schema_version: number;
 sort_order: number;
 };
+export type SeoAlternateData = {
+hreflang: string;
+url: string;
+};
+export type SeoImageData = {
+url: string;
+width: number | null;
+height: number | null;
+alt: string;
+};
+export type SeoOpenGraphData = {
+title: string;
+description: string;
+url: string;
+type: string;
+site_name: string;
+locale: string;
+alternate_locales: Array<any>;
+image: SeoImageData;
+};
+export type SeoPageData = {
+title: string;
+description: string;
+canonical_url: string;
+robots: string;
+locale: string;
+alternates: Array<SeoAlternateData>;
+x_default_url: string;
+open_graph: SeoOpenGraphData;
+twitter: SeoTwitterData;
+date_modified: string | null;
+structured_data: Array<any>;
+};
+export type SeoTwitterData = {
+card: string;
+title: string;
+description: string;
+image_url: string;
+image_alt: string;
+};
 export type VisualizationData = {
 key: string;
 type: string;

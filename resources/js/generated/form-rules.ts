@@ -289,6 +289,51 @@ export const ProjectionDataRules: FormRuleMap = {
   visualizations: { default: [], rules: [{ name: 'present' }, { name: 'array' }] },
 };
 
+export const SeoAlternateDataRules: FormRuleMap = {
+  hreflang: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  url: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+};
+
+export const SeoImageDataRules: FormRuleMap = {
+  url: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  width: { default: null, rules: [{ name: 'nullable' }, { name: 'numeric' }] },
+  height: { default: null, rules: [{ name: 'nullable' }, { name: 'numeric' }] },
+  alt: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+};
+
+export const SeoOpenGraphDataRules: FormRuleMap = {
+  title: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  description: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  url: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  type: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  site_name: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  locale: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  alternate_locales: { default: [], rules: [{ name: 'required' }, { name: 'array' }] },
+  image: { default: [], rules: [{ name: 'required' }, { name: 'array' }] },
+};
+
+export const SeoPageDataRules: FormRuleMap = {
+  title: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  description: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  canonical_url: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  robots: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  locale: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  alternates: { default: [], rules: [{ name: 'present' }, { name: 'array' }] },
+  x_default_url: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  open_graph: { default: [], rules: [{ name: 'required' }, { name: 'array' }] },
+  twitter: { default: [], rules: [{ name: 'required' }, { name: 'array' }] },
+  date_modified: { default: null, rules: [{ name: 'nullable' }] },
+  structured_data: { default: [], rules: [{ name: 'required' }, { name: 'array' }] },
+};
+
+export const SeoTwitterDataRules: FormRuleMap = {
+  card: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  title: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  description: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  image_url: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  image_alt: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+};
+
 export const VisualizationDataRules: FormRuleMap = {
   key: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
   type: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },

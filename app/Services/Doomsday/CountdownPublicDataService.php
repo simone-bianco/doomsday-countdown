@@ -84,7 +84,7 @@ final class CountdownPublicDataService
             ->values();
 
         return [
-            'app_name' => 'Doomsday Countdown',
+            'app_name' => 'Doomsday Clock',
             'current_locale' => $locale,
             'hero' => $this->hero($locale),
             'countdowns' => $items->map(fn (CountdownIndexData $item): array => $item->toArray())->all(),
@@ -108,7 +108,7 @@ final class CountdownPublicDataService
             ->all();
 
         return [
-            'app_name' => $indexPayload['app_name'] ?? 'Doomsday Countdown',
+            'app_name' => $indexPayload['app_name'] ?? 'Doomsday Clock',
             'current_locale' => $locale,
             'languages' => $this->languageOptionArrays($locale, $currentPath),
             'hero' => $indexPayload['hero'] ?? $this->hero($locale),
@@ -125,7 +125,7 @@ final class CountdownPublicDataService
         $copy = $this->aboutCopy($locale);
 
         return array_merge([
-            'app_name' => 'Doomsday Countdown',
+            'app_name' => 'Doomsday Clock',
             'current_locale' => $locale,
         ], $copy);
     }

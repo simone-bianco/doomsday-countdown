@@ -8,6 +8,7 @@ use App\Data\SaveOpenAiKeyData;
 use App\Http\Controllers\Controller;
 use App\Services\Backoffice\Doomsday\BackofficeDashboardService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
 use SimoneBianco\LaravelKeyRotator\Models\RotableApiKey;
@@ -18,11 +19,15 @@ final class OpenAiKeyController extends Controller
 
     public function index(): Response
     {
+        Gate::authorize('viewAny', RotableApiKey::class);
+
         return Inertia::render('Backoffice/OpenAiKeys/Index', $this->dashboard->openAiKeysIndex());
     }
 
     public function store(SaveOpenAiKeyData $data): RedirectResponse
     {
+        Gate::authorize('create', RotableApiKey::class);
+
         if ($data->key === null || $data->key === '') {
             return back()->with('error', 'OpenAI key is required.');
         }
@@ -34,6 +39,8 @@ final class OpenAiKeyController extends Controller
 
     public function update(SaveOpenAiKeyData $data, RotableApiKey $openAiKey): RedirectResponse
     {
+        Gate::authorize('update', $openAiKey);
+
         $openAiKey->update($this->attributes($data, $data->key !== '' ? $data->key : null));
 
         return back()->with('success', 'OpenAI key updated.');
@@ -41,6 +48,7 @@ final class OpenAiKeyController extends Controller
 
     public function destroy(RotableApiKey $openAiKey): RedirectResponse
     {
+        Gate::authorize('delete', $openAiKey);
         $openAiKey->delete();
 
         return back()->with('success', 'OpenAI key deleted.');

@@ -19,7 +19,7 @@ return new class($shared)
             'slug' => $this->shared::SLUG,
             'title' => $this->shared->t(
                 en: 'Europe on the Brink: The War Countdown',
-                it: 'Europa sull’orlo: il conto alla rovescia della guerra',
+                it: 'Europa sull’orlo: la guerra alle porte',
                 fr: 'L’Europe au bord du gouffre : le compte à rebours de la guerre',
                 de: 'Europa am Abgrund: Der Kriegs-Countdown',
                 es: 'Europa al límite: la cuenta atrás de la guerra',

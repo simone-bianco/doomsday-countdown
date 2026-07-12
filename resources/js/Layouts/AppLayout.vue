@@ -29,7 +29,7 @@ type SharedProps = {
 
 const page = usePage<SharedProps>();
 const user = computed(() => page.props.auth?.user ?? null);
-const appName = computed(() => props.appNameOverride ?? page.props.app?.name ?? 'Doomsday Countdown');
+const appName = computed(() => props.appNameOverride ?? page.props.app?.name ?? 'Doomsday Clock');
 const backofficePath = computed(() => page.props.app?.backoffice_path ?? '');
 
 function logout(): void {

@@ -15,26 +15,36 @@ use App\Http\Controllers\Web\CountdownDataController;
 use App\Http\Controllers\Web\CountdownShowPageController;
 use App\Http\Controllers\Web\HomePageController;
 use App\Http\Controllers\Web\LegalPolicyPageController;
+use App\Http\Controllers\Web\RobotsController;
+use App\Http\Controllers\Web\SitemapController;
 use Illuminate\Support\Facades\Route;
+
+Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
+Route::get('/robots.txt', RobotsController::class)->name('robots');
 
 Route::get('/', HomePageController::class)->name('home');
 Route::get('/about', AboutPageController::class)->name('about');
-Route::get('/privacy', [LegalPolicyPageController::class, 'privacy'])->name('privacy');
-Route::get('/cookie-policy', [LegalPolicyPageController::class, 'cookies'])->name('cookie-policy');
+Route::get('/privacy', [LegalPolicyPageController::class, 'privacy'])->middleware('noindex:follow')->name('privacy');
+Route::get('/cookie-policy', [LegalPolicyPageController::class, 'cookies'])->middleware('noindex:follow')->name('cookie-policy');
 Route::get('/countdowns/{slug}', CountdownShowPageController::class)->name('countdowns.show');
-Route::get('/countdowns/{slug}/overview-data', [CountdownDataController::class, 'overview'])->name('countdowns.data.overview');
-Route::get('/countdowns/{slug}/forecasts-data', [CountdownDataController::class, 'forecasts'])->name('countdowns.data.forecasts');
-Route::get('/countdowns/{slug}/statistics-data', [CountdownDataController::class, 'statistics'])->name('countdowns.data.statistics');
-Route::get('/countdowns/{slug}/news-data', [CountdownDataController::class, 'news'])->name('countdowns.data.news');
-Route::get('/countdowns/{slug}/initiatives-data', [CountdownDataController::class, 'initiatives'])->name('countdowns.data.initiatives');
+Route::get('/countdowns/{slug}/overview-data', [CountdownDataController::class, 'overview'])->middleware('noindex')->name('countdowns.data.overview');
+Route::get('/countdowns/{slug}/forecasts-data', [CountdownDataController::class, 'forecasts'])->middleware('noindex')->name('countdowns.data.forecasts');
+Route::get('/countdowns/{slug}/statistics-data', [CountdownDataController::class, 'statistics'])->middleware('noindex')->name('countdowns.data.statistics');
+Route::get('/countdowns/{slug}/news-data', [CountdownDataController::class, 'news'])->middleware('noindex')->name('countdowns.data.news');
+Route::get('/countdowns/{slug}/initiatives-data', [CountdownDataController::class, 'initiatives'])->middleware('noindex')->name('countdowns.data.initiatives');
 
-Route::post('/agent/demo', DemoAgentController::class)->name('agent.demo');
+$demoEnvironments = config('security.demo_agent.environments', ['local', 'testing']);
+if (config('security.demo_agent.enabled', true) && in_array(app()->environment(), $demoEnvironments, true)) {
+    Route::post('/agent/demo', DemoAgentController::class)->middleware('noindex')->name('agent.demo');
+}
 
-Route::get('/login', [AuthSessionController::class, 'create'])->name('login');
-Route::post('/login', [AuthSessionController::class, 'store'])->name('login.store');
-Route::post('/logout', [AuthSessionController::class, 'destroy'])->name('logout');
+Route::middleware('noindex')->group(function (): void {
+    Route::get('/login', [AuthSessionController::class, 'create'])->name('login');
+    Route::post('/login', [AuthSessionController::class, 'store'])->middleware('throttle:login')->name('login.store');
+});
+Route::post('/logout', [AuthSessionController::class, 'destroy'])->middleware(['auth', 'noindex'])->name('logout');
 
-Route::middleware('auth')
+Route::middleware(['auth', 'admin', 'noindex'])
     ->prefix(config('ai-starter.backoffice_path'))
     ->name('backoffice.')
     ->group(function (): void {

@@ -22,7 +22,7 @@ const activeSection = ref<BackofficeSection>('dashboard');
     <BackofficeShell
         v-model:active-section="activeSection"
         title="Backoffice"
-        subtitle="Operational cockpit for Doomsday Countdown administration."
+        subtitle="Operational cockpit for Doomsday Clock administration."
         :backoffice-path="props.backofficePath"
         :counts="props.counts"
     >

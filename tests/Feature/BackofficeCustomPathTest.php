@@ -19,7 +19,7 @@ final class BackofficeCustomPathTest extends TestCase
 
     public function test_backoffice_dashboard_exposes_dashboard_only_payload(): void
     {
-        $admin = User::factory()->create(['name' => 'Admin User']);
+        $admin = User::factory()->admin()->create(['name' => 'Admin User']);
         Countdown::query()->create($this->countdownAttributes());
 
         $this->actingAs($admin)
@@ -28,7 +28,7 @@ final class BackofficeCustomPathTest extends TestCase
             ->assertInertia(fn (Assert $page): Assert => $page
                 ->component('Backoffice/Index')
                 ->where('backofficePath', '/backoffice')
-                ->where('app.name', 'Doomsday Countdown')
+                ->where('app.name', 'Doomsday Clock')
                 ->where('app.backoffice_counts.users', 1)
                 ->where('app.backoffice_counts.apiKeys', 0)
                 ->where('app.backoffice_counts.countdowns', 1)
@@ -45,7 +45,7 @@ final class BackofficeCustomPathTest extends TestCase
 
     public function test_backoffice_users_and_openai_keys_have_dedicated_pages(): void
     {
-        $admin = User::factory()->create(['name' => 'Admin User']);
+        $admin = User::factory()->admin()->create(['name' => 'Admin User']);
         User::factory()->create(['name' => 'Editor User', 'email' => 'editor@example.test']);
         $this->openAiKey();
 
@@ -75,7 +75,7 @@ final class BackofficeCustomPathTest extends TestCase
 
     public function test_section_query_does_not_switch_dashboard_into_users_or_keys(): void
     {
-        $admin = User::factory()->create();
+        $admin = User::factory()->admin()->create();
         User::factory()->create();
         $this->openAiKey();
 

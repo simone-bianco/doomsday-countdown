@@ -15,6 +15,7 @@
         "simone-bianco/laravel-form-bridge": "@dev",
         "simone-bianco/laravel-key-rotator": "@dev",
         "simone-bianco/laravel-patches": "@dev",
+        "spatie/laravel-backup": "^10.0",
         "spatie/laravel-data": "^4.19",
         "tightenco/ziggy": "^2.0"
     },

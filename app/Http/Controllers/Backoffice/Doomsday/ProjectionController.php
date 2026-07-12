@@ -11,6 +11,7 @@ use App\Models\Projection;
 use App\Services\Backoffice\Doomsday\BackofficeCountdownService;
 use App\Services\Backoffice\Doomsday\BackofficeProjectionService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -23,11 +24,14 @@ final class ProjectionController extends Controller
 
     public function create(Countdown $countdown): Response
     {
+        Gate::authorize('create', Projection::class);
+
         return Inertia::render('Backoffice/Countdowns/Projections/Create', $this->countdowns->projectionForm($countdown));
     }
 
     public function edit(Countdown $countdown, Projection $projection): Response
     {
+        Gate::authorize('view', $projection);
         $this->projections->assertBelongsToCountdown($countdown, $projection);
 
         return Inertia::render('Backoffice/Countdowns/Projections/Edit', $this->countdowns->projectionForm($countdown, $projection));
@@ -35,6 +39,7 @@ final class ProjectionController extends Controller
 
     public function store(SaveProjectionData $data, Countdown $countdown): RedirectResponse
     {
+        Gate::authorize('create', Projection::class);
         $this->projections->create($countdown, $data);
 
         return back()->with('success', 'Projection created.');
@@ -42,6 +47,7 @@ final class ProjectionController extends Controller
 
     public function update(SaveProjectionData $data, Countdown $countdown, Projection $projection): RedirectResponse
     {
+        Gate::authorize('update', $projection);
         $this->projections->update($countdown, $projection, $data);
 
         return back()->with('success', 'Projection updated.');
@@ -49,6 +55,7 @@ final class ProjectionController extends Controller
 
     public function destroy(Countdown $countdown, Projection $projection): RedirectResponse
     {
+        Gate::authorize('delete', $projection);
         $this->projections->delete($countdown, $projection);
 
         return back()->with('success', 'Projection deleted.');

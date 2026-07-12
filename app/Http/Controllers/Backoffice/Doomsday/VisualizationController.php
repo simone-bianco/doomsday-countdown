@@ -13,6 +13,7 @@ use App\Services\Backoffice\Doomsday\BackofficeCountdownService;
 use App\Services\Backoffice\Doomsday\BackofficeProjectionService;
 use App\Services\Backoffice\Doomsday\BackofficeVisualizationService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -26,11 +27,14 @@ final class VisualizationController extends Controller
 
     public function createForCountdown(Countdown $countdown): Response
     {
+        Gate::authorize('create', Visualization::class);
+
         return Inertia::render('Backoffice/Countdowns/Visualizations/Create', $this->countdowns->visualizationForm($countdown));
     }
 
     public function editForCountdown(Countdown $countdown, Visualization $visualization): Response
     {
+        Gate::authorize('view', $visualization);
         $this->visualizations->assertBelongsToVisualizable($countdown, $visualization);
 
         return Inertia::render('Backoffice/Countdowns/Visualizations/Edit', $this->countdowns->visualizationForm($countdown, $visualization));
@@ -38,6 +42,7 @@ final class VisualizationController extends Controller
 
     public function createForProjection(Countdown $countdown, Projection $projection): Response
     {
+        Gate::authorize('create', Visualization::class);
         $this->projections->assertBelongsToCountdown($countdown, $projection);
 
         return Inertia::render('Backoffice/Countdowns/Visualizations/Create', $this->countdowns->visualizationForm($countdown, null, $projection));
@@ -45,6 +50,7 @@ final class VisualizationController extends Controller
 
     public function editForProjection(Countdown $countdown, Projection $projection, Visualization $visualization): Response
     {
+        Gate::authorize('view', $visualization);
         $this->projections->assertBelongsToCountdown($countdown, $projection);
         $this->visualizations->assertBelongsToVisualizable($projection, $visualization);
 
@@ -53,6 +59,7 @@ final class VisualizationController extends Controller
 
     public function storeForCountdown(SaveVisualizationData $data, Countdown $countdown): RedirectResponse
     {
+        Gate::authorize('create', Visualization::class);
         $this->visualizations->create($countdown, $data);
 
         return back()->with('success', 'Visualization created.');
@@ -60,6 +67,7 @@ final class VisualizationController extends Controller
 
     public function updateForCountdown(SaveVisualizationData $data, Countdown $countdown, Visualization $visualization): RedirectResponse
     {
+        Gate::authorize('update', $visualization);
         $this->visualizations->update($countdown, $visualization, $data);
 
         return back()->with('success', 'Visualization updated.');
@@ -67,6 +75,7 @@ final class VisualizationController extends Controller
 
     public function destroyForCountdown(Countdown $countdown, Visualization $visualization): RedirectResponse
     {
+        Gate::authorize('delete', $visualization);
         $this->visualizations->delete($countdown, $visualization);
 
         return back()->with('success', 'Visualization deleted.');
@@ -74,6 +83,7 @@ final class VisualizationController extends Controller
 
     public function storeForProjection(SaveVisualizationData $data, Countdown $countdown, Projection $projection): RedirectResponse
     {
+        Gate::authorize('create', Visualization::class);
         $this->projections->assertBelongsToCountdown($countdown, $projection);
         $this->visualizations->create($projection, $data);
 
@@ -82,6 +92,7 @@ final class VisualizationController extends Controller
 
     public function updateForProjection(SaveVisualizationData $data, Countdown $countdown, Projection $projection, Visualization $visualization): RedirectResponse
     {
+        Gate::authorize('update', $visualization);
         $this->projections->assertBelongsToCountdown($countdown, $projection);
         $this->visualizations->update($projection, $visualization, $data);
 
@@ -90,6 +101,7 @@ final class VisualizationController extends Controller
 
     public function destroyForProjection(Countdown $countdown, Projection $projection, Visualization $visualization): RedirectResponse
     {
+        Gate::authorize('delete', $visualization);
         $this->projections->assertBelongsToCountdown($countdown, $projection);
         $this->visualizations->delete($projection, $visualization);
 

@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { motion } from 'motion-v';
-import { Button, Card, Image } from '@simone-bianco/vue-ui-components';
+import { Button, Card } from '@simone-bianco/vue-ui-components';
 import { ChevronDown, ChevronLeft, FileText, Folder, Newspaper, Share2, Sparkles, X } from 'lucide-vue-next';
 import CountdownTimer from './CountdownTimer.vue';
+import ResponsiveImage from './ResponsiveImage.vue';
 import DoomsdaySectionError from './DoomsdaySectionError.vue';
 import DoomsdaySkeletonBlock from './DoomsdaySkeletonBlock.vue';
 import ForecastsSection from './ForecastsSection.vue';
@@ -76,7 +77,17 @@ watch(() => `${props.countdown.slug}:${props.currentLocale}`, () => {
         </header>
 
         <div class="relative h-[220px] overflow-hidden border-b border-white/10 sm:h-[260px]">
-            <Image :src="countdown.image_url" :alt="countdown.title" rounded="none" :ui="{ root: 'h-full', image: 'h-full w-full object-cover object-center sm:object-[center_35%]' }" />
+            <ResponsiveImage
+                :src="countdown.image_url"
+                :alt="countdown.title"
+                sizes="100vw"
+                media="(max-width: 1023px)"
+                inactive-media="(min-width: 1024px)"
+                loading="eager"
+                fetch-priority="high"
+                picture-class="block h-full w-full"
+                img-class="h-full w-full object-cover object-center sm:object-[center_35%]"
+            />
             <div class="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/70" />
         </div>
 

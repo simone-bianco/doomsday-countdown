@@ -1,29 +1,30 @@
 import '@simone-bianco/vue-ui-components/style.css';
 import '../css/app.css';
 import './bootstrap';
-import './i18n';
 
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
-import { createApp, h } from 'vue';
+import { createSSRApp, h } from 'vue';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 import { ThemeProvider } from '@simone-bianco/vue-ui-components';
-import { loadValidationMessages, setValidationLocale } from '@simone-bianco/vue-form-core';
 import AppNavigationLoader from './Components/App/AppNavigationLoader.vue';
-import { i18n } from './i18n';
+import { assertSupportedLocale, initializeClientI18n } from './i18n';
+import { initializeValidationLocale } from './i18n/validation';
 
-void import('./generated/validation-messages').then(({ validationMessages }) => {
-    loadValidationMessages(validationMessages);
-    setValidationLocale(i18n.language);
-});
+/** @typedef {import('./types/page-props').DoomsdayPageProps} DoomsdayPageProps */
 
-const appName = import.meta.env.VITE_APP_NAME || 'Doomsday Countdown';
+const appName = import.meta.env.VITE_APP_NAME || 'Doomsday Clock';
+const resolvePage = (name) => resolvePageComponent(`./Pages/${name}.vue`, import.meta.glob('./Pages/**/*.vue'));
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
-    resolve: (name) => resolvePageComponent(`./Pages/${name}.vue`, import.meta.glob('./Pages/**/*.vue')),
-    setup({ el, App, props, plugin }) {
-        const app = createApp({
+    resolve: resolvePage,
+    async setup({ el, App, props, plugin }) {
+        const locale = assertSupportedLocale(/** @type {DoomsdayPageProps} */ (props.initialPage.props).locale);
+        await initializeClientI18n(locale);
+        initializeValidationLocale(locale);
+
+        const app = createSSRApp({
             render: () => h(ThemeProvider, { defaultTheme: 'doomsday' }, () => [
                 h(App, props),
                 h(AppNavigationLoader),

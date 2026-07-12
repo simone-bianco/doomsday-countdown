@@ -1,0 +1,678 @@
+{
+  "\u0000plugin-vue:export-helper": [],
+  "node_modules/laravel-vite-plugin/inertia-helpers/index.js": [],
+  "node_modules/vue-advanced-cropper/dist/style.css": [],
+  "packages/simone-bianco/vue-form-core/src/components/DebugOverlay.vue": [
+    "/build/assets/AppLayout-CiOlqxSX.js",
+    "/build/assets/AppLayout-BJlDwapI.css"
+  ],
+  "packages/simone-bianco/vue-form-core/src/components/DebugOverlay.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/AppLayout-CiOlqxSX.js",
+    "/build/assets/AppLayout-BJlDwapI.css"
+  ],
+  "packages/simone-bianco/vue-form-core/src/components/DebugOverlay.vue?vue&type=style&index=0&scoped=6fe5be8d&lang.css": [
+    "/build/assets/AppLayout-CiOlqxSX.js",
+    "/build/assets/AppLayout-BJlDwapI.css"
+  ],
+  "packages/simone-bianco/vue-form-core/src/composables/useSmartForm.ts": [
+    "/build/assets/useSmartForm-KUAiAz4w.js"
+  ],
+  "packages/simone-bianco/vue-form-core/src/interceptors/debugInterceptor.ts": [
+    "/build/assets/AppLayout-CiOlqxSX.js",
+    "/build/assets/AppLayout-BJlDwapI.css"
+  ],
+  "packages/simone-bianco/vue-form-core/src/validation/engine.ts": [
+    "/build/assets/useSmartForm-KUAiAz4w.js"
+  ],
+  "packages/simone-bianco/vue-ui-components/src/components/ApplicationLogo.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/AvatarInitials.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/AvatarInitials.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/AvatarUploader.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/AvatarUploader.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/Badge.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/Badge.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/Button.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/Button.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/Button.vue?vue&type=style&index=0&scoped=3eb3bdb4&lang.css": [],
+  "packages/simone-bianco/vue-ui-components/src/components/Checkbox.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/Checkbox.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/Chip.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/Chip.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/CopyUrlField.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/CopyUrlField.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/DangerModal.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/DangerModal.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/DangerModal.vue?vue&type=style&index=0&scoped=ead60393&lang.css": [],
+  "packages/simone-bianco/vue-ui-components/src/components/DataTable.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/DataTable.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/DataTableRowActions.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/DataTableRowActions.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/DateInput.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/DateInput.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/Dropdown.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/Dropdown.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/DropdownItem.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/DropdownItem.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/DropdownLink.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/DropdownLink.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/DynamicFieldList.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/DynamicFieldList.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/EmptyState.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/EmptyState.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/FileUploader/FileDropZone.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/FileUploader/FileDropZone.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/FileUploader/FilePreview.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/FileUploader/FilePreview.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/FileUploader/FileUploader.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/FileUploader/FileUploader.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/FileUploader/ImageUploader.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/FileUploader/ImageUploader.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/Icon.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/Icon.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/Image.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/Image.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/ImageGallery.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/ImageGallery.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/InfoModal.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/InfoModal.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/InfoModal.vue?vue&type=style&index=0&scoped=4856d60d&lang.css": [],
+  "packages/simone-bianco/vue-ui-components/src/components/InplaceInput.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/InplaceInput.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/InputError.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/InputError.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/InputErrors.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/InputErrors.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/InputLabel.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/InputLabel.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/Modal.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/Modal.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/Modal.vue?vue&type=style&index=0&scoped=a205f00e&lang.css": [],
+  "packages/simone-bianco/vue-ui-components/src/components/NavLink.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/NavLink.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/NumberInput.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/NumberInput.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/NumberInput.vue?vue&type=style&index=0&scoped=c8900f28&lang.css": [],
+  "packages/simone-bianco/vue-ui-components/src/components/Organisms/SidebarNavigation.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/Organisms/SidebarNavigation.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/Organisms/Topbar.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/Organisms/Topbar.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/PageHeader.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/PageHeader.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/Pagination.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/Pagination.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/RadioGroup.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/RadioGroup.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/ResponsiveNavLink.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/ResponsiveNavLink.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/SearchBox.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/SearchBox.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/SectionPanel.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/SectionPanel.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/Select/Select.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/Select/Select.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/Select/SelectChip.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/Select/SelectChip.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/Select/SelectMultiple.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/Select/SelectMultiple.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/ServerDataTable.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/ServerDataTable.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/StatCard.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/StatCard.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/TextInput.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/TextInput.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/Textarea.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/Textarea.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/ThemeProvider.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/ThemeProvider.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/Toggle.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/Toggle.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/Tooltip.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/Tooltip.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/UI/Card.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/UI/Card.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/UI/CodeBlock.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/UI/CodeBlock.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/UI/CollapsibleSection.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/UI/CollapsibleSection.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/UI/EventLog.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/UI/EventLog.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/UI/EventLog.vue?vue&type=style&index=0&scoped=df7d4fb3&lang.css": [],
+  "packages/simone-bianco/vue-ui-components/src/components/UI/EventLogItem.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/UI/EventLogItem.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/UI/ExpandableContent.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/UI/ExpandableContent.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/UI/Loader.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/UI/Loader.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/UI/PageTransition.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/UI/PageTransition.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/UI/PageTransition.vue?vue&type=style&index=0&scoped=52fe446a&lang.css": [],
+  "packages/simone-bianco/vue-ui-components/src/components/UI/SearchableDropdown.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/UI/SearchableDropdown.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/UI/SearchableDropdown.vue?vue&type=style&index=0&scoped=4785c4a8&lang.css": [],
+  "packages/simone-bianco/vue-ui-components/src/components/UI/SkeletonLoader.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/UI/SkeletonLoader.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/UI/SkeletonLoader.vue?vue&type=style&index=0&scoped=37860098&lang.css": [],
+  "packages/simone-bianco/vue-ui-components/src/components/UI/StatusBadge.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/UI/StatusBadge.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/UI/StatusDot.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/UI/StatusDot.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/UI/TabPanel.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/UI/TabPanel.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/UI/Tabs.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/UI/Tabs.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/UI/ToastNotification.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/UI/ToastNotification.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/UI/ToastNotification.vue?vue&type=style&index=0&scoped=25965b49&lang.css": [],
+  "packages/simone-bianco/vue-ui-components/src/components/UsageBar.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/UsageBar.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/UsageBars.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/UsageBars.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/WarningModal.vue": [],
+  "packages/simone-bianco/vue-ui-components/src/components/WarningModal.vue?vue&type=script&setup=true&lang.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/components/WarningModal.vue?vue&type=style&index=0&scoped=fe4c3a59&lang.css": [],
+  "packages/simone-bianco/vue-ui-components/src/composables/useDebounce.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/composables/useDropdownState.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/composables/useFileUpload.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/composables/useFormError.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/composables/useOptionFilter.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/composables/useTheme.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/composables/useToast.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/icons/lucide.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/style.css": [],
+  "packages/simone-bianco/vue-ui-components/src/types/fileUploader.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/utils.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/utils/errorParser.ts": [],
+  "packages/simone-bianco/vue-ui-components/src/utils/iconResolver.ts": [],
+  "resources/js/Components/Backoffice/Dashboard/DashboardOverview.vue": [
+    "/build/assets/Index-BVJt1OiP.js"
+  ],
+  "resources/js/Components/Backoffice/Dashboard/DashboardOverview.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/Index-BVJt1OiP.js"
+  ],
+  "resources/js/Components/Backoffice/Doomsday/CountdownForm.vue": [
+    "/build/assets/CountdownForm-CavKe4_z.js"
+  ],
+  "resources/js/Components/Backoffice/Doomsday/CountdownForm.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/CountdownForm-CavKe4_z.js"
+  ],
+  "resources/js/Components/Backoffice/Doomsday/CountdownRelationsManager.vue": [
+    "/build/assets/Edit-D6eiZHSj.js"
+  ],
+  "resources/js/Components/Backoffice/Doomsday/CountdownRelationsManager.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/Edit-D6eiZHSj.js"
+  ],
+  "resources/js/Components/Backoffice/Doomsday/InitiativeForm.vue": [
+    "/build/assets/Edit-D6eiZHSj.js"
+  ],
+  "resources/js/Components/Backoffice/Doomsday/InitiativeForm.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/Edit-D6eiZHSj.js"
+  ],
+  "resources/js/Components/Backoffice/Doomsday/InitiativeManager.vue": [
+    "/build/assets/Edit-D6eiZHSj.js"
+  ],
+  "resources/js/Components/Backoffice/Doomsday/InitiativeManager.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/Edit-D6eiZHSj.js"
+  ],
+  "resources/js/Components/Backoffice/Doomsday/NewsForm.vue": [
+    "/build/assets/Edit-D6eiZHSj.js"
+  ],
+  "resources/js/Components/Backoffice/Doomsday/NewsForm.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/Edit-D6eiZHSj.js"
+  ],
+  "resources/js/Components/Backoffice/Doomsday/NewsManager.vue": [
+    "/build/assets/Edit-D6eiZHSj.js"
+  ],
+  "resources/js/Components/Backoffice/Doomsday/NewsManager.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/Edit-D6eiZHSj.js"
+  ],
+  "resources/js/Components/Backoffice/Doomsday/ProjectionForm.vue": [
+    "/build/assets/ProjectionForm-3gj2oqPe.js"
+  ],
+  "resources/js/Components/Backoffice/Doomsday/ProjectionForm.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/ProjectionForm-3gj2oqPe.js"
+  ],
+  "resources/js/Components/Backoffice/Doomsday/ProjectionManager.vue": [
+    "/build/assets/Edit-D6eiZHSj.js"
+  ],
+  "resources/js/Components/Backoffice/Doomsday/ProjectionManager.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/Edit-D6eiZHSj.js"
+  ],
+  "resources/js/Components/Backoffice/Doomsday/VisualizationForm.vue": [
+    "/build/assets/VisualizationForm-VlsgyIuA.js"
+  ],
+  "resources/js/Components/Backoffice/Doomsday/VisualizationForm.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/VisualizationForm-VlsgyIuA.js"
+  ],
+  "resources/js/Components/Backoffice/Doomsday/VisualizationManager.vue": [
+    "/build/assets/Edit-D6eiZHSj.js"
+  ],
+  "resources/js/Components/Backoffice/Doomsday/VisualizationManager.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/Edit-D6eiZHSj.js"
+  ],
+  "resources/js/Components/Backoffice/Doomsday/VisualizationPayloadEditor.vue": [
+    "/build/assets/VisualizationForm-VlsgyIuA.js"
+  ],
+  "resources/js/Components/Backoffice/Doomsday/VisualizationPayloadEditor.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/VisualizationForm-VlsgyIuA.js"
+  ],
+  "resources/js/Components/Backoffice/Doomsday/VisualizationPreview.vue": [
+    "/build/assets/VisualizationPreview-CK8ZO4Lm.js"
+  ],
+  "resources/js/Components/Backoffice/Doomsday/VisualizationPreview.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/VisualizationPreview-CK8ZO4Lm.js"
+  ],
+  "resources/js/Components/Backoffice/Doomsday/formHelpers.ts": [
+    "/build/assets/formHelpers-BXTPv_Pd.js"
+  ],
+  "resources/js/Components/Backoffice/Doomsday/relationTable.ts": [
+    "/build/assets/Edit-D6eiZHSj.js"
+  ],
+  "resources/js/Components/Backoffice/Doomsday/useBackofficePath.ts": [
+    "/build/assets/useBackofficePath-DWj-NlKi.js"
+  ],
+  "resources/js/Components/Backoffice/Layout/BackofficeShell.vue": [
+    "/build/assets/BackofficeShell-B2o2xGeb.js"
+  ],
+  "resources/js/Components/Backoffice/Layout/BackofficeShell.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/BackofficeShell-B2o2xGeb.js"
+  ],
+  "resources/js/Components/Backoffice/Navigation/BackofficeSidebar.vue": [
+    "/build/assets/BackofficeShell-B2o2xGeb.js"
+  ],
+  "resources/js/Components/Backoffice/Navigation/BackofficeSidebar.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/BackofficeShell-B2o2xGeb.js"
+  ],
+  "resources/js/Components/Backoffice/OpenAiKeyManager.vue": [
+    "/build/assets/Index-Uz7F4dsV.js"
+  ],
+  "resources/js/Components/Backoffice/OpenAiKeyManager.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/Index-Uz7F4dsV.js"
+  ],
+  "resources/js/Components/Backoffice/Shared/BackofficeSelectField.vue": [
+    "/build/assets/BackofficeSelectField-CNJDQmD8.js"
+  ],
+  "resources/js/Components/Backoffice/Shared/BackofficeSelectField.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/BackofficeSelectField-CNJDQmD8.js"
+  ],
+  "resources/js/Components/Backoffice/Shared/DeleteConfirmationModal.vue": [
+    "/build/assets/DeleteConfirmationModal-7AxgbmJP.js"
+  ],
+  "resources/js/Components/Backoffice/Shared/DeleteConfirmationModal.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/DeleteConfirmationModal-7AxgbmJP.js"
+  ],
+  "resources/js/Components/Backoffice/Shared/FormActions.vue": [
+    "/build/assets/FormActions-Wl8L_zsK.js"
+  ],
+  "resources/js/Components/Backoffice/Shared/FormActions.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/FormActions-Wl8L_zsK.js"
+  ],
+  "resources/js/Components/Backoffice/Shared/backofficeTableUi.ts": [
+    "/build/assets/backofficeTableUi-5WvUAWKW.js"
+  ],
+  "resources/js/Components/Backoffice/UserManager.vue": [
+    "/build/assets/Index-D5qMHbgr.js"
+  ],
+  "resources/js/Components/Backoffice/UserManager.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/Index-D5qMHbgr.js"
+  ],
+  "resources/js/Components/Consent/CookieConsentBanner.vue": [
+    "/build/assets/PublicLayout-CMrE3VbF.js"
+  ],
+  "resources/js/Components/Consent/CookieConsentBanner.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/PublicLayout-CMrE3VbF.js"
+  ],
+  "resources/js/Components/Doomsday/AboutClosingBand.vue": [
+    "/build/assets/About-BK44IgyS.js"
+  ],
+  "resources/js/Components/Doomsday/AboutClosingBand.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/About-BK44IgyS.js"
+  ],
+  "resources/js/Components/Doomsday/AboutFAQSection.vue": [
+    "/build/assets/About-BK44IgyS.js"
+  ],
+  "resources/js/Components/Doomsday/AboutFAQSection.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/About-BK44IgyS.js"
+  ],
+  "resources/js/Components/Doomsday/AboutGreatFilterSection.vue": [
+    "/build/assets/About-BK44IgyS.js"
+  ],
+  "resources/js/Components/Doomsday/AboutGreatFilterSection.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/About-BK44IgyS.js"
+  ],
+  "resources/js/Components/Doomsday/AboutHero.vue": [
+    "/build/assets/About-BK44IgyS.js"
+  ],
+  "resources/js/Components/Doomsday/AboutHero.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/About-BK44IgyS.js"
+  ],
+  "resources/js/Components/Doomsday/AboutSignalGrid.vue": [
+    "/build/assets/About-BK44IgyS.js"
+  ],
+  "resources/js/Components/Doomsday/AboutSignalGrid.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/About-BK44IgyS.js"
+  ],
+  "resources/js/Components/Doomsday/CommunityLinks.vue": [
+    "/build/assets/PublicLayout-CMrE3VbF.js"
+  ],
+  "resources/js/Components/Doomsday/CommunityLinks.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/PublicLayout-CMrE3VbF.js"
+  ],
+  "resources/js/Components/Doomsday/ContentPreviewCard.vue": [
+    "/build/assets/Home-BND_lgn7.js"
+  ],
+  "resources/js/Components/Doomsday/ContentPreviewCard.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/Home-BND_lgn7.js"
+  ],
+  "resources/js/Components/Doomsday/CountdownCard.vue": [
+    "/build/assets/Home-BND_lgn7.js"
+  ],
+  "resources/js/Components/Doomsday/CountdownCard.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/Home-BND_lgn7.js"
+  ],
+  "resources/js/Components/Doomsday/CountdownCardImage.vue": [
+    "/build/assets/Home-BND_lgn7.js"
+  ],
+  "resources/js/Components/Doomsday/CountdownCardImage.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/Home-BND_lgn7.js"
+  ],
+  "resources/js/Components/Doomsday/CountdownList.vue": [
+    "/build/assets/Home-BND_lgn7.js"
+  ],
+  "resources/js/Components/Doomsday/CountdownList.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/Home-BND_lgn7.js"
+  ],
+  "resources/js/Components/Doomsday/CountdownTimer.vue": [
+    "/build/assets/Home-BND_lgn7.js"
+  ],
+  "resources/js/Components/Doomsday/CountdownTimer.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/Home-BND_lgn7.js"
+  ],
+  "resources/js/Components/Doomsday/DetailPanel.vue": [
+    "/build/assets/Home-BND_lgn7.js"
+  ],
+  "resources/js/Components/Doomsday/DetailPanel.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/Home-BND_lgn7.js"
+  ],
+  "resources/js/Components/Doomsday/DoomsdaySectionError.vue": [
+    "/build/assets/Home-BND_lgn7.js"
+  ],
+  "resources/js/Components/Doomsday/DoomsdaySectionError.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/Home-BND_lgn7.js"
+  ],
+  "resources/js/Components/Doomsday/DoomsdaySkeletonBlock.vue": [
+    "/build/assets/Home-BND_lgn7.js"
+  ],
+  "resources/js/Components/Doomsday/DoomsdaySkeletonBlock.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/Home-BND_lgn7.js"
+  ],
+  "resources/js/Components/Doomsday/ForecastsSection.vue": [
+    "/build/assets/Home-BND_lgn7.js"
+  ],
+  "resources/js/Components/Doomsday/ForecastsSection.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/Home-BND_lgn7.js"
+  ],
+  "resources/js/Components/Doomsday/HeroSection.vue": [
+    "/build/assets/Home-BND_lgn7.js"
+  ],
+  "resources/js/Components/Doomsday/HeroSection.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/Home-BND_lgn7.js"
+  ],
+  "resources/js/Components/Doomsday/InitiativesSection.vue": [
+    "/build/assets/Home-BND_lgn7.js"
+  ],
+  "resources/js/Components/Doomsday/InitiativesSection.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/Home-BND_lgn7.js"
+  ],
+  "resources/js/Components/Doomsday/KeyIndicatorsCard.vue": [
+    "/build/assets/VisualizationChart-CgdRsG6k.js"
+  ],
+  "resources/js/Components/Doomsday/KeyIndicatorsCard.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/VisualizationChart-CgdRsG6k.js"
+  ],
+  "resources/js/Components/Doomsday/LanguageSelector.vue": [
+    "/build/assets/PublicLayout-CMrE3VbF.js"
+  ],
+  "resources/js/Components/Doomsday/LanguageSelector.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/PublicLayout-CMrE3VbF.js"
+  ],
+  "resources/js/Components/Doomsday/LatestNewsCarousel.vue": [
+    "/build/assets/Home-BND_lgn7.js"
+  ],
+  "resources/js/Components/Doomsday/LatestNewsCarousel.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/Home-BND_lgn7.js"
+  ],
+  "resources/js/Components/Doomsday/MobileDetailSkeleton.vue": [
+    "/build/assets/Home-BND_lgn7.js"
+  ],
+  "resources/js/Components/Doomsday/MobileDetailSkeleton.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/Home-BND_lgn7.js"
+  ],
+  "resources/js/Components/Doomsday/MobileDetailView.vue": [
+    "/build/assets/Home-BND_lgn7.js"
+  ],
+  "resources/js/Components/Doomsday/MobileDetailView.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/Home-BND_lgn7.js"
+  ],
+  "resources/js/Components/Doomsday/NewsSection.vue": [
+    "/build/assets/Home-BND_lgn7.js"
+  ],
+  "resources/js/Components/Doomsday/NewsSection.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/Home-BND_lgn7.js"
+  ],
+  "resources/js/Components/Doomsday/OverviewSection.vue": [
+    "/build/assets/Home-BND_lgn7.js"
+  ],
+  "resources/js/Components/Doomsday/OverviewSection.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/Home-BND_lgn7.js"
+  ],
+  "resources/js/Components/Doomsday/PatreonSupportLink.vue": [
+    "/build/assets/PublicLayout-CMrE3VbF.js"
+  ],
+  "resources/js/Components/Doomsday/PatreonSupportLink.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/PublicLayout-CMrE3VbF.js"
+  ],
+  "resources/js/Components/Doomsday/PublicSignalActivityCard.vue": [
+    "/build/assets/Home-BND_lgn7.js"
+  ],
+  "resources/js/Components/Doomsday/PublicSignalActivityCard.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/Home-BND_lgn7.js"
+  ],
+  "resources/js/Components/Doomsday/ResponsiveImage.vue": [
+    "/build/assets/PublicLayout-CMrE3VbF.js"
+  ],
+  "resources/js/Components/Doomsday/ResponsiveImage.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/PublicLayout-CMrE3VbF.js"
+  ],
+  "resources/js/Components/Doomsday/SelectedMasterDetail.vue": [
+    "/build/assets/Home-BND_lgn7.js"
+  ],
+  "resources/js/Components/Doomsday/SelectedMasterDetail.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/Home-BND_lgn7.js"
+  ],
+  "resources/js/Components/Doomsday/SeoHead.vue": [
+    "/build/assets/PublicLayout-CMrE3VbF.js"
+  ],
+  "resources/js/Components/Doomsday/SeoHead.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/PublicLayout-CMrE3VbF.js"
+  ],
+  "resources/js/Components/Doomsday/SidebarCards.vue": [
+    "/build/assets/Home-BND_lgn7.js"
+  ],
+  "resources/js/Components/Doomsday/SidebarCards.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/Home-BND_lgn7.js"
+  ],
+  "resources/js/Components/Doomsday/SiteHeader.vue": [
+    "/build/assets/PublicLayout-CMrE3VbF.js"
+  ],
+  "resources/js/Components/Doomsday/SiteHeader.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/PublicLayout-CMrE3VbF.js"
+  ],
+  "resources/js/Components/Doomsday/StatisticsSection.vue": [
+    "/build/assets/Home-BND_lgn7.js"
+  ],
+  "resources/js/Components/Doomsday/StatisticsSection.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/Home-BND_lgn7.js"
+  ],
+  "resources/js/Components/Doomsday/VisualizationChart.vue": [
+    "/build/assets/VisualizationChart-CgdRsG6k.js"
+  ],
+  "resources/js/Components/Doomsday/VisualizationChart.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/VisualizationChart-CgdRsG6k.js"
+  ],
+  "resources/js/Components/Doomsday/VisualizationEvidence.vue": [
+    "/build/assets/VisualizationChart-CgdRsG6k.js"
+  ],
+  "resources/js/Components/Doomsday/VisualizationEvidence.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/VisualizationChart-CgdRsG6k.js"
+  ],
+  "resources/js/Components/Doomsday/countdownClock.js": [
+    "/build/assets/Home-BND_lgn7.js"
+  ],
+  "resources/js/Components/LanguageSwitcher.vue": [
+    "/build/assets/AppLayout-CiOlqxSX.js",
+    "/build/assets/AppLayout-BJlDwapI.css"
+  ],
+  "resources/js/Components/LanguageSwitcher.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/AppLayout-CiOlqxSX.js",
+    "/build/assets/AppLayout-BJlDwapI.css"
+  ],
+  "resources/js/Composables/useDoomsdayLazySections.ts": [
+    "/build/assets/Home-BND_lgn7.js"
+  ],
+  "resources/js/Composables/useDoomsdaySelection.ts": [
+    "/build/assets/Home-BND_lgn7.js"
+  ],
+  "resources/js/Consent/consentStorage.ts": [
+    "/build/assets/PublicLayout-CMrE3VbF.js"
+  ],
+  "resources/js/Consent/consentText.ts": [
+    "/build/assets/PublicLayout-CMrE3VbF.js"
+  ],
+  "resources/js/Consent/consentTypes.ts": [
+    "/build/assets/PublicLayout-CMrE3VbF.js"
+  ],
+  "resources/js/Consent/googleConsent.ts": [
+    "/build/assets/PublicLayout-CMrE3VbF.js"
+  ],
+  "resources/js/Consent/tracking.ts": [
+    "/build/assets/PublicLayout-CMrE3VbF.js"
+  ],
+  "resources/js/Layouts/AppLayout.vue": [
+    "/build/assets/AppLayout-CiOlqxSX.js",
+    "/build/assets/AppLayout-BJlDwapI.css"
+  ],
+  "resources/js/Layouts/AppLayout.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/AppLayout-CiOlqxSX.js",
+    "/build/assets/AppLayout-BJlDwapI.css"
+  ],
+  "resources/js/Layouts/PublicLayout.vue": [
+    "/build/assets/PublicLayout-CMrE3VbF.js"
+  ],
+  "resources/js/Layouts/PublicLayout.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/PublicLayout-CMrE3VbF.js"
+  ],
+  "resources/js/Pages/Backoffice/Countdowns/Create.vue": [
+    "/build/assets/Create-DjQ5GYy4.js"
+  ],
+  "resources/js/Pages/Backoffice/Countdowns/Create.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/Create-DjQ5GYy4.js"
+  ],
+  "resources/js/Pages/Backoffice/Countdowns/Edit.vue": [
+    "/build/assets/Edit-D6eiZHSj.js"
+  ],
+  "resources/js/Pages/Backoffice/Countdowns/Edit.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/Edit-D6eiZHSj.js"
+  ],
+  "resources/js/Pages/Backoffice/Countdowns/Index.vue": [
+    "/build/assets/Index-ghR1-SGt.js"
+  ],
+  "resources/js/Pages/Backoffice/Countdowns/Index.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/Index-ghR1-SGt.js"
+  ],
+  "resources/js/Pages/Backoffice/Countdowns/Projections/Create.vue": [
+    "/build/assets/Create-BMDM_fgf.js"
+  ],
+  "resources/js/Pages/Backoffice/Countdowns/Projections/Create.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/Create-BMDM_fgf.js"
+  ],
+  "resources/js/Pages/Backoffice/Countdowns/Projections/Edit.vue": [
+    "/build/assets/Edit-D_CGC_d1.js"
+  ],
+  "resources/js/Pages/Backoffice/Countdowns/Projections/Edit.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/Edit-D_CGC_d1.js"
+  ],
+  "resources/js/Pages/Backoffice/Countdowns/Visualizations/Create.vue": [
+    "/build/assets/Create-BRAawJkB.js"
+  ],
+  "resources/js/Pages/Backoffice/Countdowns/Visualizations/Create.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/Create-BRAawJkB.js"
+  ],
+  "resources/js/Pages/Backoffice/Countdowns/Visualizations/Edit.vue": [
+    "/build/assets/Edit-D6yrAiJB.js"
+  ],
+  "resources/js/Pages/Backoffice/Countdowns/Visualizations/Edit.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/Edit-D6yrAiJB.js"
+  ],
+  "resources/js/Pages/Backoffice/Index.vue": [
+    "/build/assets/Index-BVJt1OiP.js"
+  ],
+  "resources/js/Pages/Backoffice/Index.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/Index-BVJt1OiP.js"
+  ],
+  "resources/js/Pages/Backoffice/OpenAiKeys/Index.vue": [
+    "/build/assets/Index-Uz7F4dsV.js"
+  ],
+  "resources/js/Pages/Backoffice/OpenAiKeys/Index.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/Index-Uz7F4dsV.js"
+  ],
+  "resources/js/Pages/Backoffice/Users/Index.vue": [
+    "/build/assets/Index-D5qMHbgr.js"
+  ],
+  "resources/js/Pages/Backoffice/Users/Index.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/Index-D5qMHbgr.js"
+  ],
+  "resources/js/Pages/Doomsday/About.vue": [
+    "/build/assets/About-BK44IgyS.js"
+  ],
+  "resources/js/Pages/Doomsday/About.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/About-BK44IgyS.js"
+  ],
+  "resources/js/Pages/Doomsday/Home.vue": [
+    "/build/assets/Home-BND_lgn7.js"
+  ],
+  "resources/js/Pages/Doomsday/Home.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/Home-BND_lgn7.js"
+  ],
+  "resources/js/Pages/Doomsday/LegalPolicy.vue": [
+    "/build/assets/LegalPolicy-CUa-41c5.js"
+  ],
+  "resources/js/Pages/Doomsday/LegalPolicy.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/LegalPolicy-CUa-41c5.js"
+  ],
+  "resources/js/Pages/Home.vue": [
+    "/build/assets/Home-BR5CTOL0.js"
+  ],
+  "resources/js/Pages/Home.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/Home-BR5CTOL0.js"
+  ],
+  "resources/js/Pages/Login.vue": [
+    "/build/assets/Login-Q6hS_Dbv.js"
+  ],
+  "resources/js/Pages/Login.vue?vue&type=script&setup=true&lang.ts": [
+    "/build/assets/Login-Q6hS_Dbv.js"
+  ],
+  "resources/js/Support/doomsdayResponsiveImages.ts": [
+    "/build/assets/PublicLayout-CMrE3VbF.js"
+  ],
+  "resources/js/animations/doomsdayMotion.ts": [
+    "/build/assets/doomsdayMotion-D6KS_x2N.js"
+  ],
+  "resources/js/generated/form-rules.ts": [
+    "/build/assets/form-rules-C_jmOmBo.js"
+  ],
+  "resources/js/generated/ziggy.js": [],
+  "resources/js/i18n/index.ts": [],
+  "resources/js/i18n/server.js": [],
+  "resources/js/ssr.js": [],
+  "vendor/tightenco/ziggy/dist/index.js": []
+}

@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import { usePage } from '@inertiajs/vue3';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
+import type { DoomsdayPageProps } from '@/types/page-props';
+import { countdownParts, parseRenderedAt } from './countdownClock';
 
 const props = withDefaults(defineProps<{
     readonly targetDate: string | null;
@@ -10,10 +13,12 @@ const props = withDefaults(defineProps<{
     dense: false,
 });
 
-const now = ref(Date.now());
+const page = usePage<DoomsdayPageProps>();
+const now = ref(parseRenderedAt(page.props.rendered_at));
 let timer: number | undefined;
 
 onMounted(() => {
+    now.value = Date.now();
     timer = window.setInterval(() => {
         now.value = Date.now();
     }, 1000);
@@ -25,31 +30,7 @@ onUnmounted(() => {
     }
 });
 
-const parts = computed(() => {
-    const target = props.targetDate === null ? now.value : new Date(props.targetDate).getTime();
-    const totalSeconds = Math.max(0, Math.floor((target - now.value) / 1000));
-    const years = Math.floor(totalSeconds / 31_536_000);
-    const days = Math.floor((totalSeconds % 31_536_000) / 86_400);
-    const hours = Math.floor((totalSeconds % 86_400) / 3_600);
-    const minutes = Math.floor((totalSeconds % 3_600) / 60);
-    const seconds = totalSeconds % 60;
-
-    return props.compact
-        ? [
-            { label: 'YRS', value: years },
-            { label: 'DAYS', value: days },
-            { label: 'HRS', value: hours },
-            { label: 'MIN', value: minutes },
-            { label: 'SEC', value: seconds },
-        ]
-        : [
-            { label: 'YEARS', value: years },
-            { label: 'DAYS', value: days },
-            { label: 'HOURS', value: hours },
-            { label: 'MIN', value: minutes },
-            { label: 'SEC', value: seconds },
-        ];
-});
+const parts = computed(() => countdownParts(props.targetDate, now.value, props.compact));
 
 const valueClass = computed(() => props.dense
     ? 'text-[clamp(0.72rem,2.15vw,1.08rem)] leading-none tabular-nums sm:text-[clamp(0.88rem,1.45vw,1.15rem)] 2xl:text-xl'

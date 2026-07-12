@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
-use App\Services\Doomsday\CountdownPublicDataService;
+use App\Services\Doomsday\Locale\PublicLocaleResolver;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -24,19 +24,19 @@ final class LegalPolicyPageController extends Controller
         'pl' => ['label' => 'Polski', 'native' => 'Polski', 'flag' => '🇵🇱'],
     ];
 
-    public function privacy(Request $request, CountdownPublicDataService $service): Response
+    public function privacy(Request $request, PublicLocaleResolver $localeResolver): Response
     {
-        return $this->render($request, $service, 'privacy');
+        return $this->render($request, $localeResolver, 'privacy');
     }
 
-    public function cookies(Request $request, CountdownPublicDataService $service): Response
+    public function cookies(Request $request, PublicLocaleResolver $localeResolver): Response
     {
-        return $this->render($request, $service, 'cookies');
+        return $this->render($request, $localeResolver, 'cookies');
     }
 
-    private function render(Request $request, CountdownPublicDataService $service, string $kind): Response
+    private function render(Request $request, PublicLocaleResolver $localeResolver, string $kind): Response
     {
-        $locale = $service->normalizeLocale($request->query('lang'));
+        $locale = $localeResolver->locale($request);
 
         return Inertia::render('Doomsday/LegalPolicy', [
             'page' => [
@@ -51,7 +51,7 @@ final class LegalPolicyPageController extends Controller
     /** @return array<int, array<string, mixed>> */
     private function languageOptions(string $currentLocale, string $currentPath): array
     {
-        $path = '/' . ltrim($currentPath, '/');
+        $path = '/'.ltrim($currentPath, '/');
 
         return collect(self::LANGUAGES)
             ->map(fn (array $language, string $code): array => [
@@ -59,7 +59,7 @@ final class LegalPolicyPageController extends Controller
                 'label' => $language['label'],
                 'native_label' => $language['native'],
                 'flag' => $language['flag'],
-                'url' => $path . '?lang=' . $code,
+                'url' => $path.'?lang='.$code,
                 'is_current' => $code === $currentLocale,
             ])
             ->values()

@@ -1,0 +1,22 @@
+﻿# Glossary
+
+- **Canonical URL** — preferred stable URL among duplicates/variants.
+- **Hreflang** — annotation connecting localized equivalents.
+- **x-default** — fallback alternate locale URL.
+- **Sitemap** — XML discovery hint listing canonical public URLs.
+- **JSON-LD** — structured-data format embedded in HTML.
+- **SSR** — server-side rendering of initial application HTML.
+- **Locale-adaptive page** — same URL varies by language/country hints.
+- **Accept-Language** — request header expressing browser language preferences.
+- **Trusted edge country** — country code added by verified CDN/proxy.
+- **Consent Mode** — Google tag behavior controlled by consent signals.
+- **RUM** — real-user monitoring.
+- **LCP / INP / CLS** — Core Web Vitals for loading, responsiveness and visual stability.
+- **Liveness** — process is alive.
+- **Readiness** — process can serve with required dependencies.
+- **RPO / RTO** — acceptable data-loss window and recovery duration.
+- **Immutable artifact** — release package unchanged after verification.
+- **P0 / P1 / P2** — launch blocker, growth-critical and maturity bands.
+- **CSP** — Content Security Policy.
+- **HSTS** — browser-enforced HTTPS policy.
+- **Noindex** — crawler directive preventing indexing when readable.

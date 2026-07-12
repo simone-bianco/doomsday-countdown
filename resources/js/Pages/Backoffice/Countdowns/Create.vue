@@ -17,7 +17,7 @@ const activeSection = ref<BackofficeSection>('countdowns');
 
 <template>
     <Head title="Create countdown" />
-    <BackofficeShell v-model:active-section="activeSection" title="Create countdown" subtitle="Create a public Doomsday countdown draft." :backoffice-path="backofficePath" :counts="counts">
+    <BackofficeShell v-model:active-section="activeSection" title="Create countdown" subtitle="Create a public Doomsday Clock draft." :backoffice-path="backofficePath" :counts="counts">
         <CountdownForm :options="options" :submit-url="`${normalizedBackofficePath}/countdowns`" method="post" submit-label="Create countdown" @saved="router.visit(`${normalizedBackofficePath}/countdowns`)" />
     </BackofficeShell>
 </template>

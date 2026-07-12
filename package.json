@@ -4,7 +4,11 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "dev": "vite"
+        "build:ssr": "npm run ziggy:generate && vite build --ssr",
+        "build:production": "npm run build && npm run build:ssr",
+        "dev": "vite",
+        "test:ssr": "node tests/Node/ssr-hydration.mjs",
+        "ziggy:generate": "php artisan ziggy:generate resources/js/generated/ziggy.js --no-interaction"
     },
     "dependencies": {
         "@inertiajs/vue3": "^2.0.0",

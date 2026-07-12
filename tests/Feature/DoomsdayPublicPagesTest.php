@@ -63,7 +63,7 @@ final class DoomsdayPublicPagesTest extends TestCase
         $response = $this->get('/?lang=en')->assertOk();
         $response->assertInertia(fn (Assert $page): Assert => $page
             ->component('Doomsday/Home')
-            ->where('page.app_name', 'Doomsday Countdown')
+            ->where('page.app_name', 'Doomsday Clock')
             ->where('page.current_locale', 'en')
             ->has('page.countdowns', 6)
             ->has('page.sidebar.latest_news')
@@ -257,7 +257,7 @@ final class DoomsdayPublicPagesTest extends TestCase
             ->assertOk()
             ->assertInertia(fn (Assert $page): Assert => $page
                 ->component('Doomsday/About')
-                ->where('page.app_name', 'Doomsday Countdown')
+                ->where('page.app_name', 'Doomsday Clock')
                 ->where('page.current_locale', 'it')
                 ->where('page.eyebrow', 'Un sistema di allerta per un secolo fragile')
                 ->where('page.pipeline_label', 'Pipeline degli scenari')
@@ -273,7 +273,7 @@ final class DoomsdayPublicPagesTest extends TestCase
     public function test_about_cache_refreshes_incomplete_legacy_payload(): void
     {
         Cache::put(DoomsdayCacheKeys::about('it'), [
-            'app_name' => 'Doomsday Countdown',
+            'app_name' => 'Doomsday Clock',
             'current_locale' => 'it',
             'title' => 'Legacy cached About',
             'subtitle' => 'Legacy partial payload',
@@ -282,7 +282,7 @@ final class DoomsdayPublicPagesTest extends TestCase
 
         $page = app(CountdownCache::class)->about('it', 'about');
 
-        $this->assertSame('Doomsday Countdown', $page['app_name']);
+        $this->assertSame('Doomsday Clock', $page['app_name']);
         $this->assertSame('it', $page['current_locale']);
         $this->assertSame('Un sistema di allerta per un secolo fragile', $page['eyebrow']);
         $this->assertSame('Pipeline degli scenari', $page['pipeline_label']);

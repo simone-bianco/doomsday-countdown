@@ -10,6 +10,7 @@ interface TrackingConfig {
 let activeConsent: ConsentPreferences | null = null;
 let googleTagManagerLoaded = false;
 let googleAnalyticsLoaded = false;
+let lastTrackedPageLocation: string | null = null;
 
 function trackingConfig(): TrackingConfig {
     return {
@@ -46,11 +47,19 @@ export function applyTrackingConsent(consent: ConsentPreferences): void {
     updateGoogleConsent(consent);
     activeConsent = consent;
 
+    if (!consent.analytics) {
+        lastTrackedPageLocation = null;
+    }
+
     if (!consent.analytics && !consent.marketing) {
         deleteKnownTrackerCookies();
     }
 
     loadAllowedGoogleTags(consent);
+
+    if (consent.analytics) {
+        trackVirtualPageView();
+    }
 }
 
 export function initializeConsentRuntime(): ConsentPreferences | null {
@@ -101,13 +110,20 @@ export function trackEvent(eventName: string, payload: Record<string, unknown> =
 }
 
 export function trackVirtualPageView(): void {
-    if (typeof window === 'undefined') {
+    if (typeof window === 'undefined' || !canTrackAnalytics()) {
+        return;
+    }
+
+    const pageLocation = window.location.href;
+
+    if (lastTrackedPageLocation === pageLocation) {
         return;
     }
 
     trackEvent('page_view', {
-        page_location: window.location.href,
+        page_location: pageLocation,
         page_path: `${window.location.pathname}${window.location.search}`,
         page_title: document.title,
     });
+    lastTrackedPageLocation = pageLocation;
 }

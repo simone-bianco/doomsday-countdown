@@ -98,7 +98,7 @@ export function loadGoogleAnalytics(measurementId: string): void {
     appendScript('google-analytics-tag', `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`);
     window.gtag?.('js', new Date());
     window.gtag?.('config', measurementId, {
-        send_page_view: true,
+        send_page_view: false,
     });
 }
 

@@ -162,7 +162,7 @@ final class DoomsdayLatestUpdateCtaQaTest extends TestCase
 
         $this->get('/?lang=en')
             ->assertOk()
-            ->assertSee('Doomsday Countdown')
+            ->assertSee('Doomsday Clock')
             ->assertSee('Taiwan Invasion');
 
         $this->get('/countdowns/taiwan-invasion?lang=en')

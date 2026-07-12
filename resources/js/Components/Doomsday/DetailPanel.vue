@@ -2,8 +2,9 @@
 import { computed, ref, watch } from 'vue';
 import { AnimatePresence, motion } from 'motion-v';
 import { ArrowLeft, Maximize2, Minimize2 } from 'lucide-vue-next';
-import { Button, Image } from '@simone-bianco/vue-ui-components';
+import { Button } from '@simone-bianco/vue-ui-components';
 import CountdownTimer from './CountdownTimer.vue';
+import ResponsiveImage from './ResponsiveImage.vue';
 import DoomsdaySectionError from './DoomsdaySectionError.vue';
 import DoomsdaySkeletonBlock from './DoomsdaySkeletonBlock.vue';
 import ForecastsSection from './ForecastsSection.vue';
@@ -101,7 +102,15 @@ watch(() => `${props.countdown.slug}:${props.currentLocale}`, () => {
 <template>
     <section class="doomsday-card flex h-full min-h-0 flex-col overflow-hidden rounded-2xl">
         <div class="grid min-w-0 shrink-0 gap-4 border-b border-white/10 p-4 sm:p-5 xl:grid-cols-[minmax(0,1fr)_auto]">
-            <Image :src="countdown.image_url" :alt="countdown.title" aspect-ratio="56.25%" rounded="lg" :ui="{ root: 'sm:hidden' }" />
+            <ResponsiveImage
+                :src="countdown.image_url"
+                :alt="countdown.title"
+                sizes="(max-width: 639px) calc(100vw - 2rem), 1px"
+                loading="lazy"
+                fetch-priority="low"
+                picture-class="block aspect-video w-full overflow-hidden rounded-lg sm:hidden"
+                img-class="h-full w-full object-cover object-center"
+            />
             <div class="min-w-0">
                 <div class="mb-2 flex flex-wrap items-center gap-3">
                     <Button variant="link" size="sm" :icon="ArrowLeft" :ui="{ root: 'p-0 text-ui-primary no-underline' }" @click="emit('close')">All countdowns</Button>

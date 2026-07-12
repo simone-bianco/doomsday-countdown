@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { Badge, Card, Image, StatusDot } from '@simone-bianco/vue-ui-components';
+import { Badge, Card, StatusDot } from '@simone-bianco/vue-ui-components';
 import { motion } from 'motion-v';
+import ResponsiveImage from './ResponsiveImage.vue';
 import { Orbit, RadioTower } from 'lucide-vue-next';
 import { fadeUp, resolveMotionPreset, useDoomsdayReducedMotion, withMotionDelay } from '@/animations/doomsdayMotion';
 
@@ -21,7 +22,15 @@ const timelineMotion = computed(() => resolveMotionPreset(withMotionDelay(fadeUp
 <template>
     <motion.section class="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]" :initial="panelMotion.initial" :animate="panelMotion.animate" :transition="panelMotion.transition">
         <Card :ui="{ root: 'doomsday-card rounded-[2rem]', body: 'relative min-h-[430px] overflow-hidden p-0' }">
-            <Image src="/images/doomsday/society_collapse_separate.png" alt="Civilization risk visual" rounded="none" :ui="{ root: 'absolute inset-0 h-full', image: 'h-full w-full object-cover object-center opacity-70' }" />
+            <ResponsiveImage
+                src="/images/doomsday/society_collapse_separate.png"
+                alt="Civilization risk visual"
+                sizes="(min-width: 1024px) 46vw, 100vw"
+                loading="lazy"
+                fetch-priority="low"
+                picture-class="absolute inset-0 block h-full w-full"
+                img-class="h-full w-full object-cover object-center opacity-70"
+            />
             <div class="absolute inset-0 bg-gradient-to-br from-black/20 via-black/72 to-black" />
             <div class="absolute inset-0 bg-[radial-gradient(circle_at_22%_22%,rgba(255,42,35,0.25),transparent_32%)]" />
             <div class="absolute bottom-0 left-0 right-0 p-6 sm:p-8">

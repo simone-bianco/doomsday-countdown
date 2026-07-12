@@ -46,7 +46,7 @@ final class DoomsdayTaiwanRealDataQaTest extends TestCase
         $this->seed(DoomsdaySeeder::class);
         $this->get('/?lang=en')
             ->assertOk()
-            ->assertSee('Doomsday Countdown')
+            ->assertSee('Doomsday Clock')
             ->assertSee('taiwan-invasion');
         $this->get('/countdowns/taiwan-invasion?lang=it')
             ->assertOk()

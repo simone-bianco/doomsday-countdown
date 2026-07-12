@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { Badge, Card, Image, StatusDot } from '@simone-bianco/vue-ui-components';
+import { Badge, Card, StatusDot } from '@simone-bianco/vue-ui-components';
 import { motion } from 'motion-v';
+import ResponsiveImage from './ResponsiveImage.vue';
 import { Globe2, Radar } from 'lucide-vue-next';
 import { fadeIn, fadeUp, resolveMotionPreset, useDoomsdayReducedMotion, withMotionDelay } from '@/animations/doomsdayMotion';
 import type { AboutPageData } from '@/types/generated';
@@ -36,7 +37,15 @@ const intro = computed(() => props.page.intro ?? []);
 
         <motion.div :initial="visualMotion.initial" :animate="visualMotion.animate" :transition="visualMotion.transition">
             <Card :ui="{ root: 'doomsday-card h-full rounded-[2rem]', body: 'relative h-full min-h-[520px] overflow-hidden p-0' }">
-                <Image src="/images/doomsday/uninhabitable_earth_separate.png" alt="Doomsday scenario visual" rounded="none" :ui="{ root: 'absolute inset-0 h-full', image: 'h-full w-full object-cover object-center opacity-65' }" />
+                <ResponsiveImage
+                    src="/images/doomsday/uninhabitable_earth_separate.png"
+                    alt="Doomsday scenario visual"
+                    sizes="(min-width: 1024px) 46vw, 100vw"
+                    loading="eager"
+                    fetch-priority="high"
+                    picture-class="absolute inset-0 block h-full w-full"
+                    img-class="h-full w-full object-cover object-center opacity-65"
+                />
                 <div class="absolute inset-0 bg-gradient-to-b from-black/35 via-black/50 to-black/95" />
                 <div class="absolute inset-6 rounded-full border border-ui-primary/20 doomsday-about-orbit" />
                 <div class="absolute inset-14 rounded-full border border-white/10 doomsday-about-orbit doomsday-about-orbit-slow" />

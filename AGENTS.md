@@ -5,7 +5,7 @@ Quickstart and guardrails for AI coding agents working in this repository.
 ## Project snapshot
 
 - Laravel 13 / PHP 8.4 public Inertia + Vue 3 application.
-- Main product area: public Doomsday Countdown dashboard.
+- Main product area: public Doomsday Clock dashboard.
 - Frontend entrypoint: `resources/js/app.js`.
 - Public Inertia page: `resources/js/Pages/Doomsday/Home.vue`.
 - Public domain components: `resources/js/Components/Doomsday/`.

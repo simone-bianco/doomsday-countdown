@@ -25,13 +25,13 @@ const updatedLabel = computed(() => isItalian.value ? 'Aggiornato: 9 luglio 2026
 const backLabel = computed(() => isItalian.value ? 'Torna alla dashboard' : 'Back to dashboard');
 
 const privacySections = computed<PolicySection[]>(() => isItalian.value ? [
-    { title: 'Titolare e contatti', body: ['Doomsday Countdown tratta i dati personali raccolti tramite il sito pubblico. I contatti privacy definitivi devono essere completati dal titolare prima della pubblicazione in produzione.'] },
+    { title: 'Titolare e contatti', body: ['Doomsday Clock tratta i dati personali raccolti tramite il sito pubblico. I contatti privacy definitivi devono essere completati dal titolare prima della pubblicazione in produzione.'] },
     { title: 'Dati trattati', body: ['Possiamo trattare dati tecnici di navigazione, preferenze lingua, preferenze cookie, dati inseriti volontariamente nei form futuri e dati generati dagli strumenti analytics o marketing solo dopo consenso.'] },
     { title: 'Finalità e basi giuridiche', body: ['I dati necessari servono a sicurezza e funzionamento del sito. Analytics e marketing vengono usati solo previo consenso per misurare visite, migliorare contenuti, campagne e conversioni.'] },
     { title: 'Fornitori e trasferimenti', body: ['Hosting, strumenti tecnici e piattaforme come Google Tag Manager, Google Analytics o Google Ads possono trattare dati come responsabili o autonomi titolari secondo i rispettivi contratti. I dettagli vanno aggiornati quando vengono inseriti gli ID reali dei servizi.'] },
     { title: 'Diritti', body: ['Puoi chiedere accesso, rettifica, cancellazione, limitazione, portabilità, opposizione e revoca del consenso. Puoi modificare i cookie dal pulsante “Impostazioni cookie”.'] },
 ] : [
-    { title: 'Controller and contacts', body: ['Doomsday Countdown processes personal data collected through the public website. Final privacy contact details must be completed by the controller before production launch.'] },
+    { title: 'Controller and contacts', body: ['Doomsday Clock processes personal data collected through the public website. Final privacy contact details must be completed by the controller before production launch.'] },
     { title: 'Data we process', body: ['We may process technical browsing data, language preferences, cookie choices, data voluntarily submitted through future forms and analytics or marketing data only after consent.'] },
     { title: 'Purposes and legal bases', body: ['Necessary data supports security and core site operation. Analytics and marketing are used only with consent to measure visits, improve content, campaigns and conversions.'] },
     { title: 'Providers and transfers', body: ['Hosting, technical providers and platforms such as Google Tag Manager, Google Analytics or Google Ads may process data as processors or independent controllers under their own terms. Details must be updated when real service IDs are added.'] },

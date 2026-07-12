@@ -133,7 +133,7 @@ final class DoomsdayLazyCacheInitiativesTest extends TestCase
 
         $page = app(CountdownCache::class)->page('en', null, '/');
 
-        $this->assertSame('Doomsday Countdown', $page['app_name']);
+        $this->assertSame('Doomsday Clock', $page['app_name']);
         $this->assertNotEmpty($page['countdowns']);
     }
 

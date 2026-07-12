@@ -17,11 +17,12 @@ final class DemoAgentController extends Controller
         try {
             return response()->json($agent->run($data->message));
         } catch (Throwable $exception) {
+            report($exception);
+
             return response()->json([
                 'ok' => false,
-                'error' => $exception->getMessage(),
-                'payload' => ['message' => $data->message],
-            ]);
+                'error' => 'The demo agent is temporarily unavailable.',
+            ], 503);
         }
     }
 }

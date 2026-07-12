@@ -188,7 +188,7 @@ function confirmDestroy(): void {
 
 <template>
     <Head title="Countdowns" />
-    <BackofficeShell v-model:active-section="activeSection" title="Countdowns" subtitle="Manage public Doomsday countdown records." :backoffice-path="backofficePath" :counts="counts">
+    <BackofficeShell v-model:active-section="activeSection" title="Countdowns" subtitle="Manage public Doomsday Clock records." :backoffice-path="backofficePath" :counts="counts">
         <ServerDataTable
                 :data="rows"
                 :columns="columns"

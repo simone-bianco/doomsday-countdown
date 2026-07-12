@@ -27,7 +27,7 @@ final class BackofficeDoomsdayCrudTest extends TestCase
 
     public function test_countdown_index_summary_exposes_image_path_for_backoffice_table(): void
     {
-        $admin = User::factory()->create();
+        $admin = User::factory()->admin()->create();
         Countdown::query()->create($this->countdownModelAttributes());
 
         $this->actingAs($admin)
@@ -40,7 +40,7 @@ final class BackofficeDoomsdayCrudTest extends TestCase
 
     public function test_countdown_index_filters_and_paginates_with_server_shape(): void
     {
-        $admin = User::factory()->create();
+        $admin = User::factory()->admin()->create();
         Countdown::query()->create($this->countdownModelAttributes([
             'slug' => 'alpha-risk',
             'title' => ['en' => 'Alpha risk'],
@@ -68,7 +68,7 @@ final class BackofficeDoomsdayCrudTest extends TestCase
 
     public function test_countdown_index_sorts_by_id_title_and_sort_order(): void
     {
-        $admin = User::factory()->create();
+        $admin = User::factory()->admin()->create();
         $alpha = Countdown::query()->create($this->countdownModelAttributes([
             'slug' => 'alpha-risk',
             'title' => ['en' => 'Alpha risk'],
@@ -110,7 +110,7 @@ final class BackofficeDoomsdayCrudTest extends TestCase
 
     public function test_countdown_edit_exposes_namespaced_relation_search_paginators(): void
     {
-        $admin = User::factory()->create();
+        $admin = User::factory()->admin()->create();
         $countdown = Countdown::query()->create($this->countdownModelAttributes());
         $projection = $countdown->projections()->create($this->projectionPayload([
             'title' => ['en' => 'Alpha scenario'],
@@ -162,7 +162,7 @@ final class BackofficeDoomsdayCrudTest extends TestCase
 
     public function test_authenticated_user_can_manage_countdowns_projections_and_visualizations_with_cleanup(): void
     {
-        $admin = User::factory()->create();
+        $admin = User::factory()->admin()->create();
 
         $this->actingAs($admin)
             ->post(route('backoffice.countdowns.store'), $this->countdownPayload())
@@ -224,7 +224,7 @@ final class BackofficeDoomsdayCrudTest extends TestCase
 
     public function test_authenticated_user_can_manage_countdown_news_and_initiatives(): void
     {
-        $admin = User::factory()->create();
+        $admin = User::factory()->admin()->create();
         $countdown = Countdown::query()->create($this->countdownModelAttributes());
 
         $this->actingAs($admin)
@@ -271,7 +271,7 @@ final class BackofficeDoomsdayCrudTest extends TestCase
 
     public function test_countdown_slug_and_visualization_payload_are_validated(): void
     {
-        $admin = User::factory()->create();
+        $admin = User::factory()->admin()->create();
         $countdown = Countdown::query()->create($this->countdownModelAttributes());
 
         $this->actingAs($admin)
@@ -329,7 +329,7 @@ final class BackofficeDoomsdayCrudTest extends TestCase
 
     public function test_nested_backoffice_mutations_reject_records_from_another_countdown(): void
     {
-        $admin = User::factory()->create();
+        $admin = User::factory()->admin()->create();
         $countdown = Countdown::query()->create($this->countdownModelAttributes());
         $otherCountdown = Countdown::query()->create($this->countdownModelAttributes([
             'slug' => 'other-countdown',
@@ -377,7 +377,7 @@ final class BackofficeDoomsdayCrudTest extends TestCase
         config(['doomsday.cache.enabled' => true]);
         Cache::flush();
 
-        $admin = User::factory()->create();
+        $admin = User::factory()->admin()->create();
         $countdown = Countdown::query()->create($this->countdownModelAttributes(['slug' => 'cache-old-countdown']));
         $oldSlug = $countdown->slug;
         $newSlug = 'cache-new-countdown';

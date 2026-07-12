@@ -2,6 +2,8 @@
 import { Card, StatusDot } from '@simone-bianco/vue-ui-components';
 import { motion } from 'motion-v';
 import { computed } from 'vue';
+import PatreonSupportLink from './PatreonSupportLink.vue';
+import CommunityLinks from './CommunityLinks.vue';
 import { fadeUp, resolveMotionPreset, useDoomsdayReducedMotion } from '@/animations/doomsdayMotion';
 
 defineProps<{
@@ -26,7 +28,11 @@ const motionPreset = computed(() => resolveMotionPreset(fadeUp, reducedMotion.va
                     </div>
                     <h2 class="doomsday-display mt-5 text-3xl leading-tight text-white sm:text-5xl">{{ title }}</h2>
                 </div>
-                <p class="max-w-4xl text-base leading-relaxed text-white/70 sm:text-xl">{{ body }}</p>
+                <div class="grid gap-5">
+                    <p class="max-w-4xl text-base leading-relaxed text-white/70 sm:text-xl">{{ body }}</p>
+                    <PatreonSupportLink placement="about" />
+                    <CommunityLinks />
+                </div>
             </div>
         </Card>
     </motion.section>

@@ -3,6 +3,7 @@ import { computed, ref } from 'vue';
 import { motion } from 'motion-v';
 import CountdownList from './CountdownList.vue';
 import DetailPanel from './DetailPanel.vue';
+import ResponsiveImage from './ResponsiveImage.vue';
 import DoomsdaySkeletonBlock from './DoomsdaySkeletonBlock.vue';
 import { panelReveal, resolveMotionPreset, useDoomsdayReducedMotion } from '@/animations/doomsdayMotion';
 import type { CountdownForecastsData, CountdownIndexData, CountdownInitiativesSectionData, CountdownNewsSectionData, CountdownOverviewData, CountdownStatisticsData } from '@/types/generated';
@@ -39,7 +40,17 @@ const detailMotion = computed(() => resolveMotionPreset(panelReveal, reducedMoti
     <motion.section :class="['mx-auto hidden h-[calc(100dvh-64px)] min-h-0 max-w-[1760px] gap-5 overflow-hidden px-5 py-4 lg:grid xl:px-7', isDetailExpanded ? 'grid-cols-1' : 'grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]']" :initial="detailMotion.initial" :animate="detailMotion.animate" :transition="detailMotion.transition">
         <div v-if="!isDetailExpanded" class="doomsday-scrollbar grid min-h-0 min-w-0 content-start gap-5 overflow-y-auto pr-1">
             <div class="relative min-w-0 overflow-hidden rounded-2xl border border-white/10 bg-black p-6 xl:p-8">
-                <img :src="hero.desktop_image" alt="Earth horizon with red monitoring arcs" class="absolute inset-0 h-full w-full object-cover object-center opacity-45" />
+                <ResponsiveImage
+                    :src="hero.desktop_image"
+                    alt="Earth horizon with red monitoring arcs"
+                    sizes="(min-width: 1280px) 42vw, 50vw"
+                    media="(min-width: 1024px)"
+                    inactive-media="(max-width: 1023px)"
+                    loading="eager"
+                    fetch-priority="high"
+                    picture-class="absolute inset-0 block h-full w-full"
+                    img-class="h-full w-full object-cover object-center opacity-45"
+                />
                 <div class="absolute inset-0 bg-gradient-to-r from-black via-black/85 to-black/20" />
                 <div class="relative max-w-2xl">
                     <div class="mb-6 h-px w-24 bg-ui-primary/70" />

@@ -60,6 +60,50 @@ final class DoomsdayPublicCopyTest extends TestCase
         $this->assertStringNotContainsString('backoffice', strtolower($layout));
     }
 
+    public function test_patreon_support_is_visible_in_the_topbar_and_about_without_entering_primary_navigation(): void
+    {
+        $header = (string) file_get_contents(__DIR__.'/../../resources/js/Components/Doomsday/SiteHeader.vue');
+        $closingBand = (string) file_get_contents(__DIR__.'/../../resources/js/Components/Doomsday/AboutClosingBand.vue');
+        $supportLink = (string) file_get_contents(__DIR__.'/../../resources/js/Components/Doomsday/PatreonSupportLink.vue');
+        $translations = (string) file_get_contents(__DIR__.'/../../resources/js/i18n/index.ts');
+
+        $this->assertStringContainsString('<PatreonSupportLink placement="header" />', $header);
+        $this->assertStringContainsString('<PatreonSupportLink placement="about" />', $closingBand);
+        $this->assertStringContainsString("const PATREON_URL = 'https://www.patreon.com/cw/doomsdayclock';", $supportLink);
+        $this->assertStringContainsString('target="_blank"', $supportLink);
+        $this->assertStringContainsString('rel="noopener noreferrer"', $supportLink);
+        $this->assertStringContainsString('HeartHandshake', $supportLink);
+        $this->assertStringContainsString('ExternalLink', $supportLink);
+        $this->assertStringContainsString("t('supportProjectDescription')", $supportLink);
+        $this->assertSame(8, substr_count($translations, 'supportUs:'));
+        $this->assertSame(8, substr_count($translations, 'supportOnPatreon:'));
+        $this->assertStringNotContainsString('patreon.com', substr($header, (int) strpos($header, '<nav'), (int) strpos($header, '</nav>') - (int) strpos($header, '<nav')));
+    }
+
+    public function test_discord_and_telegram_are_exposed_as_icon_only_topbar_links_and_full_about_cards(): void
+    {
+        $header = (string) file_get_contents(__DIR__.'/../../resources/js/Components/Doomsday/SiteHeader.vue');
+        $closingBand = (string) file_get_contents(__DIR__.'/../../resources/js/Components/Doomsday/AboutClosingBand.vue');
+        $communityLinks = (string) file_get_contents(__DIR__.'/../../resources/js/Components/Doomsday/CommunityLinks.vue');
+
+        $this->assertStringContainsString('<CommunityLinks placement="header" />', $header);
+        $this->assertStringContainsString('<CommunityLinks />', $closingBand);
+        $this->assertStringContainsString("placement?: 'header' | 'about'", $communityLinks);
+        $this->assertStringContainsString("href: 'https://discord.gg/NmKXDzwzK'", $communityLinks);
+        $this->assertStringContainsString("href: 'https://t.me/doomsdayclockofficial'", $communityLinks);
+        $this->assertStringContainsString('target="_blank"', $communityLinks);
+        $this->assertStringContainsString('rel="noopener noreferrer"', $communityLinks);
+        $this->assertStringContainsString("iconSrc: '/images/community/discord.png'", $communityLinks);
+        $this->assertStringContainsString("iconSrc: '/images/community/telegram.png'", $communityLinks);
+        $this->assertStringNotContainsString('MessagesSquare', $communityLinks);
+        $this->assertStringNotContainsString('icon: Send', $communityLinks);
+        $this->assertStringContainsString("t('opensInNewTab')", $communityLinks);
+        $this->assertStringContainsString('v-if="!isHeader"', $communityLinks);
+        $this->assertStringContainsString("'group inline-flex h-9 w-9", $communityLinks);
+        $navigation = substr($header, (int) strpos($header, '<nav'), (int) strpos($header, '</nav>') - (int) strpos($header, '<nav'));
+        $this->assertStringNotContainsString('CommunityLinks', $navigation);
+    }
+
     public function test_doomsday_components_do_not_pass_string_icons_to_ui_buttons(): void
     {
         $componentsPath = __DIR__.'/../../resources/js/Components/Doomsday';
@@ -94,7 +138,7 @@ final class DoomsdayPublicCopyTest extends TestCase
         $this->assertDoesNotMatchRegularExpression('/<Image\\b/', $card);
         $this->assertStringNotContainsString('<Link', $card);
         $this->assertStringNotContainsString('prefetch cache-for="2m"', $card);
-        $this->assertStringContainsString("import { Image } from '@simone-bianco/vue-ui-components';", $cardImage);
+        $this->assertStringContainsString("import ResponsiveImage from './ResponsiveImage.vue';", $cardImage);
         $this->assertStringContainsString('readonly title: string', $cardImage);
         $this->assertStringContainsString('readonly subtitle: string', $cardImage);
         $this->assertStringContainsString('absolute inset-x-0 bottom-0', $cardImage);
@@ -144,6 +188,7 @@ final class DoomsdayPublicCopyTest extends TestCase
         $selection = (string) file_get_contents(__DIR__.'/../../resources/js/Composables/useDoomsdaySelection.ts');
         $lazy = (string) file_get_contents(__DIR__.'/../../resources/js/Composables/useDoomsdayLazySections.ts');
         $timer = (string) file_get_contents(__DIR__.'/../../resources/js/Components/Doomsday/CountdownTimer.vue');
+        $clock = (string) file_get_contents(__DIR__.'/../../resources/js/Components/Doomsday/countdownClock.js');
         $cardImage = (string) file_get_contents(__DIR__.'/../../resources/js/Components/Doomsday/CountdownCardImage.vue');
         $app = (string) file_get_contents(__DIR__.'/../../resources/js/app.js');
         $loader = (string) file_get_contents(__DIR__.'/../../resources/js/Components/App/AppNavigationLoader.vue');
@@ -190,7 +235,8 @@ final class DoomsdayPublicCopyTest extends TestCase
         $this->assertStringNotContainsString('countdown.timer.estimated_label', $countdownCard);
         $this->assertStringNotContainsString('overflow-hidden', $timer);
         $this->assertStringContainsString('clamp(', $timer);
-        $this->assertStringContainsString('SEC', $timer);
+        $this->assertStringContainsString('countdownParts', $timer);
+        $this->assertStringContainsString("{ label: 'SEC'", $clock);
         $this->assertStringContainsString('tabular-nums', $timer);
         $this->assertStringContainsString('line-clamp-2', $cardImage);
         $this->assertStringContainsString('font-bold', $cardImage);
