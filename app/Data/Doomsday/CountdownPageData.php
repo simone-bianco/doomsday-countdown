@@ -11,9 +11,9 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 final class CountdownPageData extends Data
 {
     /**
-     * @param array<int, LanguageOptionData> $languages
-     * @param array<int, CountdownIndexData> $countdowns
-     * @param array<string, string> $hero
+     * @param  array<int, LanguageOptionData>  $languages
+     * @param  array<int, CountdownIndexData>  $countdowns
+     * @param  array<string, string>  $hero
      */
     public function __construct(
         public readonly string $app_name,
@@ -21,7 +21,7 @@ final class CountdownPageData extends Data
         public readonly array $languages,
         public readonly array $hero,
         public readonly array $countdowns,
+        public readonly HomeSidebarData $sidebar,
         public readonly ?CountdownOverviewData $selected_countdown,
-    ) {
-    }
+    ) {}
 }

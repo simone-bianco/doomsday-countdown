@@ -17,7 +17,8 @@ final class DoomsdayStatisticsScrollChartQaTest extends TestCase
         $selectedMaster = (string) file_get_contents(base_path('resources/js/Components/Doomsday/SelectedMasterDetail.vue'));
         $detail = (string) file_get_contents(base_path('resources/js/Components/Doomsday/DetailPanel.vue'));
 
-        $this->assertStringContainsString('h-[calc(100vh-64px)] min-h-0', $selectedMaster);
+        $this->assertStringContainsString('h-[calc(100dvh-64px)] min-h-0', $selectedMaster);
+        $this->assertStringNotContainsString('h-[calc(100vh-64px)]', $selectedMaster);
         $this->assertStringContainsString('overflow-hidden px-5 py-4 lg:grid', $selectedMaster);
         $this->assertStringContainsString('doomsday-scrollbar grid min-h-0 min-w-0 content-start gap-5 overflow-y-auto', $selectedMaster);
         $this->assertStringContainsString('min-h-0 min-w-0 self-stretch', $selectedMaster);
@@ -29,8 +30,9 @@ final class DoomsdayStatisticsScrollChartQaTest extends TestCase
         $this->assertStringContainsString('doomsday-card flex h-full min-h-0 flex-col overflow-hidden', $detail);
         $this->assertStringContainsString('grid min-w-0 shrink-0 gap-4', $detail);
         $this->assertStringContainsString('doomsday-scrollbar flex shrink-0', $detail);
-        $this->assertStringContainsString('doomsday-scrollbar grid min-h-0 min-w-0 flex-1 auto-rows-max gap-5 overflow-y-auto overscroll-contain', $detail);
-        $this->assertStringContainsString('class="doomsday-scrollbar grid min-h-0 min-w-0 flex-1 auto-rows-max gap-5 overflow-y-auto overscroll-contain p-4 pr-2 sm:p-5 sm:pr-3"', $detail);
+        $this->assertStringContainsString('doomsday-scrollbar grid min-h-0 min-w-0 flex-1 auto-rows-max gap-5 overflow-y-auto overscroll-contain scroll-pb-8', $detail);
+        $this->assertStringContainsString('p-4 pb-8 pr-2', $detail);
+        $this->assertStringContainsString('sm:scroll-pb-10 sm:p-5 sm:pb-10 sm:pr-3', $detail);
         $this->assertStringContainsString(":class=\"['grid w-full min-w-0 gap-5', expanded ? 'xl:grid-cols-2' : '']\"", $detail);
         $this->assertStringNotContainsString("['doomsday-scrollbar grid min-h-0 min-w-0 flex-1 auto-rows-max gap-5 overflow-y-auto overscroll-contain p-4 pr-2 sm:p-5 sm:pr-3', expanded ? 'xl:grid-cols-2' : '']", $detail);
         $this->assertStringContainsString("activeTab === 'statistics'", $detail);

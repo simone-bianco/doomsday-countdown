@@ -36,7 +36,7 @@ const detailMotion = computed(() => resolveMotionPreset(panelReveal, reducedMoti
 </script>
 
 <template>
-    <motion.section :class="['mx-auto hidden max-w-[1760px] h-[calc(100vh-64px)] min-h-0 gap-5 overflow-hidden px-5 py-4 lg:grid xl:px-7', isDetailExpanded ? 'grid-cols-1' : 'grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]']" :initial="detailMotion.initial" :animate="detailMotion.animate" :transition="detailMotion.transition">
+    <motion.section :class="['mx-auto hidden h-[calc(100dvh-64px)] min-h-0 max-w-[1760px] gap-5 overflow-hidden px-5 py-4 lg:grid xl:px-7', isDetailExpanded ? 'grid-cols-1' : 'grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]']" :initial="detailMotion.initial" :animate="detailMotion.animate" :transition="detailMotion.transition">
         <div v-if="!isDetailExpanded" class="doomsday-scrollbar grid min-h-0 min-w-0 content-start gap-5 overflow-y-auto pr-1">
             <div class="relative min-w-0 overflow-hidden rounded-2xl border border-white/10 bg-black p-6 xl:p-8">
                 <img :src="hero.desktop_image" alt="Earth horizon with red monitoring arcs" class="absolute inset-0 h-full w-full object-cover object-center opacity-45" />

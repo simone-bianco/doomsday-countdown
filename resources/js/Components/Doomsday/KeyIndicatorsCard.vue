@@ -32,17 +32,23 @@ const indicators = computed((): Indicator[] => {
 </script>
 
 <template>
-    <Card :ui="{ root: 'doomsday-card rounded-xl', body: 'p-5 sm:p-6' }">
+    <Card :ui="{ root: 'doomsday-card min-w-0 rounded-xl', body: 'min-w-0 p-5 pb-6 sm:p-6 sm:pb-8' }">
         <h3 class="doomsday-display mb-5 text-lg text-white">{{ t('keyIndicators') }}</h3>
-        <div class="grid gap-4">
-            <div v-for="indicator in indicators" :key="indicator.label" class="grid grid-cols-[1fr_auto_90px] items-center gap-3 border-b border-white/5 pb-3 last:border-b-0 last:pb-0">
-                <span class="text-sm text-ui-muted-foreground">{{ indicator.label }}</span>
-                <span class="text-sm text-white">{{ indicator.value }} <span class="text-ui-primary">{{ indicator.direction === 'up' ? '↑' : '↓' }}</span></span>
-                <div class="flex h-5 items-end gap-1">
-                    <span v-for="(value, index) in indicator.sparkline" :key="index" class="w-1 bg-ui-primary" :style="{ height: `${Math.max(15, value)}%` }" />
+        <div class="grid min-w-0 gap-4">
+            <div
+                v-for="indicator in indicators"
+                :key="indicator.label"
+                class="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2 border-b border-white/5 pb-3 last:border-b-0 last:pb-0 sm:grid-cols-[minmax(0,1fr)_auto_minmax(56px,90px)]"
+            >
+                <span class="min-w-0 break-words text-sm text-ui-muted-foreground">{{ indicator.label }}</span>
+                <span class="whitespace-nowrap text-sm text-white">{{ indicator.value }} <span class="text-ui-primary">{{ indicator.direction === 'up' ? '↑' : '↓' }}</span></span>
+                <div class="col-span-2 flex h-5 min-w-0 max-w-full items-end gap-1 overflow-hidden sm:col-span-1">
+                    <span v-for="(value, index) in indicator.sparkline" :key="index" class="min-w-0 flex-1 bg-ui-primary" :style="{ height: `${Math.max(15, value)}%` }" />
                 </div>
             </div>
         </div>
-        <VisualizationEvidence :sources="visualization?.sources ?? []" :reasoning="visualization?.reasoning ?? null" />
+        <div class="mt-5 min-w-0 pb-1">
+            <VisualizationEvidence :sources="visualization?.sources ?? []" :reasoning="visualization?.reasoning ?? null" />
+        </div>
     </Card>
 </template>

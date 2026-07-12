@@ -189,6 +189,7 @@ export const CountdownPageDataRules: FormRuleMap = {
   languages: { default: [], rules: [{ name: 'present' }, { name: 'array' }] },
   hero: { default: [], rules: [{ name: 'required' }, { name: 'array' }] },
   countdowns: { default: [], rules: [{ name: 'present' }, { name: 'array' }] },
+  sidebar: { default: [], rules: [{ name: 'required' }, { name: 'array' }] },
   selected_countdown: { default: [], rules: [{ name: 'nullable' }, { name: 'array' }] },
 };
 
@@ -201,6 +202,11 @@ export const CountdownTimerDataRules: FormRuleMap = {
   target_date: { default: null, rules: [{ name: 'nullable' }] },
   estimated_label: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
   is_elapsed: { default: null, rules: [{ name: 'required' }, { name: 'boolean' }] },
+};
+
+export const HomeSidebarDataRules: FormRuleMap = {
+  latest_news: { default: [], rules: [{ name: 'present' }, { name: 'array' }] },
+  signal_activity: { default: [], rules: [{ name: 'required' }, { name: 'array' }] },
 };
 
 export const InitiativeDataRules: FormRuleMap = {
@@ -229,6 +235,33 @@ export const LanguageOptionDataRules: FormRuleMap = {
   flag: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
   url: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
   is_current: { default: null, rules: [{ name: 'required' }, { name: 'boolean' }] },
+};
+
+export const LatestNewsItemDataRules: FormRuleMap = {
+  id: { default: null, rules: [{ name: 'required' }, { name: 'numeric' }] },
+  title: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  excerpt: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  content_type: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  source_name: { default: null, rules: [{ name: 'nullable' }, { name: 'string' }] },
+  source_url: { default: null, rules: [{ name: 'nullable' }, { name: 'string' }] },
+  image_url: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  published_at: { default: null, rules: [{ name: 'required' }] },
+  countdown_slug: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  countdown_title: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+  countdown_url: { default: null, rules: [{ name: 'required' }, { name: 'string' }] },
+};
+
+export const NewsActivityDataRules: FormRuleMap = {
+  window_start: { default: null, rules: [{ name: 'required' }] },
+  window_end: { default: null, rules: [{ name: 'required' }] },
+  bucket_labels: { default: [], rules: [{ name: 'required' }, { name: 'array' }] },
+  bucket_counts: { default: [], rules: [{ name: 'required' }, { name: 'array' }] },
+  total_items: { default: null, rules: [{ name: 'required' }, { name: 'numeric' }] },
+  unique_sources: { default: null, rules: [{ name: 'required' }, { name: 'numeric' }] },
+  latest_published_at: { default: null, rules: [{ name: 'nullable' }] },
+  top_countdown_slug: { default: null, rules: [{ name: 'nullable' }, { name: 'string' }] },
+  top_countdown_title: { default: null, rules: [{ name: 'nullable' }, { name: 'string' }] },
+  top_countdown_count: { default: null, rules: [{ name: 'required' }, { name: 'numeric' }] },
 };
 
 export const NewsDataRules: FormRuleMap = {

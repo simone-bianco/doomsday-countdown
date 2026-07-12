@@ -129,7 +129,7 @@ watch(() => `${props.countdown.slug}:${props.currentLocale}`, () => {
             </Button>
         </div>
 
-        <div class="doomsday-scrollbar grid min-h-0 min-w-0 flex-1 auto-rows-max gap-5 overflow-y-auto overscroll-contain p-4 pr-2 sm:p-5 sm:pr-3">
+        <div class="doomsday-scrollbar grid min-h-0 min-w-0 flex-1 auto-rows-max gap-5 overflow-y-auto overscroll-contain scroll-pb-8 p-4 pb-8 pr-2 sm:scroll-pb-10 sm:p-5 sm:pb-10 sm:pr-3">
             <AnimatePresence mode="wait" :initial="false">
                 <motion.div
                     :key="tabContentKey"

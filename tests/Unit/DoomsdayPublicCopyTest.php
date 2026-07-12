@@ -148,6 +148,9 @@ final class DoomsdayPublicCopyTest extends TestCase
         $app = (string) file_get_contents(__DIR__.'/../../resources/js/app.js');
         $loader = (string) file_get_contents(__DIR__.'/../../resources/js/Components/App/AppNavigationLoader.vue');
         $sidebar = (string) file_get_contents(__DIR__.'/../../resources/js/Components/Doomsday/SidebarCards.vue');
+        $carousel = (string) file_get_contents(__DIR__.'/../../resources/js/Components/Doomsday/LatestNewsCarousel.vue');
+        $activity = (string) file_get_contents(__DIR__.'/../../resources/js/Components/Doomsday/PublicSignalActivityCard.vue');
+        $translations = (string) file_get_contents(__DIR__.'/../../resources/js/i18n/index.ts');
         $this->assertStringContainsString('readonly selected_countdown?: CountdownOverviewData | null', $home);
         $this->assertStringContainsString('useDoomsdaySelection', $home);
         $this->assertStringContainsString('selection.selectedCountdown.value', $home);
@@ -239,7 +242,8 @@ final class DoomsdayPublicCopyTest extends TestCase
         $this->assertStringContainsString('flex h-full min-h-0 flex-col overflow-hidden', $detail);
         $this->assertStringContainsString('auto-rows-max', $detail);
         $this->assertStringContainsString('overscroll-contain', $detail);
-        $this->assertStringContainsString('h-[calc(100vh-64px)] min-h-0', $masterDetail);
+        $this->assertStringContainsString('h-[calc(100dvh-64px)] min-h-0', $masterDetail);
+        $this->assertStringNotContainsString('h-[calc(100vh-64px)]', $masterDetail);
         $this->assertStringContainsString('self-stretch', $masterDetail);
         $this->assertStringContainsString('doomsday-scrollbar', $detail);
         $this->assertStringContainsString('overflow-y-auto', $detail);
@@ -256,11 +260,28 @@ final class DoomsdayPublicCopyTest extends TestCase
         $this->assertStringContainsString("import { ZiggyVue } from '../../vendor/tightenco/ziggy';", $app);
         $this->assertLessThan(strpos($app, '.use(plugin)'), strpos($app, '.use(ZiggyVue)'));
         $this->assertStringContainsString('h(AppNavigationLoader)', $app);
-        $this->assertStringContainsString('block w-full sm:w-fit', $sidebar);
-        $this->assertStringContainsString('size="md"', $sidebar);
-        $this->assertStringContainsString('doomsday-display w-full border-ui-primary/50 bg-ui-primary/10', $sidebar);
-        $this->assertStringContainsString('hover:shadow-[0_0_26px_rgba(255,42,35,0.28)]', $sidebar);
-        $this->assertStringContainsString('group-hover:translate-x-0.5', $sidebar);
+        $this->assertStringContainsString(':sidebar="page.sidebar"', $home);
+        $this->assertStringContainsString('readonly sidebar: HomeSidebarData', $sidebar);
+        $this->assertStringContainsString('<LatestNewsCarousel :items="sidebar.latest_news" />', $sidebar);
+        $this->assertStringContainsString('<PublicSignalActivityCard :activity="sidebar.signal_activity" />', $sidebar);
+        $this->assertStringContainsString('role="region"', $carousel);
+        $this->assertStringContainsString('aria-roledescription="carousel"', $carousel);
+        $this->assertStringContainsString('loading-type="skeleton"', $carousel);
+        $this->assertStringContainsString('<SkeletonLoader', $carousel);
+        $this->assertStringContainsString('<AnimatePresence mode="wait" :initial="false">', $carousel);
+        $this->assertStringContainsString(":is=\"activeExternalUrl ? 'a' : Link\"", $carousel);
+        $this->assertStringContainsString(":rel=\"activeExternalUrl ? 'noopener noreferrer' : undefined\"", $carousel);
+        $this->assertStringContainsString(':aria-current="index === currentIndex ? \'true\' : undefined"', $carousel);
+        $this->assertStringContainsString('pointer-events-none absolute inset-x-0 top-0 z-20 aspect-video', $carousel);
+        foreach (['v-show', '{{ currentIndex + 1 }} / {{ items.length }}', '<ExternalLink', "{{ t('openSource') }}", '<Link v-else'] as $forbiddenCarousel) {
+            $this->assertStringNotContainsString($forbiddenCarousel, $carousel);
+        }
+        $this->assertStringContainsString('props.activity.bucket_counts', $activity);
+        $this->assertStringContainsString("t('publicSignalActivityDisclaimer')", $activity);
+        $this->assertStringContainsString('Published items from monitored public sources. Volume measures source activity, not event probability.', $translations);
+        foreach (['page.countdowns[0]', '18.0', '/100', 'Global Risk Index', 'Daily update'] as $forbidden) {
+            $this->assertStringNotContainsString($forbidden, $home.$sidebar.$activity.$translations);
+        }
         $this->assertStringContainsString('router.on(\'start\'', $loader);
         $this->assertStringContainsString('fixed inset-x-0 top-0', $loader);
     }

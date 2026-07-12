@@ -61,17 +61,17 @@ final class DoomsdayAntibioticApocalypseSeedTest extends TestCase
             }
         }
         $descriptionContract = [
-            'en' => [['active checkpoint', 'post-target evidence checkpoint', 'broader than antibiotic resistance'], ['main timer', 'current timer', 'default timer', 'permanent timer']],
-            'it' => [['checkpoint attivo', 'checkpoint neutral post-target delle evidenze', 'più ampia della resistenza agli antibiotici'], ['timer principale', 'timer corrente', 'timer predefinito', 'timer permanente']],
-            'fr' => [['point de contrôle actif', 'point de contrôle neutral post-cible des données probantes', 'dépasse la seule résistance aux antibiotiques'], ['minuteur principal', 'minuteur actuel', 'minuteur par défaut', 'minuteur permanent']],
-            'de' => [['aktive kontrollpunkt', 'neutral-evidenzkontrollpunkt nach dem zieljahr', 'umfasst mehr als antibiotikaresistenz'], ['haupttimer', 'aktueller timer', 'standardtimer', 'permanenter timer']],
-            'es' => [['punto de control activo', 'punto de control neutral de evidencia posterior al objetivo', 'más amplia que la resistencia a los antibióticos'], ['temporizador principal', 'temporizador actual', 'temporizador predeterminado', 'temporizador permanente']],
-            'nl' => [['actieve controlepunt', 'neutral-bewijscontrolepunt na de doelperiode', 'breder dan antibioticaresistentie'], ['hoofdtimer', 'huidige timer', 'standaardtimer', 'permanente timer']],
-            'sv' => [['aktiva kontrollpunkten', 'neutral-evidenskontrollpunkten efter målåret', 'bredare än antibiotikaresistens'], ['huvudtimern', 'aktuell timer', 'standardtimer', 'permanent timer']],
-            'pl' => [['aktywnym punktem kontrolnym', 'neutralnym punktem oceny dowodów po terminie celu', 'szersza niż oporność na antybiotyki'], ['główny licznik', 'bieżący licznik', 'domyślny licznik', 'stały licznik']],
+            'en' => [['title is editorial', 'active checkpoint', 'post-target evidence checkpoint', 'surveillance and publication lag', 'broader than antibiotic resistance', 'none of these dates predicts a certain treatment collapse'], ['main timer', 'current timer', 'default timer', 'permanent timer']],
+            'it' => [['titolo è editoriale', 'checkpoint attivo', 'checkpoint neutral post-target delle evidenze', 'ritardi di sorveglianza e pubblicazione', 'più ampia della resistenza agli antibiotici', 'nessuna di queste date predice un certo collasso terapeutico'], ['timer principale', 'timer corrente', 'timer predefinito', 'timer permanente']],
+            'fr' => [['titre est éditorial', 'point de contrôle actif', 'point de contrôle neutral post-cible des données probantes', 'délais de surveillance et de publication', 'dépasse la seule résistance aux antibiotiques', 'aucune de ces dates ne prédit un effondrement certain des traitements'], ['minuteur principal', 'minuteur actuel', 'minuteur par défaut', 'minuteur permanent']],
+            'de' => [['titel ist redaktionell', 'aktive kontrollpunkt', 'neutral-evidenzkontrollpunkt nach dem zieljahr', 'überwachungs- und veröffentlichungsverzug', 'umfasst mehr als antibiotikaresistenz', 'keiner dieser termine sagt einen sicheren therapiezusammenbruch voraus'], ['haupttimer', 'aktueller timer', 'standardtimer', 'permanenter timer']],
+            'es' => [['título es editorial', 'punto de control activo', 'punto de control neutral de evidencia posterior al objetivo', 'retrasos de vigilancia y publicación', 'más amplia que la resistencia a los antibióticos', 'ninguna de estas fechas predice un colapso terapéutico cierto'], ['temporizador principal', 'temporizador actual', 'temporizador predeterminado', 'temporizador permanente']],
+            'nl' => [['titel is redactioneel', 'actieve controlepunt', 'neutral-bewijscontrolepunt na de doelperiode', 'vertraging in surveillance en publicatie', 'breder dan antibioticaresistentie', 'geen van deze data voorspelt een zekere instorting van behandelingen'], ['hoofdtimer', 'huidige timer', 'standaardtimer', 'permanente timer']],
+            'sv' => [['titeln är redaktionell', 'aktiva kontrollpunkten', 'neutral-evidenskontrollpunkten efter målåret', 'fördröjning i övervakning och publicering', 'bredare än antibiotikaresistens', 'inget av dessa datum förutsäger en säker behandlingskollaps'], ['huvudtimern', 'aktuell timer', 'standardtimer', 'permanent timer']],
+            'pl' => [['tytuł ma charakter redakcyjny', 'aktywnym punktem kontrolnym', 'neutralnym punktem oceny dowodów po terminie celu', 'opóźnieniach nadzoru i publikacji', 'szersza niż oporność na antybiotyki', 'żadna z tych dat nie przewiduje pewnego załamania leczenia'], ['główny licznik', 'bieżący licznik', 'domyślny licznik', 'stały licznik']],
         ];
         foreach (self::LOCALES as $locale) {
-            $description = strtolower($countdown->description[$locale]);
+            $description = mb_strtolower($countdown->description[$locale], 'UTF-8');
             foreach (array_merge(['pessimistic 2029', 'neutral 2032', 'optimistic 2036'], $descriptionContract[$locale][0]) as $marker) {
                 $this->assertStringContainsString($marker, $description, $locale);
             }

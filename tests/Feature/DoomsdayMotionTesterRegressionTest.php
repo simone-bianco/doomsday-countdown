@@ -49,8 +49,8 @@ final class DoomsdayMotionTesterRegressionTest extends TestCase
         $this->assertSame('2.3.0', $lockedPackages['node_modules/motion-v']['version'] ?? null);
 
         foreach (['@formkit/auto-animate', 'gsap', 'animejs', 'anime.js', 'lottie-web', 'unplugin-vue-components'] as $forbiddenPackage) {
-            $this->assertArrayNotHasKey($forbiddenPackage, $declaredPackages, 'Forbidden animation dependency declared: ' . $forbiddenPackage);
-            $this->assertArrayNotHasKey('node_modules/' . $forbiddenPackage, $lockedPackages, 'Forbidden animation package locked: ' . $forbiddenPackage);
+            $this->assertArrayNotHasKey($forbiddenPackage, $declaredPackages, 'Forbidden animation dependency declared: '.$forbiddenPackage);
+            $this->assertArrayNotHasKey('node_modules/'.$forbiddenPackage, $lockedPackages, 'Forbidden animation package locked: '.$forbiddenPackage);
         }
 
         $runtimeSources = $this->readSourcesUnder([
@@ -62,7 +62,7 @@ final class DoomsdayMotionTesterRegressionTest extends TestCase
         ]);
 
         foreach (['@formkit/auto-animate', 'AutoAnimate', 'auto-animate', "from 'gsap'", 'from "gsap"', 'unplugin-vue-components', 'motion.button', '<motion.button'] as $forbiddenRuntimePattern) {
-            $this->assertStringNotContainsString($forbiddenRuntimePattern, $runtimeSources, 'Forbidden animation/runtime pattern found: ' . $forbiddenRuntimePattern);
+            $this->assertStringNotContainsString($forbiddenRuntimePattern, $runtimeSources, 'Forbidden animation/runtime pattern found: '.$forbiddenRuntimePattern);
         }
     }
 
@@ -74,6 +74,7 @@ final class DoomsdayMotionTesterRegressionTest extends TestCase
         $selected = $this->readSource('resources/js/Components/Doomsday/SelectedMasterDetail.vue');
         $detail = $this->readSource('resources/js/Components/Doomsday/DetailPanel.vue');
         $sidebar = $this->readSource('resources/js/Components/Doomsday/SidebarCards.vue');
+        $carousel = $this->readSource('resources/js/Components/Doomsday/LatestNewsCarousel.vue');
 
         $this->assertStringContainsString("import { useReducedMotion } from 'motion-v';", $motion);
         $this->assertStringContainsString('export const reducedMotionFallback = {', $motion);
@@ -96,18 +97,32 @@ final class DoomsdayMotionTesterRegressionTest extends TestCase
         $this->assertStringContainsString('pointer-events-none absolute inset-y-0 left-0 z-20 w-[2px] bg-ui-primary', $card);
         $this->assertStringNotContainsString('border-l', $card);
 
-        $this->assertStringContainsString('h-[calc(100vh-64px)] min-h-0', $selected);
+        $this->assertStringContainsString('h-[calc(100dvh-64px)] min-h-0', $selected);
+        $this->assertStringNotContainsString('h-[calc(100vh-64px)]', $selected);
         $this->assertStringContainsString('doomsday-scrollbar grid min-h-0 min-w-0 content-start gap-5 overflow-y-auto', $selected);
         $this->assertStringContainsString('doomsday-card flex h-full min-h-0 flex-col overflow-hidden', $detail);
         $this->assertStringContainsString('doomsday-scrollbar grid min-h-0 min-w-0 flex-1 auto-rows-max gap-5 overflow-y-auto overscroll-contain', $detail);
         $this->assertStringContainsString('<StatisticsSection v-if="statisticsSection" :section="statisticsSection" />', $detail);
         $this->assertStringContainsString('tabContentKey', $detail);
 
-        $this->assertStringContainsString("import { Card, Image, Button } from '@simone-bianco/vue-ui-components';", $sidebar);
-        $this->assertStringContainsString('<Link :href="featured.url" class="block w-full sm:w-fit">', $sidebar);
-        $this->assertStringContainsString('<Button', $sidebar);
-        $this->assertStringContainsString(':icon="ChevronRight"', $sidebar);
-        $this->assertStringContainsString(':while-hover="ctaHoverMotion"', $sidebar);
+        $this->assertStringContainsString('<LatestNewsCarousel :items="sidebar.latest_news" />', $sidebar);
+        $this->assertStringContainsString('<PublicSignalActivityCard :activity="sidebar.signal_activity" />', $sidebar);
+        $this->assertStringContainsString("import { AnimatePresence, motion } from 'motion-v';", $carousel);
+        $this->assertStringContainsString('useDoomsdayReducedMotion', $carousel);
+        $this->assertStringContainsString('autoplayIntervalMs: 7000', $carousel);
+        $this->assertStringContainsString('navigationDirection.value = direction', $carousel);
+        $this->assertStringContainsString('forwardDistance <= backwardDistance ? 1 : -1', $carousel);
+        $this->assertStringContainsString('<AnimatePresence mode="wait" :initial="false">', $carousel);
+        $this->assertStringContainsString(':initial="slideInitial"', $carousel);
+        $this->assertStringContainsString(':animate="slideAnimate"', $carousel);
+        $this->assertStringContainsString(':exit="slideExit"', $carousel);
+        $this->assertStringContainsString('const slideInitial = computed(() => reducedMotion.value', $carousel);
+        $this->assertStringContainsString('? { opacity: 0 }', $carousel);
+        $this->assertStringContainsString('onBeforeUnmount', $carousel);
+        $this->assertStringContainsString('clearAutoplay()', $carousel);
+        $this->assertStringContainsString('@keydown.left.prevent="previous"', $carousel);
+        $this->assertStringContainsString('@keydown.right.prevent="next"', $carousel);
+        $this->assertStringNotContainsString('v-show', $carousel);
     }
 
     public function test_motion_runtime_sources_do_not_reintroduce_url_changing_apis_or_layout_animation_tokens(): void
@@ -121,13 +136,15 @@ final class DoomsdayMotionTesterRegressionTest extends TestCase
             'resources/js/Components/Doomsday/MobileDetailView.vue',
             'resources/js/Components/Doomsday/DetailPanel.vue',
             'resources/js/Components/Doomsday/SidebarCards.vue',
+            'resources/js/Components/Doomsday/LatestNewsCarousel.vue',
+            'resources/js/Components/Doomsday/PublicSignalActivityCard.vue',
             'resources/js/Composables/useDoomsdaySelection.ts',
             'resources/js/Composables/useDoomsdayLazySections.ts',
             'resources/js/animations/doomsdayMotion.ts',
         ]);
 
         foreach (['router.visit', 'router.reload', 'router.prefetch', 'history.pushState', 'window.location', 'window.fetch', 'prefetch cache-for="2m"'] as $forbiddenNavigation) {
-            $this->assertStringNotContainsString($forbiddenNavigation, $navigationRuntimeSources, 'Forbidden URL-changing runtime API found: ' . $forbiddenNavigation);
+            $this->assertStringNotContainsString($forbiddenNavigation, $navigationRuntimeSources, 'Forbidden URL-changing runtime API found: '.$forbiddenNavigation);
         }
 
         $motionAnimatedSurfaces = $this->readSourcesUnder([
@@ -138,12 +155,11 @@ final class DoomsdayMotionTesterRegressionTest extends TestCase
             'resources/js/Components/Doomsday/SelectedMasterDetail.vue',
             'resources/js/Components/Doomsday/MobileDetailView.vue',
             'resources/js/Components/Doomsday/DetailPanel.vue',
-            'resources/js/Components/Doomsday/SidebarCards.vue',
             'resources/js/animations/doomsdayMotion.ts',
         ]);
 
         foreach (['height:', 'width:', 'gridTemplate', 'grid-template', 'layout:'] as $forbiddenLayoutAnimation) {
-            $this->assertStringNotContainsString($forbiddenLayoutAnimation, $motionAnimatedSurfaces, 'Forbidden layout animation token found in motion-touched surfaces: ' . $forbiddenLayoutAnimation);
+            $this->assertStringNotContainsString($forbiddenLayoutAnimation, $motionAnimatedSurfaces, 'Forbidden layout animation token found in motion-touched surfaces: '.$forbiddenLayoutAnimation);
         }
     }
 
@@ -153,7 +169,7 @@ final class DoomsdayMotionTesterRegressionTest extends TestCase
     }
 
     /**
-     * @param list<string> $paths
+     * @param  list<string>  $paths
      */
     private function readSourcesUnder(array $paths): string
     {
@@ -163,7 +179,8 @@ final class DoomsdayMotionTesterRegressionTest extends TestCase
             $absolutePath = base_path($path);
 
             if (is_file($absolutePath)) {
-                $content .= "\n/* {$path} */\n" . (string) file_get_contents($absolutePath);
+                $content .= "\n/* {$path} */\n".(string) file_get_contents($absolutePath);
+
                 continue;
             }
 
@@ -173,7 +190,7 @@ final class DoomsdayMotionTesterRegressionTest extends TestCase
                     continue;
                 }
 
-                $content .= "\n/* " . $file->getPathname() . " */\n" . (string) file_get_contents($file->getPathname());
+                $content .= "\n/* ".$file->getPathname()." */\n".(string) file_get_contents($file->getPathname());
             }
         }
 

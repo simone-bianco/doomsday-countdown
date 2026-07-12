@@ -12,45 +12,151 @@ final class DoomsdayLatestUpdateCtaQaTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_latest_update_cta_uses_doomsday_button_styling_and_component_icon_contract(): void
+    public function test_home_consumes_the_generated_sidebar_contract_without_a_featured_countdown(): void
     {
+        $generated = (string) file_get_contents(base_path('resources/js/types/generated.d.ts'));
+        $home = (string) file_get_contents(base_path('resources/js/Pages/Doomsday/Home.vue'));
         $sidebar = (string) file_get_contents(base_path('resources/js/Components/Doomsday/SidebarCards.vue'));
 
-        $this->assertStringContainsString("import { Link } from '@inertiajs/vue3';", $sidebar);
-        $this->assertStringContainsString("import { Card, Image, Button } from '@simone-bianco/vue-ui-components';", $sidebar);
-        $this->assertStringContainsString("import { ChevronRight } from 'lucide-vue-next';", $sidebar);
-        $this->assertStringContainsString('<Link :href="featured.url" class="block w-full sm:w-fit">', $sidebar);
-        $this->assertStringContainsString('variant="secondary"', $sidebar);
-        $this->assertStringContainsString('size="md"', $sidebar);
-        $this->assertStringContainsString('icon-position="right"', $sidebar);
-        $this->assertStringContainsString(':icon="ChevronRight"', $sidebar);
-        $this->assertStringContainsString('ui="{', $sidebar);
-        $this->assertStringContainsString('group doomsday-display w-full border-ui-primary/50 bg-ui-primary/10', $sidebar);
-        $this->assertStringContainsString('text-[0.7rem] font-bold uppercase tracking-[0.12em] text-ui-primary', $sidebar);
-        $this->assertStringContainsString('shadow-[0_0_18px_rgba(255,42,35,0.16)]', $sidebar);
-        $this->assertStringContainsString('hover:border-ui-primary hover:bg-ui-primary/20 hover:text-white', $sidebar);
-        $this->assertStringContainsString('hover:shadow-[0_0_26px_rgba(255,42,35,0.28)]', $sidebar);
-        $this->assertStringContainsString('sm:w-auto', $sidebar);
-        $this->assertStringContainsString("icon: 'transition-transform group-hover:translate-x-0.5'", $sidebar);
-        $this->assertStringContainsString("{{ t('viewDetails') }}", $sidebar);
-    }
-
-    public function test_latest_update_cta_scoped_file_has_no_icon_or_navigation_regression_patterns(): void
-    {
-        $sidebar = (string) file_get_contents(base_path('resources/js/Components/Doomsday/SidebarCards.vue'));
-
-        foreach (['icon="chevron-right"', 'icon="arrow-right"', 'router.visit', 'router.reload', 'router.prefetch', 'history.pushState', 'window.location', 'window.fetch', 'prefetch cache-for="2m"'] as $forbidden) {
-            $this->assertStringNotContainsString($forbidden, $sidebar, 'Sidebar CTA regression: '.$forbidden);
+        foreach (['sidebar: HomeSidebarData;', 'export type HomeSidebarData = {', 'export type LatestNewsItemData = {', 'export type NewsActivityData = {'] as $contract) {
+            $this->assertStringContainsString($contract, $generated);
         }
 
-        $linkOffset = strpos($sidebar, '<Link :href="featured.url" class="block w-full sm:w-fit">');
-        $buttonOffset = strpos($sidebar, '<Button');
-        $this->assertIsInt($linkOffset);
-        $this->assertIsInt($buttonOffset);
-        $this->assertLessThan($buttonOffset, $linkOffset, 'CTA Link should wrap the styled Button.');
+        $this->assertStringContainsString(':sidebar="page.sidebar"', $home);
+        $this->assertStringNotContainsString('page.countdowns[0]', $home);
+        $this->assertStringNotContainsString('const featured', $home);
+
+        $this->assertStringContainsString('readonly sidebar: HomeSidebarData', $sidebar);
+        $this->assertStringContainsString('<LatestNewsCarousel :items="sidebar.latest_news" />', $sidebar);
+        $this->assertStringContainsString('<PublicSignalActivityCard :activity="sidebar.signal_activity" />', $sidebar);
+        $this->assertStringNotContainsString('readonly featured:', $sidebar);
     }
 
-    public function test_latest_update_cta_does_not_break_public_taiwan_route_or_prior_visual_contracts(): void
+    public function test_latest_news_carousel_has_stable_geometry_skeleton_primary_link_and_accessible_controls(): void
+    {
+        $carousel = (string) file_get_contents(base_path('resources/js/Components/Doomsday/LatestNewsCarousel.vue'));
+
+        foreach ([
+            'readonly items: readonly LatestNewsItemData[]',
+            'autoplayIntervalMs: 7000',
+            "import { AnimatePresence, motion } from 'motion-v';",
+            'Button, Card, Image, SkeletonLoader',
+            "const slideViewportClass = 'relative min-h-[32rem] overflow-hidden sm:min-h-[35.5rem]'",
+            "const slideContentClass = 'grid grid-rows-[1.25rem_3.5rem_4.5rem_1.5rem]",
+            'v-else-if="hasPendingSlide"',
+            ':animated="!reducedMotion"',
+            'loading-type="skeleton"',
+            'aspect-ratio="56.25%"',
+            'line-clamp-2 min-h-[3.5rem]',
+            'line-clamp-3 min-h-[4.5rem]',
+            '<AnimatePresence mode="wait" :initial="false">',
+            '<motion.article',
+            ':initial="slideInitial"',
+            ':exit="slideExit"',
+            ":is=\"activeExternalUrl ? 'a' : Link\"",
+            ':href="activeExternalUrl ?? activeItem.countdown_url"',
+            ":rel=\"activeExternalUrl ? 'noopener noreferrer' : undefined\"",
+            'pointer-events-none absolute inset-x-0 top-0 z-20 aspect-video',
+            'h-11 min-h-11 w-11 min-w-11',
+            ':aria-current="index === currentIndex ? \'true\' : undefined"',
+            '@click="goTo(index)"',
+            'v-if="!items.length"',
+            'v-if="hasMultipleItems"',
+            ':icon="ChevronLeft"',
+            ':icon="ChevronRight"',
+            'role="region"',
+            'aria-roledescription="carousel"',
+            'aria-roledescription="slide"',
+        ] as $contract) {
+            $this->assertStringContainsString($contract, $carousel, 'Missing modern carousel contract: '.$contract);
+        }
+
+        $primaryLinkStart = strpos($carousel, '<component');
+        $primaryLinkEnd = strpos($carousel, '</component>');
+        $arrowOverlayStart = strpos($carousel, '<div v-if="hasMultipleItems" class="pointer-events-none absolute');
+        $dotsStart = strpos($carousel, '<div :class="paginationClass" role="group"');
+        $this->assertIsInt($primaryLinkStart);
+        $this->assertIsInt($primaryLinkEnd);
+        $this->assertIsInt($arrowOverlayStart);
+        $this->assertIsInt($dotsStart);
+        $this->assertGreaterThan($primaryLinkEnd, $arrowOverlayStart, 'Arrow controls must remain outside the primary slide link.');
+        $this->assertGreaterThan($primaryLinkEnd, $dotsStart, 'Dot controls must remain outside the primary slide link.');
+
+        foreach (['v-show', '{{ currentIndex + 1 }} / {{ items.length }}', '<ExternalLink', "{{ t('openSource') }}", '<Link v-else', '<button', 'setTimeout(', 'window.fetch', 'axios.'] as $forbidden) {
+            $this->assertStringNotContainsString($forbidden, $carousel, 'Obsolete or unsafe carousel marker: '.$forbidden);
+        }
+    }
+
+    public function test_latest_news_carousel_preserves_autoplay_pause_keyboard_and_cleanup_contracts(): void
+    {
+        $carousel = (string) file_get_contents(base_path('resources/js/Components/Doomsday/LatestNewsCarousel.vue'));
+
+        foreach ([
+            'useDoomsdayReducedMotion',
+            '!reducedMotion.value',
+            'setInterval(() => advance(1), props.autoplayIntervalMs)',
+            "document.addEventListener('visibilitychange', handleVisibilityChange)",
+            "document.removeEventListener('visibilitychange', handleVisibilityChange)",
+            'onBeforeUnmount',
+            'clearAutoplay()',
+            '@mouseenter="hoverPaused = true"',
+            '@mouseleave="hoverPaused = false"',
+            '@focusin="focusPaused = true"',
+            '@focusout="handleFocusOut"',
+            '@keydown.left.prevent="previous"',
+            '@keydown.right.prevent="next"',
+            'navigationDirection.value = direction',
+            'forwardDistance <= backwardDistance ? 1 : -1',
+            'const slideInitial = computed(() => reducedMotion.value',
+            '? { opacity: 0 }',
+            'const slideTransition = computed(() => reducedMotion.value',
+            '? { duration: 0.12 }',
+        ] as $contract) {
+            $this->assertStringContainsString($contract, $carousel, 'Missing lifecycle or motion contract: '.$contract);
+        }
+    }
+
+    public function test_public_signal_activity_uses_backend_buckets_without_risk_score_semantics(): void
+    {
+        $activity = (string) file_get_contents(base_path('resources/js/Components/Doomsday/PublicSignalActivityCard.vue'));
+        $translations = (string) file_get_contents(base_path('resources/js/i18n/index.ts'));
+
+        foreach ([
+            'readonly activity: NewsActivityData',
+            'props.activity.bucket_counts',
+            'props.activity.bucket_labels',
+            '{{ activity.total_items }}',
+            '{{ activity.unique_sources }}',
+            'activity.latest_published_at',
+            'activity.top_countdown_title',
+            'activity.top_countdown_count',
+            "t('publicSignalActivityDisclaimer')",
+            'v-if="!hasActivity"',
+        ] as $contract) {
+            $this->assertStringContainsString($contract, $activity, 'Missing activity contract: '.$contract);
+        }
+
+        $this->assertStringContainsString('Published items from monitored public sources. Volume measures source activity, not event probability.', $translations);
+        $this->assertStringContainsString('Elementi pubblicati da fonti pubbliche monitorate. Il volume misura l’attività delle fonti, non la probabilità di un evento.', $translations);
+
+        foreach (['18.0', '/100', 'Global Risk Index', 'Global risk index', "t('riskIndex')", 'probability_score', 'confidence_score'] as $forbidden) {
+            $this->assertStringNotContainsString($forbidden, $activity.$translations, 'Misleading activity marker: '.$forbidden);
+        }
+    }
+
+    public function test_old_latest_update_and_hardcoded_risk_ui_are_removed(): void
+    {
+        $home = (string) file_get_contents(base_path('resources/js/Pages/Doomsday/Home.vue'));
+        $sidebar = (string) file_get_contents(base_path('resources/js/Components/Doomsday/SidebarCards.vue'));
+        $translations = (string) file_get_contents(base_path('resources/js/i18n/index.ts'));
+        $source = $home.$sidebar.$translations;
+
+        foreach (['18.0', '/100', 'Global Risk Index', 'Global risk index', 'Daily update', 'Aggiornamento giornaliero', 'dailyUpdate', 'riskIndex', 'latestUpdate', 'page.countdowns[0]'] as $forbidden) {
+            $this->assertStringNotContainsString($forbidden, $source, 'Obsolete Home sidebar marker: '.$forbidden);
+        }
+    }
+
+    public function test_sidebar_redesign_does_not_break_public_taiwan_route_or_selection_runtime(): void
     {
         $this->seed(DoomsdaySeeder::class);
 
@@ -63,26 +169,6 @@ final class DoomsdayLatestUpdateCtaQaTest extends TestCase
             ->assertOk()
             ->assertSee('Taiwan Invasion');
 
-        $card = (string) file_get_contents(base_path('resources/js/Components/Doomsday/CountdownCard.vue'));
-        $detail = (string) file_get_contents(base_path('resources/js/Components/Doomsday/DetailPanel.vue'));
-        $chart = (string) file_get_contents(base_path('resources/js/Components/Doomsday/VisualizationChart.vue'));
-        $news = (string) file_get_contents(base_path('resources/js/Components/Doomsday/NewsSection.vue'));
-        $initiatives = (string) file_get_contents(base_path('resources/js/Components/Doomsday/InitiativesSection.vue'));
-
-        $this->assertStringContainsString('pointer-events-none absolute inset-y-0 left-0 z-20 w-[2px] bg-ui-primary', $card);
-        $this->assertStringContainsString('border-t border-white/10', $card);
-        $this->assertStringNotContainsString('border-l', $card);
-        $this->assertStringNotContainsString('<Link', $card);
-        $this->assertStringContainsString('flex h-full min-h-0 flex-col overflow-hidden', $detail);
-        $this->assertStringContainsString('overflow-y-auto overscroll-contain', $detail);
-        $this->assertStringContainsString('h-[22rem] min-w-[600px] w-full', $chart);
-        $this->assertStringNotContainsString('h-72', $chart);
-        $this->assertStringContainsString(':href="item.source_url"', $news);
-        $this->assertStringContainsString(':href="item.url"', $initiatives);
-    }
-
-    public function test_latest_update_cta_polish_preserves_no_url_selection_runtime_contract(): void
-    {
         $selection = (string) file_get_contents(base_path('resources/js/Composables/useDoomsdaySelection.ts'));
         $lazy = (string) file_get_contents(base_path('resources/js/Composables/useDoomsdayLazySections.ts'));
         $runtime = $selection.$lazy;
@@ -91,7 +177,6 @@ final class DoomsdayLatestUpdateCtaQaTest extends TestCase
         $this->assertStringContainsString("route('countdowns.data.overview'", $selection);
         $this->assertStringContainsString('pendingSelectedSlug.value === requestedSlug', $selection);
         $this->assertStringContainsString('axios.get<{ data: SectionDataByKey[K] }>', $lazy);
-        $this->assertStringContainsString('route(sectionRouteByKey[key]', $lazy);
         $this->assertStringContainsString('countdownSlug.value === requestedSlug', $lazy);
 
         foreach (['router.visit', 'router.reload', 'router.prefetch', 'history.pushState', 'window.location', 'window.fetch'] as $forbidden) {

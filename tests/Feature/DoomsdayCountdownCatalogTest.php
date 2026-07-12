@@ -25,6 +25,26 @@ final class DoomsdayCountdownCatalogTest extends TestCase
         'unlivable-heat' => 'images/doomsday/extreme_heat_breakpoint_separate.png',
     ];
 
+    /** @var array<int, string> */
+    private const DISPLAY_ORDER = [
+        'europe-war-countdown',
+        'ai-job-apocalypse',
+        'taiwan-invasion',
+        'sixth-mass-extinction',
+        'antibiotic-apocalypse',
+        'unlivable-heat',
+    ];
+
+    /** @var array<int, string> */
+    private const ROLLOVER_ORDER = [
+        'ai-job-apocalypse',
+        'taiwan-invasion',
+        'sixth-mass-extinction',
+        'antibiotic-apocalypse',
+        'europe-war-countdown',
+        'unlivable-heat',
+    ];
+
     /** @var array<string, string> */
     private const ACTIVE_TARGETS = [
         'taiwan-invasion' => '2027-12-31 23:59:59',
@@ -71,7 +91,7 @@ final class DoomsdayCountdownCatalogTest extends TestCase
         $payload = $service->indexPayload('en');
         $items = collect($payload['countdowns'])->keyBy('slug');
 
-        $this->assertSame(array_keys(self::CATALOG), array_column($payload['countdowns'], 'slug'));
+        $this->assertSame(self::DISPLAY_ORDER, array_column($payload['countdowns'], 'slug'));
 
         foreach (self::ACTIVE_TARGETS as $slug => $target) {
             $item = $items->get($slug);
@@ -101,6 +121,10 @@ final class DoomsdayCountdownCatalogTest extends TestCase
                 ->where('key', 'projection_curve');
             $this->assertCount(1, $canonicalCharts, $slug.':canonical projection curve');
         }
+
+        $this->travelTo(CarbonImmutable::parse('2027-04-01 00:00:00', 'UTC'));
+        $rolloverPayload = $service->indexPayload('en');
+        $this->assertSame(self::ROLLOVER_ORDER, array_column($rolloverPayload['countdowns'], 'slug'));
     }
 
     private function assertUtcTimestamp(string $expected, ?string $actual, string $message): void

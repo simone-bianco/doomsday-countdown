@@ -22,8 +22,7 @@ const props = defineProps<{
     readonly initiatives_section?: CountdownInitiativesSectionData | null;
 }>();
 
-const featured = computed(() => props.page.countdowns[0] ?? null);
-const hero = computed(() => props.page.hero as Record<string, string>);
+const hero = computed(() => props.page.hero as unknown as Record<string, string>);
 const initialSelectedCountdown = computed(() => props.selected_countdown ?? null);
 const currentLocale = computed(() => props.page.current_locale);
 const selection = useDoomsdaySelection(initialSelectedCountdown, currentLocale);
@@ -78,7 +77,7 @@ const pageStateMotion = computed(() => resolveMotionPreset(panelReveal, reducedM
                                 @select="selection.selectCountdown"
                             />
                         </div>
-                        <SidebarCards class="hidden lg:grid" :featured="featured" />
+                        <SidebarCards class="hidden lg:grid" :sidebar="page.sidebar" />
                     </div>
                     <footer class="mx-auto flex max-w-[1760px] items-center justify-between px-4 pb-8 text-xs text-ui-muted-foreground sm:px-7">
                         <span>All countdowns are editorial estimates based on public-source scenario data.</span>

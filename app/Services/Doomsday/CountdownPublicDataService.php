@@ -28,11 +28,14 @@ use App\Services\Doomsday\Copy\AboutPageCopy;
 use Carbon\CarbonImmutable;
 use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Str;
 
 final class CountdownPublicDataService
 {
-    public function __construct(private readonly AboutPageCopy $aboutPageCopy) {}
+    public function __construct(
+        private readonly AboutPageCopy $aboutPageCopy,
+        private readonly HomeSidebarDataService $homeSidebarDataService,
+        private readonly PublicContentResolver $contentResolver,
+    ) {}
 
     /** @var array<string, int> */
     private const ACTIVE_PROJECTION_PRIORITY = [
@@ -75,15 +78,17 @@ final class CountdownPublicDataService
             ->with(['projections'])
             ->orderBy('sort_order')
             ->get();
+        $items = $countdowns
+            ->map(fn (Countdown $countdown): CountdownIndexData => $this->toIndexItem($countdown, $locale, false, $at))
+            ->sortBy(fn (CountdownIndexData $item): array => $this->indexSortKey($item, $at))
+            ->values();
 
         return [
             'app_name' => 'Doomsday Countdown',
             'current_locale' => $locale,
             'hero' => $this->hero($locale),
-            'countdowns' => $countdowns
-                ->map(fn (Countdown $countdown): array => $this->toIndexItem($countdown, $locale, false, $at)->toArray())
-                ->values()
-                ->all(),
+            'countdowns' => $items->map(fn (CountdownIndexData $item): array => $item->toArray())->all(),
+            'sidebar' => $this->homeSidebarDataService->compose($locale, $at)->toArray(),
         ];
     }
 
@@ -108,6 +113,7 @@ final class CountdownPublicDataService
             'languages' => $this->languageOptionArrays($locale, $currentPath),
             'hero' => $indexPayload['hero'] ?? $this->hero($locale),
             'countdowns' => $countdowns,
+            'sidebar' => $indexPayload['sidebar'] ?? $this->homeSidebarDataService->empty(CarbonImmutable::now('UTC'))->toArray(),
             'selected_countdown' => $overview,
         ];
     }
@@ -255,6 +261,20 @@ final class CountdownPublicDataService
             : null;
     }
 
+    /** @return array{int, int, int, int} */
+    private function indexSortKey(CountdownIndexData $item, CarbonImmutable $at): array
+    {
+        $target = $item->timer->target_date?->utc();
+
+        if ($target === null) {
+            return [2, 0, $item->sort_order, $item->id];
+        }
+
+        return $target->greaterThanOrEqualTo($at)
+            ? [0, $target->getTimestamp(), $item->sort_order, $item->id]
+            : [1, -$target->getTimestamp(), $item->sort_order, $item->id];
+    }
+
     private function toIndexItem(Countdown $countdown, string $locale, bool $isSelected, CarbonImmutable $at): CountdownIndexData
     {
         $mainProjection = $this->activeProjection($countdown, $at);
@@ -370,11 +390,11 @@ final class CountdownPublicDataService
                 return new NewsData(
                     $news->locale->value,
                     $news->title,
-                    $this->previewExcerpt($news->excerpt),
+                    $this->contentResolver->excerpt($news->excerpt),
                     $news->content_type ?: 'article',
                     $news->source_name,
                     $news->source_url,
-                    $this->resolvedPreviewImageUrl($news->preview_image_url, $news->image_path, $countdown->image_path),
+                    $this->contentResolver->imageUrl($news->preview_image_url, $news->image_path, $countdown->image_path),
                     $news->embed_url,
                     $news->external_provider,
                     $news->published_at?->toImmutable(),
@@ -396,12 +416,12 @@ final class CountdownPublicDataService
                     $initiative->locale->value,
                     $initiative->type->value,
                     $initiative->title,
-                    $this->previewExcerpt($initiative->excerpt, $initiative->body),
+                    $this->contentResolver->excerpt($initiative->excerpt, $initiative->body),
                     $initiative->body,
                     $initiative->organization,
                     $initiative->url,
                     $initiative->content_type ?: 'article',
-                    $this->resolvedPreviewImageUrl($initiative->preview_image_url, $initiative->image_path, $countdown->image_path),
+                    $this->contentResolver->imageUrl($initiative->preview_image_url, $initiative->image_path, $countdown->image_path),
                     $initiative->embed_url,
                     $initiative->external_provider,
                     $initiative->cta_label,
@@ -412,41 +432,6 @@ final class CountdownPublicDataService
                 );
             })
             ->all();
-    }
-
-    private function previewExcerpt(?string $excerpt, ?string $fallback = null): string
-    {
-        $source = trim((string) $excerpt);
-        if ($source === '') {
-            $source = trim((string) $fallback);
-        }
-
-        $configuredLimit = config('doomsday.content.preview_excerpt_limit', 220);
-        $limit = is_numeric($configuredLimit) && (int) $configuredLimit > 0 ? (int) $configuredLimit : 220;
-
-        return Str::limit($source, $limit, '…');
-    }
-
-    private function resolvedPreviewImageUrl(?string $previewImageUrl, ?string $imagePath, string $fallbackPath): string
-    {
-        $previewImageUrl = trim((string) $previewImageUrl);
-        if ($this->isHttpsUrl($previewImageUrl)) {
-            return $previewImageUrl;
-        }
-
-        $imagePath = trim((string) $imagePath);
-        if ($imagePath !== '' && parse_url($imagePath, PHP_URL_SCHEME) === null && ! str_starts_with($imagePath, '//')) {
-            return asset($imagePath);
-        }
-
-        return asset($fallbackPath);
-    }
-
-    private function isHttpsUrl(string $url): bool
-    {
-        return $url !== ''
-            && filter_var($url, FILTER_VALIDATE_URL) !== false
-            && strtolower((string) parse_url($url, PHP_URL_SCHEME)) === 'https';
     }
 
     private function timer(?CarbonInterface $targetDate, string $locale): CountdownTimerData

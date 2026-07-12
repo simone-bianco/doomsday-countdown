@@ -89,6 +89,7 @@ current_locale: string;
 languages: Array<LanguageOptionData>;
 hero: Array<any>;
 countdowns: Array<CountdownIndexData>;
+sidebar: HomeSidebarData;
 selected_countdown: CountdownOverviewData | null;
 };
 export type CountdownSeverity = 'low' | 'moderate' | 'elevated' | 'high' | 'severe' | 'critical' | 'existential';
@@ -103,6 +104,10 @@ estimated_label: string;
 is_elapsed: boolean;
 };
 export type FreeLimitType = 'daily' | 'monthly' | 'none';
+export type HomeSidebarData = {
+latest_news: Array<LatestNewsItemData>;
+signal_activity: NewsActivityData;
+};
 export type InitiativeData = {
 locale: string;
 type: string;
@@ -131,9 +136,34 @@ flag: string;
 url: string;
 is_current: boolean;
 };
+export type LatestNewsItemData = {
+id: number;
+title: string;
+excerpt: string;
+content_type: string;
+source_name: string | null;
+source_url: string | null;
+image_url: string;
+published_at: string;
+countdown_slug: string;
+countdown_title: string;
+countdown_url: string;
+};
 export type LoginData = {
 email: string;
 password: string;
+};
+export type NewsActivityData = {
+window_start: string;
+window_end: string;
+bucket_labels: Array<any>;
+bucket_counts: Array<any>;
+total_items: number;
+unique_sources: number;
+latest_published_at: string | null;
+top_countdown_slug: string | null;
+top_countdown_title: string | null;
+top_countdown_count: number;
 };
 export type NewsData = {
 locale: string;

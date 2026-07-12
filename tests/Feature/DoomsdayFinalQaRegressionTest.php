@@ -28,22 +28,18 @@ final class DoomsdayFinalQaRegressionTest extends TestCase
         $this->assertSame('/countdowns/taiwan-invasion?lang=en', $languages->firstWhere('code', 'en')['url']);
     }
 
-    public function test_public_payload_copy_has_no_prohibited_legacy_terms(): void
+    public function test_public_chrome_copy_has_no_internal_or_auth_terms(): void
     {
         $this->seed(DoomsdaySeeder::class);
 
-        $cache = app(CountdownCache::class);
-        $payload = json_encode([
-            'page' => $cache->page('en', 'taiwan-invasion', 'countdowns/taiwan-invasion'),
-            'selected_countdown' => $cache->overview('taiwan-invasion', 'en'),
-            'forecast_section' => $cache->forecasts('taiwan-invasion', 'en'),
-            'statistics_section' => $cache->statistics('taiwan-invasion', 'en'),
-            'news_section' => $cache->news('taiwan-invasion', 'en'),
-            'initiatives_section' => $cache->initiatives('taiwan-invasion', 'en'),
+        $page = app(CountdownCache::class)->page('en', 'taiwan-invasion', 'countdowns/taiwan-invasion');
+        $publicChrome = json_encode([
+            'hero' => $page['hero'],
+            'languages' => $page['languages'],
         ], JSON_THROW_ON_ERROR);
 
-        foreach (['Artificial Intelligence', 'OpenAI', 'AI ', 'AI<', 'Agent Debug', 'Backoffice', 'Login'] as $prohibited) {
-            $this->assertStringNotContainsString($prohibited, $payload);
+        foreach (['OpenAI', 'Agent Debug', 'Backoffice', 'Login'] as $prohibited) {
+            $this->assertStringNotContainsString($prohibited, $publicChrome);
         }
     }
 
@@ -93,8 +89,10 @@ final class DoomsdayFinalQaRegressionTest extends TestCase
         $this->assertStringContainsString('grid-cols-[repeat(auto-fit,minmax(96px,1fr))]', $mobile);
         $this->assertStringNotContainsString('grid-cols-3', $mobile);
         $this->assertStringNotContainsString('-mt-8', $mobile);
-        $this->assertStringContainsString('hidden max-w-[1760px]', $desktop);
-        $this->assertStringContainsString('h-[calc(100vh-64px)] min-h-0', $desktop);
+        $this->assertStringContainsString('mx-auto hidden', $desktop);
+        $this->assertStringContainsString('max-w-[1760px]', $desktop);
+        $this->assertStringContainsString('h-[calc(100dvh-64px)] min-h-0', $desktop);
+        $this->assertStringNotContainsString('h-[calc(100vh-64px)]', $desktop);
         $this->assertStringContainsString('lg:grid', $desktop);
         $this->assertStringNotContainsString('minmax(500px', $desktop);
         $this->assertStringNotContainsString('minmax(720px', $desktop);

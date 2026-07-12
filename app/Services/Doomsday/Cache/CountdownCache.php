@@ -6,20 +6,41 @@ namespace App\Services\Doomsday\Cache;
 
 use App\Models\Countdown;
 use App\Services\Doomsday\CountdownPublicDataService;
+use App\Services\Doomsday\HomeSidebarDataService;
+use Carbon\CarbonImmutable;
+use Carbon\CarbonInterface;
 use Closure;
 use Illuminate\Support\Facades\Cache;
 
 final class CountdownCache
 {
-    public function __construct(private readonly CountdownPublicDataService $service)
-    {
-    }
+    private const ROLLOVER_ENVELOPE = '__doomsday_rollover_envelope';
+
+    private const ROLLOVER_PAYLOAD = '__doomsday_rollover_payload';
+
+    private const ROLLOVER_BOUNDARY = '__doomsday_rollover_boundary';
+
+    private const NULL_SENTINEL = '__doomsday_null';
+
+    public function __construct(
+        private readonly CountdownPublicDataService $service,
+        private readonly HomeSidebarDataService $homeSidebarDataService,
+    ) {}
 
     /** @return array<string, mixed> */
     public function page(string $locale, ?string $selectedSlug, string $currentPath): array
     {
         $locale = $this->service->normalizeLocale($locale);
-        $indexPayload = $this->remember(DoomsdayCacheKeys::index($locale), fn (): array => $this->service->indexPayload($locale));
+        $indexPayload = $this->rememberRolloverAware(
+            DoomsdayCacheKeys::index($locale),
+            fn (): array => $this->service->indexPayload($locale),
+            fn (array $payload): array => $this->indexTimerTargets($payload),
+            fn (CarbonImmutable $at): ?CarbonImmutable => $this->nearestBoundary([
+                $this->nextUtcWeekBoundary($at),
+                $this->homeSidebarDataService->earliestFutureVisiblePublication($locale, $at),
+            ]),
+            fn (?array $payload): bool => $this->isCompleteIndexPayload($payload),
+        ) ?? [];
 
         return $this->service->pageFromPayload($locale, $currentPath, $indexPayload, null);
     }
@@ -42,7 +63,11 @@ final class CountdownCache
     /** @return array<string, mixed>|null */
     public function overview(string $slug, string $locale): ?array
     {
-        return $this->rememberNullable(DoomsdayCacheKeys::overview($slug, $this->service->normalizeLocale($locale)), fn (): ?array => $this->service->overview($slug, $locale));
+        return $this->rememberRolloverAware(
+            DoomsdayCacheKeys::overview($slug, $this->service->normalizeLocale($locale)),
+            fn (): ?array => $this->service->overview($slug, $locale),
+            fn (array $payload): array => $this->overviewTimerTargets($payload),
+        );
     }
 
     /** @return array<string, mixed>|null */
@@ -121,6 +146,189 @@ final class CountdownCache
         return true;
     }
 
+    /**
+     * @param  Closure(): array<string, mixed>|null  $callback
+     * @param  Closure(array<string, mixed>): array<int, mixed>  $targetResolver
+     * @param  Closure(CarbonImmutable): CarbonImmutable|null  $additionalBoundaryResolver
+     * @param  Closure(array<string, mixed>|null): bool|null  $payloadValidator
+     * @return array<string, mixed>|null
+     */
+    private function rememberRolloverAware(
+        string $key,
+        Closure $callback,
+        Closure $targetResolver,
+        ?Closure $additionalBoundaryResolver = null,
+        ?Closure $payloadValidator = null,
+    ): ?array {
+        if (! $this->enabled()) {
+            return $callback();
+        }
+
+        $at = CarbonImmutable::now('UTC');
+        $cached = Cache::get($key);
+
+        if (is_array($cached) && $this->isRolloverEnvelope($cached)) {
+            if ($this->isRolloverEnvelopeValid($cached, $at)) {
+                $payload = $this->unwrapRolloverEnvelope($cached);
+                if ($payloadValidator === null || $payloadValidator($payload)) {
+                    return $payload;
+                }
+            }
+
+            Cache::forget($key);
+        } elseif ($cached !== null) {
+            Cache::forget($key);
+        }
+
+        $payload = $callback();
+        $timerBoundary = is_array($payload)
+            ? $this->rolloverBoundary($targetResolver($payload), $at)
+            : null;
+        $additionalBoundary = $additionalBoundaryResolver?->__invoke($at);
+        $boundary = $this->nearestBoundary([$timerBoundary, $additionalBoundary]);
+        $storedPayload = $payload ?? [self::NULL_SENTINEL => true];
+
+        Cache::put($key, [
+            self::ROLLOVER_ENVELOPE => true,
+            self::ROLLOVER_PAYLOAD => $storedPayload,
+            self::ROLLOVER_BOUNDARY => $boundary?->toIso8601String(),
+        ], $this->expiresAt($at, $boundary));
+
+        return $payload;
+    }
+
+    /** @param array<string, mixed> $value */
+    private function isRolloverEnvelope(array $value): bool
+    {
+        return ($value[self::ROLLOVER_ENVELOPE] ?? false) === true
+            && array_key_exists(self::ROLLOVER_PAYLOAD, $value)
+            && array_key_exists(self::ROLLOVER_BOUNDARY, $value);
+    }
+
+    /** @param array<string, mixed> $envelope */
+    private function isRolloverEnvelopeValid(array $envelope, CarbonImmutable $at): bool
+    {
+        $boundary = $envelope[self::ROLLOVER_BOUNDARY] ?? null;
+
+        if ($boundary === null) {
+            return true;
+        }
+
+        if (! is_string($boundary) || trim($boundary) === '') {
+            return false;
+        }
+
+        try {
+            return $at->lessThan(CarbonImmutable::parse($boundary)->utc());
+        } catch (\Throwable) {
+            return false;
+        }
+    }
+
+    /** @param array<string, mixed> $envelope @return array<string, mixed>|null */
+    private function unwrapRolloverEnvelope(array $envelope): ?array
+    {
+        $payload = $envelope[self::ROLLOVER_PAYLOAD] ?? null;
+
+        if (! is_array($payload) || ($payload[self::NULL_SENTINEL] ?? false) === true) {
+            return null;
+        }
+
+        return $payload;
+    }
+
+    /** @param array<string, mixed>|null $payload */
+    private function isCompleteIndexPayload(?array $payload): bool
+    {
+        $sidebar = $payload['sidebar'] ?? null;
+
+        return is_array($sidebar)
+            && is_array($sidebar['latest_news'] ?? null)
+            && is_array($sidebar['signal_activity'] ?? null);
+    }
+
+    /** @param array<string, mixed> $payload @return array<int, mixed> */
+    private function indexTimerTargets(array $payload): array
+    {
+        $targets = [];
+
+        foreach ($payload['countdowns'] ?? [] as $countdown) {
+            if (! is_array($countdown)) {
+                continue;
+            }
+
+            $targets[] = is_array($countdown['timer'] ?? null)
+                ? ($countdown['timer']['target_date'] ?? null)
+                : null;
+        }
+
+        return $targets;
+    }
+
+    /** @param array<string, mixed> $payload @return array<int, mixed> */
+    private function overviewTimerTargets(array $payload): array
+    {
+        return [
+            is_array($payload['timer'] ?? null)
+                ? ($payload['timer']['target_date'] ?? null)
+                : null,
+        ];
+    }
+
+    /** @param array<int, mixed> $targets */
+    private function rolloverBoundary(array $targets, CarbonImmutable $at): ?CarbonImmutable
+    {
+        $nearest = null;
+
+        foreach ($targets as $value) {
+            if (! is_string($value) || trim($value) === '') {
+                continue;
+            }
+
+            try {
+                $target = CarbonImmutable::parse($value)->utc();
+            } catch (\Throwable) {
+                continue;
+            }
+
+            if ($target->lessThan($at)) {
+                continue;
+            }
+
+            if (! $nearest instanceof CarbonImmutable || $target->lessThan($nearest)) {
+                $nearest = $target;
+            }
+        }
+
+        return $nearest?->addSecond();
+    }
+
+    /** @param array<int, CarbonImmutable|null> $boundaries */
+    private function nearestBoundary(array $boundaries): ?CarbonImmutable
+    {
+        return collect($boundaries)
+            ->filter(fn (?CarbonImmutable $boundary): bool => $boundary instanceof CarbonImmutable)
+            ->sortBy(fn (CarbonImmutable $boundary): int => $boundary->getTimestamp())
+            ->first();
+    }
+
+    private function nextUtcWeekBoundary(CarbonImmutable $at): CarbonImmutable
+    {
+        return $at->utc()
+            ->startOfWeek(CarbonInterface::MONDAY)
+            ->startOfDay()
+            ->addWeek();
+    }
+
+    private function expiresAt(CarbonImmutable $at, ?CarbonImmutable $boundary): CarbonImmutable
+    {
+        $configuredExpiry = $at->addSeconds($this->ttl());
+
+        return $boundary instanceof CarbonImmutable && $boundary->lessThan($configuredExpiry)
+            ? $boundary
+            : $configuredExpiry;
+    }
+
     /** @return array<string, mixed> */
     private function remember(string $key, Closure $callback): array
     {
@@ -138,10 +346,10 @@ final class CountdownCache
             return $callback();
         }
 
-        $sentinel = ['__doomsday_null' => true];
+        $sentinel = [self::NULL_SENTINEL => true];
         $value = Cache::remember($key, $this->ttl(), fn (): array => $callback() ?? $sentinel);
 
-        return ($value['__doomsday_null'] ?? false) === true ? null : $value;
+        return ($value[self::NULL_SENTINEL] ?? false) === true ? null : $value;
     }
 
     private function enabled(): bool

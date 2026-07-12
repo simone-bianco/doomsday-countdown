@@ -36,6 +36,8 @@ final class NewsObserver
 
     private function purge(News $news): void
     {
-        app(CountdownCache::class)->forgetCountdown($news->countdown);
+        $cache = app(CountdownCache::class);
+        $cache->forgetIndex();
+        $cache->forgetCountdown($news->countdown);
     }
 }

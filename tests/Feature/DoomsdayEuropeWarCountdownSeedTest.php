@@ -103,6 +103,7 @@ final class DoomsdayEuropeWarCountdownSeedTest extends TestCase
         $this->assertStringContainsString('No cited source identifies 31 March 2027', $pessimistic->methodology['source_alignment']);
         $this->assertNotNull($neutral);
         $this->assertNotNull($optimistic);
+        $this->assertEuropeActiveChainCopy($countdown, $neutral);
         $this->assertTrue($pessimistic->target_date->lessThan($neutral->target_date));
         $this->assertTrue($neutral->target_date->lessThan($optimistic->target_date));
         $this->assertSame($countdown->target_date?->utc()->format('Y-m-d H:i:s'), $neutral->target_date?->utc()->format('Y-m-d H:i:s'));
@@ -380,6 +381,56 @@ final class DoomsdayEuropeWarCountdownSeedTest extends TestCase
 
         $this->assertFalse(Countdown::query()->where('slug', self::SLUG)->exists());
         $this->assertTrue(Countdown::query()->whereKey($unrelated->getKey())->exists());
+    }
+
+    private function assertEuropeActiveChainCopy(Countdown $countdown, object $neutral): void
+    {
+        $guardrails = [
+            'en' => ['not a prediction of war', 'no cited source'],
+            'it' => ['non una previsione di guerra', 'nessuna fonte citata'],
+            'fr' => ['pas une prédiction de guerre', 'aucune source citée'],
+            'de' => ['keine kriegsprognose', 'keine zitierte quelle'],
+            'es' => ['no una predicción de guerra', 'ninguna fuente citada'],
+            'nl' => ['geen oorlogsvoorspelling', 'geen aangehaalde bron'],
+            'sv' => ['inte en krigsprognos', 'ingen citerad källa'],
+            'pl' => ['a nie prognoza wojny', 'żadna cytowana'],
+        ];
+        $obsolete = [
+            'en' => ['main timer', 'timer uses end-2030'],
+            'it' => ['timer principale', 'il timer usa fine 2030'],
+            'fr' => ['minuteur principal', 'le minuteur retient fin 2030'],
+            'de' => ['haupttimer', 'der timer nutzt ende 2030'],
+            'es' => ['temporizador principal', 'el temporizador usa finales de 2030'],
+            'nl' => ['hoofdtimer', 'de timer gebruikt eind 2030'],
+            'sv' => ['huvudtimern', 'timern använder slutet av 2030'],
+            'pl' => ['główny licznik', 'licznik wskazuje koniec 2030'],
+        ];
+        $service = app(CountdownPublicDataService::class);
+
+        foreach (self::LOCALES as $locale) {
+            $overview = $service->overview(self::SLUG, $locale);
+            $neutralPublic = collect($service->forecasts(self::SLUG, $locale)['projections'] ?? [])
+                ->firstWhere('type', ProjectionType::Neutral->value);
+            $fields = [$countdown->summary[$locale], $countdown->description[$locale], $neutral->summary[$locale]];
+
+            $this->assertSame($countdown->summary[$locale], $overview['summary'] ?? null, $locale.':summary');
+            $this->assertSame($countdown->description[$locale], $overview['description'] ?? null, $locale.':description');
+            $this->assertSame($neutral->summary[$locale], $neutralPublic['summary'] ?? null, $locale.':neutral summary');
+            $this->assertSame(ProjectionType::Pessimistic->value, $overview['main_projection']['type'] ?? null, $locale.':active type');
+
+            foreach ($fields as $field) {
+                $normalized = mb_strtolower($field);
+                foreach (['2027', '2030', '2035'] as $year) {
+                    $this->assertStringContainsString($year, $field, $locale.':'.$year);
+                }
+                foreach ($obsolete[$locale] as $marker) {
+                    $this->assertStringNotContainsString($marker, $normalized, $locale.':'.$marker);
+                }
+            }
+
+            $this->assertStringContainsString($guardrails[$locale][0], mb_strtolower($countdown->summary[$locale]), $locale.':guardrail');
+            $this->assertStringContainsString($guardrails[$locale][1], mb_strtolower($countdown->description[$locale]), $locale.':source guardrail');
+        }
     }
 
     private function assertYouTubeMedia(?string $url, ?string $externalId, ?string $embedUrl, ?string $previewImageUrl, ?string $provider): void

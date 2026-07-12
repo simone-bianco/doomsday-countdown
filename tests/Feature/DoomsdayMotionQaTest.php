@@ -20,8 +20,8 @@ final class DoomsdayMotionQaTest extends TestCase
         $this->assertSame('2.3.0', $lock['packages']['node_modules/motion-v']['version'] ?? null);
 
         foreach (['@formkit/auto-animate', 'gsap', 'auto-animate'] as $forbiddenDependency) {
-            $this->assertArrayNotHasKey($forbiddenDependency, $dependencies, 'Forbidden animation dependency present: ' . $forbiddenDependency);
-            $this->assertArrayNotHasKey('node_modules/' . $forbiddenDependency, $lock['packages'] ?? [], 'Forbidden animation lock entry present: ' . $forbiddenDependency);
+            $this->assertArrayNotHasKey($forbiddenDependency, $dependencies, 'Forbidden animation dependency present: '.$forbiddenDependency);
+            $this->assertArrayNotHasKey('node_modules/'.$forbiddenDependency, $lock['packages'] ?? [], 'Forbidden animation lock entry present: '.$forbiddenDependency);
         }
     }
 
@@ -35,7 +35,7 @@ final class DoomsdayMotionQaTest extends TestCase
         $this->assertLessThan(strpos($app, '.use(plugin)'), strpos($app, '.use(ZiggyVue)'));
 
         foreach (['MotionPlugin', '@formkit/auto-animate', 'AutoAnimate', 'auto-animate', 'gsap', 'unplugin-vue-components'] as $forbidden) {
-            $this->assertStringNotContainsString($forbidden, $app, 'Forbidden global animation/app-shell pattern found: ' . $forbidden);
+            $this->assertStringNotContainsString($forbidden, $app, 'Forbidden global animation/app-shell pattern found: '.$forbidden);
         }
     }
 
@@ -61,7 +61,7 @@ final class DoomsdayMotionQaTest extends TestCase
             'reducedMotionFallback',
             'cardStaggerDelay',
         ] as $requiredExport) {
-            $this->assertStringContainsString($requiredExport, $motion, 'Missing motion preset export/helper: ' . $requiredExport);
+            $this->assertStringContainsString($requiredExport, $motion, 'Missing motion preset export/helper: '.$requiredExport);
         }
 
         $this->assertStringContainsString("import { useReducedMotion } from 'motion-v';", $motion);
@@ -69,7 +69,7 @@ final class DoomsdayMotionQaTest extends TestCase
         $this->assertStringNotContainsString(' any', $motion);
 
         foreach (['height:', 'width:', 'gridTemplate', 'grid-template', 'layout:'] as $forbiddenLayoutAnimation) {
-            $this->assertStringNotContainsString($forbiddenLayoutAnimation, $motion, 'Layout animation token found in preset layer: ' . $forbiddenLayoutAnimation);
+            $this->assertStringNotContainsString($forbiddenLayoutAnimation, $motion, 'Layout animation token found in preset layer: '.$forbiddenLayoutAnimation);
         }
     }
 
@@ -83,8 +83,9 @@ final class DoomsdayMotionQaTest extends TestCase
         $mobile = $this->readSource('resources/js/Components/Doomsday/MobileDetailView.vue');
         $detail = $this->readSource('resources/js/Components/Doomsday/DetailPanel.vue');
         $sidebar = $this->readSource('resources/js/Components/Doomsday/SidebarCards.vue');
+        $carousel = $this->readSource('resources/js/Components/Doomsday/LatestNewsCarousel.vue');
 
-        foreach ([$home, $hero, $list, $card, $selected, $mobile, $detail, $sidebar] as $source) {
+        foreach ([$home, $hero, $list, $card, $selected, $mobile, $detail] as $source) {
             $this->assertStringContainsString("from 'motion-v'", $source);
             $this->assertStringContainsString('@/animations/doomsdayMotion', $source);
         }
@@ -106,17 +107,33 @@ final class DoomsdayMotionQaTest extends TestCase
         $this->assertStringContainsString('pointer-events-none absolute inset-y-0 left-0 z-20 w-[2px] bg-ui-primary', $card);
         $this->assertStringContainsString('<CountdownTimer :target-date="countdown.timer.target_date" :compact="true" :dense="compact" />', $card);
 
-        $this->assertStringContainsString('h-[calc(100vh-64px)] min-h-0', $selected);
+        $this->assertStringContainsString('h-[calc(100dvh-64px)] min-h-0', $selected);
+        $this->assertStringNotContainsString('h-[calc(100vh-64px)]', $selected);
         $this->assertStringContainsString('doomsday-scrollbar grid min-h-0 min-w-0 content-start gap-5 overflow-y-auto', $selected);
         $this->assertStringContainsString('min-h-screen bg-black pb-24 lg:hidden', $mobile);
         $this->assertStringContainsString('doomsday-scrollbar grid min-h-0 min-w-0 flex-1 auto-rows-max gap-5 overflow-y-auto overscroll-contain', $detail);
         $this->assertStringContainsString('tabContentKey', $detail);
         $this->assertStringContainsString('<StatisticsSection v-if="statisticsSection" :section="statisticsSection" />', $detail);
 
-        $this->assertStringContainsString('<Link :href="featured.url" class="block w-full sm:w-fit">', $sidebar);
-        $this->assertStringContainsString('<Button', $sidebar);
-        $this->assertStringContainsString(':icon="ChevronRight"', $sidebar);
-        $this->assertStringContainsString(':while-hover="ctaHoverMotion"', $sidebar);
+        $this->assertStringContainsString('<LatestNewsCarousel :items="sidebar.latest_news" />', $sidebar);
+        $this->assertStringContainsString('<PublicSignalActivityCard :activity="sidebar.signal_activity" />', $sidebar);
+        $this->assertStringContainsString("import { AnimatePresence, motion } from 'motion-v';", $carousel);
+        $this->assertStringContainsString('useDoomsdayReducedMotion', $carousel);
+        $this->assertStringContainsString('!reducedMotion.value', $carousel);
+        $this->assertStringContainsString('const navigationDirection = ref<SlideDirection>(1)', $carousel);
+        $this->assertStringContainsString(': { opacity: 0, x: navigationDirection.value * 56 }', $carousel);
+        $this->assertStringContainsString(': { opacity: 0, x: navigationDirection.value * -56 }', $carousel);
+        $this->assertStringContainsString('const slideInitial = computed(() => reducedMotion.value', $carousel);
+        $this->assertStringContainsString('? { opacity: 0 }', $carousel);
+        $this->assertStringContainsString('<AnimatePresence mode="wait" :initial="false">', $carousel);
+        $this->assertStringContainsString('<motion.article', $carousel);
+        $this->assertStringContainsString(':initial="slideInitial"', $carousel);
+        $this->assertStringContainsString(':exit="slideExit"', $carousel);
+        $this->assertStringContainsString("document.addEventListener('visibilitychange', handleVisibilityChange)", $carousel);
+        $this->assertStringContainsString("document.removeEventListener('visibilitychange', handleVisibilityChange)", $carousel);
+        $this->assertStringContainsString('@focusin="focusPaused = true"', $carousel);
+        $this->assertStringContainsString('@mouseenter="hoverPaused = true"', $carousel);
+        $this->assertStringNotContainsString('v-show', $carousel);
     }
 
     public function test_motion_changes_do_not_introduce_forbidden_navigation_native_controls_or_layout_animation(): void
@@ -130,16 +147,18 @@ final class DoomsdayMotionQaTest extends TestCase
             'resources/js/Components/Doomsday/MobileDetailView.vue',
             'resources/js/Components/Doomsday/DetailPanel.vue',
             'resources/js/Components/Doomsday/SidebarCards.vue',
+            'resources/js/Components/Doomsday/LatestNewsCarousel.vue',
+            'resources/js/Components/Doomsday/PublicSignalActivityCard.vue',
             'resources/js/Composables/useDoomsdaySelection.ts',
             'resources/js/Composables/useDoomsdayLazySections.ts',
         ]);
 
         foreach (['router.visit', 'router.reload', 'router.prefetch', 'history.pushState', 'window.location', 'window.fetch', '<motion.button', 'motion.button', '<button', 'icon="chevron', 'icon="arrow'] as $forbidden) {
-            $this->assertStringNotContainsString($forbidden, $runtime, 'Forbidden motion regression pattern found: ' . $forbidden);
+            $this->assertStringNotContainsString($forbidden, $runtime, 'Forbidden motion regression pattern found: '.$forbidden);
         }
 
         foreach (['height:', 'width:', 'gridTemplate', 'grid-template'] as $forbiddenLayoutAnimation) {
-            $this->assertStringNotContainsString($forbiddenLayoutAnimation, $runtime, 'Forbidden layout animation pattern found: ' . $forbiddenLayoutAnimation);
+            $this->assertStringNotContainsString($forbiddenLayoutAnimation, $runtime, 'Forbidden layout animation pattern found: '.$forbiddenLayoutAnimation);
         }
 
         $selection = $this->readSource('resources/js/Composables/useDoomsdaySelection.ts');
@@ -160,14 +179,14 @@ final class DoomsdayMotionQaTest extends TestCase
     }
 
     /**
-     * @param list<string> $paths
+     * @param  list<string>  $paths
      */
     private function readSources(array $paths): string
     {
         $content = '';
 
         foreach ($paths as $path) {
-            $content .= "\n/* {$path} */\n" . $this->readSource($path);
+            $content .= "\n/* {$path} */\n".$this->readSource($path);
         }
 
         return $content;
