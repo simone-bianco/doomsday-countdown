@@ -4,7 +4,7 @@ import { Head, router } from "@inertiajs/vue3";
 import { ArrowLeft } from "lucide-vue-next";
 import { h as _sfc_main$2, B as Button } from "../ssr.js";
 import { _ as _sfc_main$1 } from "./BackofficeShell-B2o2xGeb.js";
-import { _ as _sfc_main$3 } from "./VisualizationForm-VlsgyIuA.js";
+import { _ as _sfc_main$3 } from "./VisualizationForm-GrIMvRrD.js";
 import { u as useBackofficePath } from "./useBackofficePath-DWj-NlKi.js";
 import "@vue/server-renderer";
 import "clsx";
@@ -17,11 +17,11 @@ import "./useSmartForm-KUAiAz4w.js";
 import "./BackofficeSelectField-CNJDQmD8.js";
 import "./FormActions-Wl8L_zsK.js";
 import "./form-rules-C_jmOmBo.js";
-import "./VisualizationPreview-CK8ZO4Lm.js";
-import "./VisualizationChart-CgdRsG6k.js";
+import "./VisualizationPreview-CPwyEvMQ.js";
+import "./VisualizationChart-CkPtd6z_.js";
 import "./formHelpers-BXTPv_Pd.js";
 const _sfc_main = /* @__PURE__ */ defineComponent({
-  __name: "Edit",
+  __name: "Create",
   __ssrInlineRender: true,
   props: {
     countdown: {},
@@ -35,7 +35,7 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
     const activeSection = ref("countdowns");
     const returnTab = computed(() => props.projection === null ? "visualizations" : "projections");
     const returnUrl = computed(() => countdownEditUrl(returnTab.value));
-    const submitUrl = computed(() => props.projection === null ? `${normalizedBackofficePath.value}/countdowns/${props.countdown.id}/visualizations/${props.visualization.id}` : `${normalizedBackofficePath.value}/countdowns/${props.countdown.id}/projections/${props.projection.id}/visualizations/${props.visualization.id}`);
+    const submitUrl = computed(() => props.projection === null ? `${normalizedBackofficePath.value}/countdowns/${props.countdown.id}/visualizations` : `${normalizedBackofficePath.value}/countdowns/${props.countdown.id}/projections/${props.projection.id}/visualizations`);
     function countdownEditUrl(tab) {
       const params = new URLSearchParams(typeof window === "undefined" ? "" : window.location.search);
       params.set("tab", tab);
@@ -48,13 +48,13 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
       var _a;
       _push(`<!--[-->`);
       _push(ssrRenderComponent(unref(Head), {
-        title: `Edit visualization · ${__props.visualization.title.en ?? __props.visualization.key}`
+        title: `Create visualization · ${__props.countdown.slug}`
       }, null, _parent));
       _push(ssrRenderComponent(_sfc_main$1, {
         "active-section": activeSection.value,
         "onUpdate:activeSection": ($event) => activeSection.value = $event,
-        title: "Edit visualization",
-        subtitle: `Update ${__props.visualization.title.en ?? __props.visualization.key} for ${((_a = __props.projection) == null ? void 0 : _a.title.en) ?? __props.countdown.title.en ?? __props.countdown.slug}.`,
+        title: "Create visualization",
+        subtitle: `Add a visualization for ${((_a = __props.projection) == null ? void 0 : _a.title.en) ?? __props.countdown.title.en ?? __props.countdown.slug}.`,
         "backoffice-path": unref(backofficePath),
         counts: unref(counts)
       }, {
@@ -84,10 +84,10 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
                   _push3(`</div>`);
                   _push3(ssrRenderComponent(_sfc_main$3, {
                     options: __props.options,
-                    visualization: __props.visualization,
+                    visualization: __props.visualization ?? void 0,
                     "submit-url": submitUrl.value,
-                    method: "put",
-                    "submit-label": "Save visualization",
+                    method: "post",
+                    "submit-label": "Create visualization",
                     "show-top-actions": "",
                     onSaved: backToCountdown,
                     onCancel: backToCountdown
@@ -113,10 +113,10 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
                     ]),
                     createVNode(_sfc_main$3, {
                       options: __props.options,
-                      visualization: __props.visualization,
+                      visualization: __props.visualization ?? void 0,
                       "submit-url": submitUrl.value,
-                      method: "put",
-                      "submit-label": "Save visualization",
+                      method: "post",
+                      "submit-label": "Create visualization",
                       "show-top-actions": "",
                       onSaved: backToCountdown,
                       onCancel: backToCountdown
@@ -149,10 +149,10 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
                   ]),
                   createVNode(_sfc_main$3, {
                     options: __props.options,
-                    visualization: __props.visualization,
+                    visualization: __props.visualization ?? void 0,
                     "submit-url": submitUrl.value,
-                    method: "put",
-                    "submit-label": "Save visualization",
+                    method: "post",
+                    "submit-label": "Create visualization",
                     "show-top-actions": "",
                     onSaved: backToCountdown,
                     onCancel: backToCountdown
@@ -172,7 +172,7 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
 const _sfc_setup = _sfc_main.setup;
 _sfc_main.setup = (props, ctx) => {
   const ssrContext = useSSRContext();
-  (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("resources/js/Pages/Backoffice/Countdowns/Visualizations/Edit.vue");
+  (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("resources/js/Pages/Backoffice/Countdowns/Visualizations/Create.vue");
   return _sfc_setup ? _sfc_setup(props, ctx) : void 0;
 };
 export {

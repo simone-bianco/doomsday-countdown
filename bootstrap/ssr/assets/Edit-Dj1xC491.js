@@ -12,7 +12,7 @@ import { _ as _sfc_main$8 } from "./BackofficeSelectField-CNJDQmD8.js";
 import { _ as _sfc_main$c } from "./FormActions-Wl8L_zsK.js";
 import { S as SaveInitiativeDataRules, a as SaveNewsDataRules } from "./form-rules-C_jmOmBo.js";
 import { o as optionItems, i as isoDate, f as first } from "./formHelpers-BXTPv_Pd.js";
-import { _ as _sfc_main$i } from "./VisualizationPreview-CK8ZO4Lm.js";
+import { _ as _sfc_main$i } from "./VisualizationPreview-CPwyEvMQ.js";
 import { u as useBackofficePath } from "./useBackofficePath-DWj-NlKi.js";
 import "@vue/server-renderer";
 import "clsx";
@@ -20,7 +20,7 @@ import "tailwind-merge";
 import "vue-advanced-cropper";
 import "node:async_hooks";
 import "i18next";
-import "./VisualizationChart-CgdRsG6k.js";
+import "./VisualizationChart-CkPtd6z_.js";
 const _sfc_main$7 = /* @__PURE__ */ defineComponent({
   __name: "InitiativeForm",
   __ssrInlineRender: true,

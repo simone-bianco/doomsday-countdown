@@ -9,9 +9,12 @@ import type { CountdownStatisticsData, VisualizationData } from '@/types/generat
 
 type KpiItem = { readonly label: string; readonly value: string };
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
     readonly section: CountdownStatisticsData;
-}>();
+    readonly mobile?: boolean;
+}>(), {
+    mobile: false,
+});
 
 function isRecord(value: unknown): value is Record<string, unknown> {
     return typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -40,7 +43,9 @@ const otherVisualizations = computed(() => props.section.visualizations.filter((
             :payload="visualization.payload"
             :type="visualization.type"
             :sources="visualization.sources"
+            :explanation="visualization.explanation"
             :reasoning="visualization.reasoning"
+            :mobile="mobile"
         />
         <div v-else-if="visualization.type === 'kpi'" class="space-y-4">
             <div class="grid gap-3 sm:grid-cols-2">
@@ -49,7 +54,8 @@ const otherVisualizations = computed(() => props.section.visualizations.filter((
                     <p class="mt-2 text-xl text-white">{{ item.value }}</p>
                 </div>
             </div>
-            <VisualizationEvidence :sources="visualization.sources" :reasoning="visualization.reasoning" />
+            <VisualizationEvidence :sources="visualization.sources" :explanation="visualization.explanation"
+            :reasoning="visualization.reasoning" />
         </div>
         <p class="mt-4 text-sm text-ui-muted-foreground">{{ visualization.description }}</p>
     </Card>

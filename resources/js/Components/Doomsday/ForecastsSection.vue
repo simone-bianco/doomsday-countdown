@@ -4,9 +4,12 @@ import VisualizationChart from './VisualizationChart.vue';
 import { t } from '@/i18n';
 import type { CountdownForecastsData } from '@/types/generated';
 
-defineProps<{
+withDefaults(defineProps<{
     readonly section: CountdownForecastsData;
-}>();
+    readonly mobile?: boolean;
+}>(), {
+    mobile: false,
+});
 </script>
 
 <template>
@@ -17,7 +20,9 @@ defineProps<{
             :payload="section.projection_chart.payload"
             :type="section.projection_chart.type"
             :sources="section.projection_chart.sources"
+            :explanation="section.projection_chart.explanation"
             :reasoning="section.projection_chart.reasoning"
+            :mobile="mobile"
         />
         <p class="mt-4 text-sm text-ui-muted-foreground">{{ section.projection_chart?.description }}</p>
     </Card>

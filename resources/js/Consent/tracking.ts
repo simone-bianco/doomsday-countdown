@@ -5,6 +5,7 @@ import { initializeGoogleConsentDefaults, loadGoogleAnalytics, loadGoogleTagMana
 interface TrackingConfig {
     readonly googleTagManagerId: string;
     readonly googleAnalyticsId: string;
+    readonly loadGoogleTagManagerBeforeConsent: boolean;
 }
 
 let activeConsent: ConsentPreferences | null = null;
@@ -16,21 +17,16 @@ function trackingConfig(): TrackingConfig {
     return {
         googleTagManagerId: String(import.meta.env.VITE_GOOGLE_TAG_MANAGER_ID ?? '').trim(),
         googleAnalyticsId: String(import.meta.env.VITE_GOOGLE_ANALYTICS_ID ?? '').trim(),
+        loadGoogleTagManagerBeforeConsent: String(import.meta.env.VITE_GOOGLE_TAG_MANAGER_PRELOAD ?? '').trim().toLowerCase() === 'true',
     };
 }
 
-function shouldLoadTracking(consent: ConsentPreferences): boolean {
-    return consent.analytics || consent.marketing;
-}
-
 function loadAllowedGoogleTags(consent: ConsentPreferences): void {
-    if (!shouldLoadTracking(consent)) {
-        return;
-    }
-
     const config = trackingConfig();
 
-    if (config.googleTagManagerId !== '' && !googleTagManagerLoaded) {
+    const canLoadGoogleTagManager = config.loadGoogleTagManagerBeforeConsent || consent.analytics || consent.marketing;
+
+    if (config.googleTagManagerId !== '' && canLoadGoogleTagManager && !googleTagManagerLoaded) {
         loadGoogleTagManager(config.googleTagManagerId);
         googleTagManagerLoaded = true;
         return;
@@ -64,6 +60,7 @@ export function applyTrackingConsent(consent: ConsentPreferences): void {
 
 export function initializeConsentRuntime(): ConsentPreferences | null {
     initializeGoogleConsentDefaults();
+    loadAllowedGoogleTags(createConsentPreferences(EMPTY_CONSENT_DRAFT, 'rejected_all', null));
     const stored = readStoredConsent();
 
     if (stored !== null) {

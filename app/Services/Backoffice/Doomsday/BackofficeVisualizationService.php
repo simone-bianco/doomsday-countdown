@@ -57,6 +57,7 @@ final class BackofficeVisualizationService
             'type' => $data->type,
             'title' => $this->normalizer->localizedText($data->title, 'title'),
             'description' => $this->normalizer->optionalLocalizedText($data->description),
+            'explanation' => $this->normalizer->optionalLocalizedText($data->explanation),
             'sources' => array_values(array_unique(array_map(static fn (string $source): string => trim($source), $data->sources))),
             'reasoning' => $this->normalizer->localizedText($data->reasoning, 'reasoning'),
             'payload' => $data->payload,

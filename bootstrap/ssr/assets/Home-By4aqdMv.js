@@ -2,11 +2,11 @@ import { defineComponent, computed, mergeProps, useSSRContext, ref, onMounted, o
 import { ssrRenderAttrs, ssrRenderComponent, ssrRenderClass, ssrInterpolate, ssrRenderList, ssrGetDirectiveProps, ssrRenderStyle, ssrRenderVNode, ssrRenderAttr } from "vue/server-renderer";
 import { motion, vMotion, AnimatePresence } from "motion-v";
 import { usePage, Link, Head } from "@inertiajs/vue3";
-import { b as _sfc_main$l, c as _sfc_main$r } from "./PublicLayout-CMrE3VbF.js";
-import { h as _sfc_main$m, B as Button, t, j as _sfc_main$o, S as SkeletonLoader, u as currentLanguage } from "../ssr.js";
+import { h as _sfc_main$m, B as Button, t, j as _sfc_main$o, S as SkeletonLoader, u as currentLanguage, P } from "../ssr.js";
+import { b as _sfc_main$l, c as _sfc_main$r } from "./PublicLayout-Cg7TjPHG.js";
 import { u as useDoomsdayReducedMotion, r as resolveMotionPreset, s as selectedAccentPulse, d as selectedCardIdle, e as disabledMotionTarget, g as selectedCardActive, h as cardHover, i as cardPress, j as fastTransition, a as cardReveal, w as withMotionDelay, c as cardStaggerDelay, b as fadeIn, f as fadeUp, p as panelReveal, t as tabContent } from "./doomsdayMotion-D6KS_x2N.js";
-import { ChevronLeft, RefreshCw, ExternalLink, Share2, X, ChevronDown, Sparkles, Newspaper, Folder, FileText, ArrowLeft, Minimize2, Maximize2, ChevronRight, Activity, RadioTower, CalendarDays } from "lucide-vue-next";
-import { _ as _sfc_main$n, a as _sfc_main$p, b as _sfc_main$q } from "./VisualizationChart-CgdRsG6k.js";
+import { ChevronLeft, RefreshCw, ExternalLink, Share2, X, ChevronUp, ChevronDown, Sparkles, Newspaper, Folder, FileText, ArrowLeft, Minimize2, Maximize2, ChevronRight, Activity, RadioTower, CalendarDays } from "lucide-vue-next";
+import { _ as _sfc_main$n, a as _sfc_main$p, b as _sfc_main$q } from "./VisualizationChart-CkPtd6z_.js";
 import axios from "axios";
 import "@vue/server-renderer";
 import "clsx";
@@ -581,7 +581,8 @@ const _sfc_main$c = /* @__PURE__ */ defineComponent({
   __name: "ForecastsSection",
   __ssrInlineRender: true,
   props: {
-    section: {}
+    section: {},
+    mobile: { type: Boolean, default: false }
   },
   setup(__props) {
     return (_ctx, _push, _parent, _attrs) => {
@@ -596,7 +597,8 @@ const _sfc_main$c = /* @__PURE__ */ defineComponent({
                 payload: __props.section.projection_chart.payload,
                 type: __props.section.projection_chart.type,
                 sources: __props.section.projection_chart.sources,
-                reasoning: __props.section.projection_chart.reasoning
+                reasoning: __props.section.projection_chart.reasoning,
+                mobile: __props.mobile
               }, null, _parent2, _scopeId));
             } else {
               _push2(`<!---->`);
@@ -610,8 +612,9 @@ const _sfc_main$c = /* @__PURE__ */ defineComponent({
                 payload: __props.section.projection_chart.payload,
                 type: __props.section.projection_chart.type,
                 sources: __props.section.projection_chart.sources,
-                reasoning: __props.section.projection_chart.reasoning
-              }, null, 8, ["payload", "type", "sources", "reasoning"])) : createCommentVNode("", true),
+                reasoning: __props.section.projection_chart.reasoning,
+                mobile: __props.mobile
+              }, null, 8, ["payload", "type", "sources", "reasoning", "mobile"])) : createCommentVNode("", true),
               createVNode("p", { class: "mt-4 text-sm text-ui-muted-foreground" }, toDisplayString((_b = __props.section.projection_chart) == null ? void 0 : _b.description), 1)
             ];
           }
@@ -916,7 +919,8 @@ const _sfc_main$8 = /* @__PURE__ */ defineComponent({
   __name: "StatisticsSection",
   __ssrInlineRender: true,
   props: {
-    section: {}
+    section: {},
+    mobile: { type: Boolean, default: false }
   },
   setup(__props) {
     const props = __props;
@@ -950,7 +954,8 @@ const _sfc_main$8 = /* @__PURE__ */ defineComponent({
                   payload: visualization.payload,
                   type: visualization.type,
                   sources: visualization.sources,
-                  reasoning: visualization.reasoning
+                  reasoning: visualization.reasoning,
+                  mobile: __props.mobile
                 }, null, _parent2, _scopeId));
               } else if (visualization.type === "kpi") {
                 _push2(`<div class="space-y-4"${_scopeId}><div class="grid gap-3 sm:grid-cols-2"${_scopeId}><!--[-->`);
@@ -975,8 +980,9 @@ const _sfc_main$8 = /* @__PURE__ */ defineComponent({
                   payload: visualization.payload,
                   type: visualization.type,
                   sources: visualization.sources,
-                  reasoning: visualization.reasoning
-                }, null, 8, ["payload", "type", "sources", "reasoning"])) : visualization.type === "kpi" ? (openBlock(), createBlock("div", {
+                  reasoning: visualization.reasoning,
+                  mobile: __props.mobile
+                }, null, 8, ["payload", "type", "sources", "reasoning", "mobile"])) : visualization.type === "kpi" ? (openBlock(), createBlock("div", {
                   key: 1,
                   class: "space-y-4"
                 }, [
@@ -1124,6 +1130,8 @@ const _sfc_main$7 = /* @__PURE__ */ defineComponent({
     const props = __props;
     const emit = __emit;
     const activeTab = ref("overview");
+    const isOverviewExpanded = ref(false);
+    const touchOrigin = ref(null);
     const tabs = computed(() => [
       { value: "overview", label: t("overview") },
       { value: "forecasts", label: t("predictions") },
@@ -1131,6 +1139,7 @@ const _sfc_main$7 = /* @__PURE__ */ defineComponent({
       { value: "news", label: t("news") },
       { value: "initiatives", label: t("initiatives") }
     ]);
+    const activeTabIndex = computed(() => tabs.value.findIndex((tab) => tab.value === activeTab.value));
     const countdownSlug = computed(() => props.countdown.slug);
     const currentLocale = computed(() => props.currentLocale);
     const lazy = useDoomsdayLazySections(countdownSlug, currentLocale, {
@@ -1151,13 +1160,45 @@ const _sfc_main$7 = /* @__PURE__ */ defineComponent({
         void lazy.loadSection(value);
       }
     }
+    function handleTouchStart(event) {
+      if (event.touches.length !== 1) {
+        touchOrigin.value = null;
+        return;
+      }
+      const touch = event.touches.item(0);
+      touchOrigin.value = touch ? { x: touch.clientX, y: touch.clientY } : null;
+    }
+    function handleTouchEnd(event) {
+      const origin = touchOrigin.value;
+      const touch = event.changedTouches.item(0);
+      touchOrigin.value = null;
+      if (!origin || !touch) {
+        return;
+      }
+      const horizontalDistance = origin.x - touch.clientX;
+      const verticalDistance = origin.y - touch.clientY;
+      const isHorizontalSwipe = Math.abs(horizontalDistance) >= 56 && Math.abs(horizontalDistance) > Math.abs(verticalDistance) * 1.25;
+      if (!isHorizontalSwipe) {
+        return;
+      }
+      const nextIndex = activeTabIndex.value + (horizontalDistance > 0 ? 1 : -1);
+      const nextTab = tabs.value[nextIndex];
+      if (nextTab) {
+        activateTab(nextTab.value);
+      }
+    }
+    function resetTouchGesture() {
+      touchOrigin.value = null;
+    }
     watch(() => `${props.countdown.slug}:${props.currentLocale}`, () => {
       activeTab.value = "overview";
+      isOverviewExpanded.value = false;
+      resetTouchGesture();
       lazy.reset();
     });
     return (_ctx, _push, _parent, _attrs) => {
       _push(ssrRenderComponent(unref(motion).section, mergeProps({
-        class: "min-h-screen bg-black pb-24 lg:hidden",
+        class: "min-h-screen overflow-x-hidden bg-black pb-24 lg:hidden",
         initial: panelMotion.value.initial,
         animate: panelMotion.value.animate,
         transition: panelMotion.value.transition
@@ -1223,12 +1264,16 @@ const _sfc_main$7 = /* @__PURE__ */ defineComponent({
               }),
               _: 1
             }, _parent2, _scopeId));
-            _push2(`</div><div class="mt-5 flex gap-6 overflow-x-auto border-b border-white/10 px-4"${_scopeId}><!--[-->`);
+            _push2(`</div><div class="sticky top-16 z-30 mt-5 grid w-full grid-cols-5 border-b border-white/10 bg-black/95 px-1 backdrop-blur-xl" role="tablist"${ssrRenderAttr("aria-label", unref(t)("analysis"))}${_scopeId}><!--[-->`);
             ssrRenderList(tabs.value, (tab) => {
               _push2(ssrRenderComponent(unref(Button), {
+                id: `mobile-tab-${tab.value}`,
                 key: tab.value,
                 variant: "link",
-                ui: { root: ["doomsday-display rounded-none border-b-2 px-0 py-4 text-xs no-underline outline-none ring-0 shadow-none focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 active:ring-0 active:outline-none", activeTab.value === tab.value ? "border-ui-primary text-ui-primary" : "border-transparent text-ui-muted-foreground"].join(" ") },
+                role: "tab",
+                "aria-selected": activeTab.value === tab.value,
+                "aria-controls": `mobile-panel-${tab.value}`,
+                ui: { root: ["doomsday-display min-w-0 w-full justify-center whitespace-normal rounded-none border-b-2 px-1 py-3 text-[10px] leading-tight no-underline outline-none ring-0 shadow-none focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 active:ring-0 active:outline-none sm:text-xs", activeTab.value === tab.value ? "border-ui-primary text-ui-primary" : "border-transparent text-ui-muted-foreground"].join(" ") },
                 onClick: ($event) => activateTab(tab.value)
               }, {
                 default: withCtx((_2, _push3, _parent3, _scopeId2) => {
@@ -1243,26 +1288,28 @@ const _sfc_main$7 = /* @__PURE__ */ defineComponent({
                 _: 2
               }, _parent2, _scopeId));
             });
-            _push2(`<!--]--></div><div class="grid gap-4 px-4 py-5"${_scopeId}>`);
+            _push2(`<!--]--></div><div${ssrRenderAttr("id", `mobile-panel-${activeTab.value}`)} class="grid touch-pan-y gap-4 overflow-x-hidden px-4 py-5" role="tabpanel"${ssrRenderAttr("aria-labelledby", `mobile-tab-${activeTab.value}`)}${_scopeId}>`);
             if (activeTab.value === "overview") {
               _push2(ssrRenderComponent(unref(_sfc_main$m), { ui: { root: "doomsday-card rounded-xl", body: "p-5" } }, {
                 default: withCtx((_2, _push3, _parent3, _scopeId2) => {
                   var _a, _b, _c, _d;
                   if (_push3) {
-                    _push3(`<h2 class="doomsday-display mb-4 text-lg text-white"${_scopeId2}>${ssrInterpolate(unref(t)("summary"))}</h2><p class="leading-relaxed text-ui-muted-foreground"${_scopeId2}>${ssrInterpolate(__props.countdown.description)}</p><div class="mt-5 grid grid-cols-[repeat(auto-fit,minmax(96px,1fr))] gap-2 text-xs"${_scopeId2}><div class="rounded-lg border border-white/10 bg-white/5 p-3"${_scopeId2}><span class="text-ui-muted-foreground"${_scopeId2}>Confidence</span><strong class="block text-lg text-white"${_scopeId2}>${ssrInterpolate(((_a = __props.countdown.main_projection) == null ? void 0 : _a.confidence_score) ?? 0)}%</strong></div><div class="rounded-lg border border-white/10 bg-white/5 p-3"${_scopeId2}><span class="text-ui-muted-foreground"${_scopeId2}>Trend</span><strong class="block text-ui-primary"${_scopeId2}>${ssrInterpolate((_b = __props.countdown.main_projection) == null ? void 0 : _b.trend)}</strong></div><div class="rounded-lg border border-white/10 bg-white/5 p-3"${_scopeId2}><span class="text-ui-muted-foreground"${_scopeId2}>Risk</span><strong class="block text-ui-primary"${_scopeId2}>${ssrInterpolate(__props.countdown.severity)}</strong></div></div>`);
+                    _push3(`<h2 class="doomsday-display mb-4 text-lg text-white"${_scopeId2}>${ssrInterpolate(unref(t)("summary"))}</h2><p class="${ssrRenderClass(["leading-relaxed text-ui-muted-foreground", isOverviewExpanded.value ? "" : "line-clamp-5"])}"${_scopeId2}>${ssrInterpolate(__props.countdown.description)}</p><div class="mt-5 grid grid-cols-[repeat(auto-fit,minmax(96px,1fr))] gap-2 text-xs"${_scopeId2}><div class="rounded-lg border border-white/10 bg-white/5 p-3"${_scopeId2}><span class="text-ui-muted-foreground"${_scopeId2}>Confidence</span><strong class="block text-lg text-white"${_scopeId2}>${ssrInterpolate(((_a = __props.countdown.main_projection) == null ? void 0 : _a.confidence_score) ?? 0)}%</strong></div><div class="rounded-lg border border-white/10 bg-white/5 p-3"${_scopeId2}><span class="text-ui-muted-foreground"${_scopeId2}>Trend</span><strong class="block text-ui-primary"${_scopeId2}>${ssrInterpolate((_b = __props.countdown.main_projection) == null ? void 0 : _b.trend)}</strong></div><div class="rounded-lg border border-white/10 bg-white/5 p-3"${_scopeId2}><span class="text-ui-muted-foreground"${_scopeId2}>Risk</span><strong class="block text-ui-primary"${_scopeId2}>${ssrInterpolate(__props.countdown.severity)}</strong></div></div>`);
                     _push3(ssrRenderComponent(unref(Button), {
                       variant: "link",
                       size: "sm",
-                      icon: unref(ChevronDown),
+                      icon: isOverviewExpanded.value ? unref(ChevronUp) : unref(ChevronDown),
                       "icon-position": "right",
-                      ui: { root: "mt-5 p-0 text-ui-primary no-underline" }
+                      "aria-expanded": isOverviewExpanded.value,
+                      ui: { root: "mt-5 p-0 text-ui-primary no-underline" },
+                      onClick: ($event) => isOverviewExpanded.value = !isOverviewExpanded.value
                     }, {
                       default: withCtx((_3, _push4, _parent4, _scopeId3) => {
                         if (_push4) {
-                          _push4(`${ssrInterpolate(unref(t)("readMore"))}`);
+                          _push4(`${ssrInterpolate(unref(t)(isOverviewExpanded.value ? "readLess" : "readMore"))}`);
                         } else {
                           return [
-                            createTextVNode(toDisplayString(unref(t)("readMore")), 1)
+                            createTextVNode(toDisplayString(unref(t)(isOverviewExpanded.value ? "readLess" : "readMore")), 1)
                           ];
                         }
                       }),
@@ -1271,7 +1318,9 @@ const _sfc_main$7 = /* @__PURE__ */ defineComponent({
                   } else {
                     return [
                       createVNode("h2", { class: "doomsday-display mb-4 text-lg text-white" }, toDisplayString(unref(t)("summary")), 1),
-                      createVNode("p", { class: "leading-relaxed text-ui-muted-foreground" }, toDisplayString(__props.countdown.description), 1),
+                      createVNode("p", {
+                        class: ["leading-relaxed text-ui-muted-foreground", isOverviewExpanded.value ? "" : "line-clamp-5"]
+                      }, toDisplayString(__props.countdown.description), 3),
                       createVNode("div", { class: "mt-5 grid grid-cols-[repeat(auto-fit,minmax(96px,1fr))] gap-2 text-xs" }, [
                         createVNode("div", { class: "rounded-lg border border-white/10 bg-white/5 p-3" }, [
                           createVNode("span", { class: "text-ui-muted-foreground" }, "Confidence"),
@@ -1289,15 +1338,17 @@ const _sfc_main$7 = /* @__PURE__ */ defineComponent({
                       createVNode(unref(Button), {
                         variant: "link",
                         size: "sm",
-                        icon: unref(ChevronDown),
+                        icon: isOverviewExpanded.value ? unref(ChevronUp) : unref(ChevronDown),
                         "icon-position": "right",
-                        ui: { root: "mt-5 p-0 text-ui-primary no-underline" }
+                        "aria-expanded": isOverviewExpanded.value,
+                        ui: { root: "mt-5 p-0 text-ui-primary no-underline" },
+                        onClick: ($event) => isOverviewExpanded.value = !isOverviewExpanded.value
                       }, {
                         default: withCtx(() => [
-                          createTextVNode(toDisplayString(unref(t)("readMore")), 1)
+                          createTextVNode(toDisplayString(unref(t)(isOverviewExpanded.value ? "readLess" : "readMore")), 1)
                         ]),
                         _: 1
-                      }, 8, ["icon"])
+                      }, 8, ["icon", "aria-expanded", "onClick"])
                     ];
                   }
                 }),
@@ -1306,7 +1357,10 @@ const _sfc_main$7 = /* @__PURE__ */ defineComponent({
             } else if (activeTab.value === "forecasts") {
               _push2(`<!--[-->`);
               if (unref(forecastSection)) {
-                _push2(ssrRenderComponent(_sfc_main$c, { section: unref(forecastSection) }, null, _parent2, _scopeId));
+                _push2(ssrRenderComponent(_sfc_main$c, {
+                  section: unref(forecastSection),
+                  mobile: ""
+                }, null, _parent2, _scopeId));
               } else if (unref(lazy).hasError("forecasts")) {
                 _push2(ssrRenderComponent(_sfc_main$d, {
                   title: "Forecasts unavailable",
@@ -1319,7 +1373,10 @@ const _sfc_main$7 = /* @__PURE__ */ defineComponent({
             } else if (activeTab.value === "statistics") {
               _push2(`<!--[-->`);
               if (unref(statisticsSection)) {
-                _push2(ssrRenderComponent(_sfc_main$8, { section: unref(statisticsSection) }, null, _parent2, _scopeId));
+                _push2(ssrRenderComponent(_sfc_main$8, {
+                  section: unref(statisticsSection),
+                  mobile: ""
+                }, null, _parent2, _scopeId));
               } else if (unref(lazy).hasError("statistics")) {
                 _push2(ssrRenderComponent(_sfc_main$d, {
                   title: "Statistics unavailable",
@@ -1474,22 +1531,38 @@ const _sfc_main$7 = /* @__PURE__ */ defineComponent({
                   _: 1
                 })
               ]),
-              createVNode("div", { class: "mt-5 flex gap-6 overflow-x-auto border-b border-white/10 px-4" }, [
+              createVNode("div", {
+                class: "sticky top-16 z-30 mt-5 grid w-full grid-cols-5 border-b border-white/10 bg-black/95 px-1 backdrop-blur-xl",
+                role: "tablist",
+                "aria-label": unref(t)("analysis")
+              }, [
                 (openBlock(true), createBlock(Fragment, null, renderList(tabs.value, (tab) => {
                   return openBlock(), createBlock(unref(Button), {
+                    id: `mobile-tab-${tab.value}`,
                     key: tab.value,
                     variant: "link",
-                    ui: { root: ["doomsday-display rounded-none border-b-2 px-0 py-4 text-xs no-underline outline-none ring-0 shadow-none focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 active:ring-0 active:outline-none", activeTab.value === tab.value ? "border-ui-primary text-ui-primary" : "border-transparent text-ui-muted-foreground"].join(" ") },
+                    role: "tab",
+                    "aria-selected": activeTab.value === tab.value,
+                    "aria-controls": `mobile-panel-${tab.value}`,
+                    ui: { root: ["doomsday-display min-w-0 w-full justify-center whitespace-normal rounded-none border-b-2 px-1 py-3 text-[10px] leading-tight no-underline outline-none ring-0 shadow-none focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 active:ring-0 active:outline-none sm:text-xs", activeTab.value === tab.value ? "border-ui-primary text-ui-primary" : "border-transparent text-ui-muted-foreground"].join(" ") },
                     onClick: ($event) => activateTab(tab.value)
                   }, {
                     default: withCtx(() => [
                       createTextVNode(toDisplayString(tab.label), 1)
                     ]),
                     _: 2
-                  }, 1032, ["ui", "onClick"]);
+                  }, 1032, ["id", "aria-selected", "aria-controls", "ui", "onClick"]);
                 }), 128))
-              ]),
-              createVNode("div", { class: "grid gap-4 px-4 py-5" }, [
+              ], 8, ["aria-label"]),
+              createVNode("div", {
+                id: `mobile-panel-${activeTab.value}`,
+                class: "grid touch-pan-y gap-4 overflow-x-hidden px-4 py-5",
+                role: "tabpanel",
+                "aria-labelledby": `mobile-tab-${activeTab.value}`,
+                onTouchstartPassive: handleTouchStart,
+                onTouchendPassive: handleTouchEnd,
+                onTouchcancel: resetTouchGesture
+              }, [
                 activeTab.value === "overview" ? (openBlock(), createBlock(unref(_sfc_main$m), {
                   key: 0,
                   ui: { root: "doomsday-card rounded-xl", body: "p-5" }
@@ -1498,7 +1571,9 @@ const _sfc_main$7 = /* @__PURE__ */ defineComponent({
                     var _a, _b;
                     return [
                       createVNode("h2", { class: "doomsday-display mb-4 text-lg text-white" }, toDisplayString(unref(t)("summary")), 1),
-                      createVNode("p", { class: "leading-relaxed text-ui-muted-foreground" }, toDisplayString(__props.countdown.description), 1),
+                      createVNode("p", {
+                        class: ["leading-relaxed text-ui-muted-foreground", isOverviewExpanded.value ? "" : "line-clamp-5"]
+                      }, toDisplayString(__props.countdown.description), 3),
                       createVNode("div", { class: "mt-5 grid grid-cols-[repeat(auto-fit,minmax(96px,1fr))] gap-2 text-xs" }, [
                         createVNode("div", { class: "rounded-lg border border-white/10 bg-white/5 p-3" }, [
                           createVNode("span", { class: "text-ui-muted-foreground" }, "Confidence"),
@@ -1516,22 +1591,25 @@ const _sfc_main$7 = /* @__PURE__ */ defineComponent({
                       createVNode(unref(Button), {
                         variant: "link",
                         size: "sm",
-                        icon: unref(ChevronDown),
+                        icon: isOverviewExpanded.value ? unref(ChevronUp) : unref(ChevronDown),
                         "icon-position": "right",
-                        ui: { root: "mt-5 p-0 text-ui-primary no-underline" }
+                        "aria-expanded": isOverviewExpanded.value,
+                        ui: { root: "mt-5 p-0 text-ui-primary no-underline" },
+                        onClick: ($event) => isOverviewExpanded.value = !isOverviewExpanded.value
                       }, {
                         default: withCtx(() => [
-                          createTextVNode(toDisplayString(unref(t)("readMore")), 1)
+                          createTextVNode(toDisplayString(unref(t)(isOverviewExpanded.value ? "readLess" : "readMore")), 1)
                         ]),
                         _: 1
-                      }, 8, ["icon"])
+                      }, 8, ["icon", "aria-expanded", "onClick"])
                     ];
                   }),
                   _: 1
                 })) : activeTab.value === "forecasts" ? (openBlock(), createBlock(Fragment, { key: 1 }, [
                   unref(forecastSection) ? (openBlock(), createBlock(_sfc_main$c, {
                     key: 0,
-                    section: unref(forecastSection)
+                    section: unref(forecastSection),
+                    mobile: ""
                   }, null, 8, ["section"])) : unref(lazy).hasError("forecasts") ? (openBlock(), createBlock(_sfc_main$d, {
                     key: 1,
                     title: "Forecasts unavailable",
@@ -1543,7 +1621,8 @@ const _sfc_main$7 = /* @__PURE__ */ defineComponent({
                 ], 64)) : activeTab.value === "statistics" ? (openBlock(), createBlock(Fragment, { key: 2 }, [
                   unref(statisticsSection) ? (openBlock(), createBlock(_sfc_main$8, {
                     key: 0,
-                    section: unref(statisticsSection)
+                    section: unref(statisticsSection),
+                    mobile: ""
                   }, null, 8, ["section"])) : unref(lazy).hasError("statistics") ? (openBlock(), createBlock(_sfc_main$d, {
                     key: 1,
                     title: "Statistics unavailable",
@@ -1577,7 +1656,7 @@ const _sfc_main$7 = /* @__PURE__ */ defineComponent({
                     variant: "initiatives"
                   }))
                 ], 64)) : createCommentVNode("", true)
-              ]),
+              ], 40, ["id", "aria-labelledby"]),
               createVNode("nav", { class: "fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 border-t border-white/10 bg-black/95 px-3 pb-5 pt-3 text-center text-[11px] text-ui-muted-foreground backdrop-blur-xl" }, [
                 createVNode(unref(Button), {
                   variant: "link",
@@ -3325,7 +3404,23 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
                             class: "hidden lg:grid",
                             sidebar: __props.page.sidebar
                           }, null, _parent4, _scopeId3));
-                          _push4(`</div><footer class="mx-auto flex max-w-[1760px] items-center justify-between px-4 pb-8 text-xs text-ui-muted-foreground sm:px-7"${_scopeId3}><span${_scopeId3}>All countdowns are editorial estimates based on public-source scenario data.</span><a${ssrRenderAttr("href", `/about?lang=${__props.page.current_locale}`)} class="text-ui-primary"${_scopeId3}>Learn more about our methodology</a></footer>`);
+                          _push4(`</div><footer class="mx-auto flex max-w-[1760px] items-center justify-between px-4 pb-8 text-xs text-ui-muted-foreground sm:px-7"${_scopeId3}><span${_scopeId3}>All countdowns are editorial estimates based on public-source scenario data.</span>`);
+                          _push4(ssrRenderComponent(unref(Link), {
+                            href: unref(P)("about", { lang: __props.page.current_locale }),
+                            class: "text-ui-primary"
+                          }, {
+                            default: withCtx((_4, _push5, _parent5, _scopeId4) => {
+                              if (_push5) {
+                                _push5(`Learn more about our methodology`);
+                              } else {
+                                return [
+                                  createTextVNode("Learn more about our methodology")
+                                ];
+                              }
+                            }),
+                            _: 1
+                          }, _parent4, _scopeId3));
+                          _push4(`</footer>`);
                         } else {
                           return [
                             createVNode(_sfc_main$g, { hero: hero.value }, null, 8, ["hero"]),
@@ -3345,10 +3440,15 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
                             ]),
                             createVNode("footer", { class: "mx-auto flex max-w-[1760px] items-center justify-between px-4 pb-8 text-xs text-ui-muted-foreground sm:px-7" }, [
                               createVNode("span", null, "All countdowns are editorial estimates based on public-source scenario data."),
-                              createVNode("a", {
-                                href: `/about?lang=${__props.page.current_locale}`,
+                              createVNode(unref(Link), {
+                                href: unref(P)("about", { lang: __props.page.current_locale }),
                                 class: "text-ui-primary"
-                              }, "Learn more about our methodology", 8, ["href"])
+                              }, {
+                                default: withCtx(() => [
+                                  createTextVNode("Learn more about our methodology")
+                                ]),
+                                _: 1
+                              }, 8, ["href"])
                             ])
                           ];
                         }
@@ -3423,10 +3523,15 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
                         ]),
                         createVNode("footer", { class: "mx-auto flex max-w-[1760px] items-center justify-between px-4 pb-8 text-xs text-ui-muted-foreground sm:px-7" }, [
                           createVNode("span", null, "All countdowns are editorial estimates based on public-source scenario data."),
-                          createVNode("a", {
-                            href: `/about?lang=${__props.page.current_locale}`,
+                          createVNode(unref(Link), {
+                            href: unref(P)("about", { lang: __props.page.current_locale }),
                             class: "text-ui-primary"
-                          }, "Learn more about our methodology", 8, ["href"])
+                          }, {
+                            default: withCtx(() => [
+                              createTextVNode("Learn more about our methodology")
+                            ]),
+                            _: 1
+                          }, 8, ["href"])
                         ])
                       ]),
                       _: 1
@@ -3508,10 +3613,15 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
                       ]),
                       createVNode("footer", { class: "mx-auto flex max-w-[1760px] items-center justify-between px-4 pb-8 text-xs text-ui-muted-foreground sm:px-7" }, [
                         createVNode("span", null, "All countdowns are editorial estimates based on public-source scenario data."),
-                        createVNode("a", {
-                          href: `/about?lang=${__props.page.current_locale}`,
+                        createVNode(unref(Link), {
+                          href: unref(P)("about", { lang: __props.page.current_locale }),
                           class: "text-ui-primary"
-                        }, "Learn more about our methodology", 8, ["href"])
+                        }, {
+                          default: withCtx(() => [
+                            createTextVNode("Learn more about our methodology")
+                          ]),
+                          _: 1
+                        }, 8, ["href"])
                       ])
                     ]),
                     _: 1

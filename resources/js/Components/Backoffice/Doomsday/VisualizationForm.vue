@@ -10,9 +10,10 @@ import { defaultPayload, first, localizedText, optionItems } from '@/Components/
 import type { BackofficeOptions, LocalizedText, VisualizationPayload, VisualizationRecord } from '@/Components/Backoffice/Doomsday/types';
 import type { SaveVisualizationData } from '@/types/generated';
 
-type SaveVisualizationForm = Omit<SaveVisualizationData, 'title' | 'description' | 'sources' | 'reasoning' | 'payload'> & {
+type SaveVisualizationForm = Omit<SaveVisualizationData, 'title' | 'description' | 'explanation' | 'sources' | 'reasoning' | 'payload'> & {
     title: LocalizedText;
     description: LocalizedText;
+    explanation: LocalizedText;
     sources: string[];
     reasoning: LocalizedText;
     payload: VisualizationPayload;
@@ -77,6 +78,7 @@ form.fill({
     type: initialType,
     title: localizedText(props.visualization?.title.en ?? ''),
     description: localizedText(props.visualization?.description?.en ?? ''),
+    explanation: localizedText(props.visualization?.explanation?.en ?? ''),
     sources: [...(props.visualization?.sources ?? [])],
     reasoning: localizedText(props.visualization?.reasoning.en ?? ''),
     payload: initialPayload,
@@ -137,6 +139,7 @@ function submit(): void {
         <div class="grid gap-4 md:grid-cols-2">
             <TextInput v-model="form.title.en" label="Title (EN)" :error="form.errors.title" />
             <Textarea v-model="form.description.en" label="Description (EN)" :rows="2" :error="form.errors.description" />
+            <Textarea v-model="form.explanation.en" label="Chart explanation (EN)" :rows="3" helper-text="Tell readers what the chart shows and how to read its main signal." :error="form.errors.explanation" />
         </div>
 
         <div class="grid gap-4 md:grid-cols-2">

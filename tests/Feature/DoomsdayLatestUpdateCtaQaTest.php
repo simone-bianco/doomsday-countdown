@@ -163,11 +163,11 @@ final class DoomsdayLatestUpdateCtaQaTest extends TestCase
         $this->get('/?lang=en')
             ->assertOk()
             ->assertSee('Doomsday Clock')
-            ->assertSee('Taiwan Invasion');
+            ->assertSee('Taiwan Strait: The Risk of War');
 
         $this->get('/countdowns/taiwan-invasion?lang=en')
             ->assertOk()
-            ->assertSee('Taiwan Invasion');
+            ->assertSee('Taiwan Strait: The Risk of War');
 
         $selection = (string) file_get_contents(base_path('resources/js/Composables/useDoomsdaySelection.ts'));
         $lazy = (string) file_get_contents(base_path('resources/js/Composables/useDoomsdayLazySections.ts'));

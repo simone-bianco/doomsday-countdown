@@ -13,6 +13,7 @@ const props = defineProps<{
         readonly type: string;
         readonly title: { readonly en?: string };
         readonly description?: { readonly en?: string } | null;
+        readonly explanation?: { readonly en?: string } | null;
         readonly sources: readonly string[];
         readonly reasoning: { readonly en?: string };
         readonly payload: VisualizationPayload;
@@ -29,6 +30,7 @@ const publicVisualization = computed<VisualizationData>(() => ({
     type: props.visualization.type,
     title: title.value,
     description: props.visualization.description?.en ?? null,
+    explanation: props.visualization.explanation?.en ?? null,
     sources: [...props.visualization.sources],
     reasoning: props.visualization.reasoning.en ?? '',
     payload: props.visualization.payload as Array<unknown>,
@@ -52,6 +54,7 @@ const publicVisualization = computed<VisualizationData>(() => ({
             :payload="visualization.payload"
             :type="visualization.type"
             :sources="visualization.sources"
+            :explanation="visualization.explanation?.en ?? ''"
             :reasoning="visualization.reasoning.en ?? ''"
             compact
         />
@@ -62,3 +65,4 @@ const publicVisualization = computed<VisualizationData>(() => ({
         </div>
     </Card>
 </template>
+

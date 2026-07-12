@@ -21,11 +21,18 @@ final class DoomsdayAnalyticsConsentContractTest extends TestCase
         self::assertIsString($blade);
 
         self::assertStringContainsString('VITE_GOOGLE_ANALYTICS_ID', $tracking);
+        self::assertStringContainsString('VITE_GOOGLE_TAG_MANAGER_PRELOAD', $tracking);
+        self::assertStringContainsString('config.loadGoogleTagManagerBeforeConsent || consent.analytics || consent.marketing', $tracking);
         self::assertStringContainsString('initializeGoogleConsentDefaults();', $tracking);
+        self::assertMatchesRegularExpression(
+            "/initializeGoogleConsentDefaults\(\);\s+loadAllowedGoogleTags\(createConsentPreferences\(EMPTY_CONSENT_DRAFT, 'rejected_all', null\)\);/",
+            $tracking,
+        );
         self::assertMatchesRegularExpression(
             '/loadAllowedGoogleTags\(consent\);\s+if \(consent\.analytics\) \{\s+trackVirtualPageView\(\);\s+\}/',
             $tracking,
         );
+        self::assertStringNotContainsString('shouldLoadTracking', $tracking);
         self::assertStringContainsString('send_page_view: false', $googleConsent);
         self::assertStringContainsString("router.on('finish'", $banner);
         self::assertStringNotContainsString('googletagmanager.com/gtag/js', $blade);

@@ -1,14 +1,22 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { Maximize2, Minus, Plus, RotateCcw, X } from 'lucide-vue-next';
 import VisualizationEvidence from './VisualizationEvidence.vue';
+import { useMobileChartZoom } from '@/Composables/useMobileChartZoom';
+import { localizeDoomsdayLabel, t } from '@/i18n';
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
     readonly payload: unknown;
     readonly type: string;
     readonly sources: readonly string[];
+    readonly explanation: string;
     readonly reasoning: string;
     readonly compact?: boolean;
-}>();
+    readonly mobile?: boolean;
+}>(), {
+    compact: false,
+    mobile: false,
+});
 
 type ChartType = 'line' | 'area' | 'bar';
 type XAxis = { readonly label: string; readonly type: 'temporal' | 'ordinal' | 'category' };
@@ -41,7 +49,7 @@ function parseXAxis(value: unknown): XAxis | null {
         return null;
     }
 
-    return { label: value.label, type: value.type as XAxis['type'] };
+    return { label: localizeDoomsdayLabel(value.label), type: value.type as XAxis['type'] };
 }
 
 function parseYAxis(value: unknown): YAxis | null {
@@ -49,18 +57,39 @@ function parseYAxis(value: unknown): YAxis | null {
         return null;
     }
 
-    return { label: value.label, unit: value.unit, format: value.format as YAxis['format'] };
+    return { label: localizeDoomsdayLabel(value.label), unit: localizeDoomsdayLabel(value.unit), format: value.format as YAxis['format'] };
 }
 
 const chartType = computed((): ChartType | null => isChartType(props.type) ? props.type : null);
 const source = computed((): Record<string, unknown> => isRecord(props.payload) ? props.payload : {});
 const labels = computed((): string[] => Array.isArray(source.value.labels)
-    ? source.value.labels.filter((label): label is string => typeof label === 'string' && label.trim() !== '')
+    ? source.value.labels.filter((label): label is string => typeof label === 'string' && label.trim() !== '').map(localizeDoomsdayLabel)
     : []);
 const axes = computed(() => isRecord(source.value.axes) ? source.value.axes : {});
 const xAxis = computed(() => parseXAxis(axes.value.x));
 const yAxis = computed(() => parseYAxis(axes.value.y));
 const validSources = computed(() => props.sources.filter((item) => item.startsWith('https://')));
+const {
+    chartSurface,
+    isZoomed,
+    chartScale,
+    chartPanX,
+    chartPanY,
+    chartTransformStyle,
+    minChartScale,
+    maxChartScale,
+    openZoom,
+    closeZoom,
+    zoomChartIn,
+    zoomChartOut,
+    resetChartMagnification,
+    toggleChartMagnification,
+    handleChartTouchStart,
+    handleChartTouchMove,
+    handleChartTouchEnd,
+    resetChartGesture,
+    stopZoomedTouchPropagation,
+} = useMobileChartZoom(computed(() => props.mobile));
 
 const rawSeries = computed((): RawSeries[] => {
     const raw = source.value.series;
@@ -79,7 +108,7 @@ const rawSeries = computed((): RawSeries[] => {
             }
 
             return {
-                name: entry.name,
+                name: localizeDoomsdayLabel(entry.name),
                 color: typeof entry.color === 'string' ? entry.color : fallbackColors[index % fallbackColors.length],
                 values: values as number[],
             };
@@ -92,7 +121,7 @@ const rawSeries = computed((): RawSeries[] => {
     }
 
     return [{
-        name: yAxis.value?.label || 'Series',
+        name: yAxis.value?.label || t('seriesLabel'),
         color: fallbackColors[0],
         values: values as number[],
     }];
@@ -192,55 +221,136 @@ const ariaLabel = computed(() => isPayloadValid.value
 </script>
 
 <template>
-    <div :class="['doomsday-scrollbar w-full overflow-x-auto rounded-lg border border-white/10 bg-black/35 py-4 pb-6', compact ? 'px-2 sm:px-3' : 'px-3 sm:px-5']">
+    <div
+        ref="chartSurface"
+        :class="[
+            !mobile ? 'doomsday-scrollbar w-full overflow-x-auto rounded-lg border border-white/10 bg-black/35 py-4 pb-6' : '',
+            !mobile ? (compact ? 'px-2 sm:px-3' : 'px-3 sm:px-5') : '',
+            mobile && !isZoomed ? 'relative w-full overflow-hidden border-0 bg-transparent px-0 py-2' : '',
+            mobile && isZoomed ? 'fixed inset-0 z-[100] flex h-[100dvh] w-[100dvw] select-none items-center justify-center overflow-hidden bg-black/95 p-2' : '',
+        ]"
+        @touchstart="stopZoomedTouchPropagation"
+        @touchend="stopZoomedTouchPropagation"
+    >
+        <button
+            v-if="mobile && isZoomed"
+            type="button"
+            class="absolute right-3 top-3 z-30 inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-black/80 text-white shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ui-primary"
+            :aria-label="t('closeChart')"
+            @click.stop="closeZoom"
+        >
+            <X class="h-5 w-5" />
+        </button>
+
         <template v-if="isPayloadValid">
-            <svg :viewBox="`0 0 ${width} ${height}`" class="h-[22rem] min-w-[600px] w-full" role="img" :aria-label="ariaLabel">
-                <g class="text-white/10">
-                    <line v-for="tick in yTicks" :key="`y-${tick}`" :x1="plot.left" :y1="yAt(tick)" :x2="plot.right" :y2="yAt(tick)" stroke="currentColor" />
-                    <line v-for="(label, index) in labels" :key="`x-${label}`" :x1="xAt(index, labels.length)" :y1="plot.top" :x2="xAt(index, labels.length)" :y2="plot.bottom" stroke="currentColor" />
-                    <line :x1="plot.left" :y1="plot.top" :x2="plot.left" :y2="plot.bottom" stroke="currentColor" />
-                    <line :x1="plot.left" :y1="plot.bottom" :x2="plot.right" :y2="plot.bottom" stroke="currentColor" />
-                </g>
-
-                <g class="doomsday-display text-[11px] text-white/55">
-                    <text v-for="tick in yTicks" :key="`tick-${tick}`" :x="plot.left - 12" :y="yAt(tick) + 4" text-anchor="end" fill="currentColor">{{ formatValue(tick) }}</text>
-                    <text
-                        v-for="(label, index) in labels"
-                        :key="`label-${label}`"
-                        :x="xAt(index, labels.length)"
-                        :y="plot.bottom + 28"
-                        :text-anchor="rotateLabels ? 'end' : 'middle'"
-                        :transform="rotateLabels ? `rotate(-22 ${xAt(index, labels.length)} ${plot.bottom + 28})` : undefined"
-                        fill="currentColor"
-                    ><title>{{ label }}</title>{{ label }}</text>
-                    <text :x="(plot.left + plot.right) / 2" :y="height - 6" text-anchor="middle" fill="currentColor">{{ xAxis?.label }}</text>
-                    <text :transform="`rotate(-90 16 ${(plot.top + plot.bottom) / 2})`" x="16" :y="(plot.top + plot.bottom) / 2" text-anchor="middle" fill="currentColor">{{ yAxis?.label }} ({{ yAxis?.unit }})</text>
-                </g>
-
-                <g v-if="chartType === 'bar'">
-                    <rect v-for="bar in bars" :key="`${bar.name}-${bar.label}`" :x="bar.x" :y="bar.y" :width="bar.width" :height="bar.height" :fill="bar.color" rx="2">
-                        <title>{{ bar.name }} · {{ bar.label }}: {{ formatValue(bar.value) }} {{ yAxis?.unit }}</title>
-                    </rect>
-                </g>
-
-                <g v-else v-for="item in series" :key="item.name">
-                    <path v-if="chartType === 'area' && item.points.length > 1" :d="item.areaPath" :fill="item.color" fill-opacity="0.18" />
-                    <path v-if="item.points.length > 1" :d="item.path" fill="none" :stroke="item.color" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
-                    <circle v-for="point in item.points" :key="`${item.name}-${point.label}`" :cx="point.x" :cy="point.y" r="4" :fill="item.color">
-                        <title>{{ item.name }} · {{ point.label }}: {{ formatValue(point.value) }} {{ yAxis?.unit }}</title>
-                    </circle>
-                </g>
-
-                <g class="doomsday-display text-[11px]">
-                    <g v-for="(item, index) in series" :key="`legend-${item.name}`" :transform="`translate(${plot.left + index * 150}, 16)`">
-                        <line x1="0" y1="0" x2="22" y2="0" :stroke="item.color" stroke-width="3" stroke-linecap="round" />
-                        <text x="30" y="4" fill="rgba(255,255,255,0.72)">{{ item.name }}</text>
+            <div
+                :class="isZoomed ? 'relative flex h-full w-full touch-none items-center justify-center overflow-hidden' : 'relative w-full'"
+                @touchstart="handleChartTouchStart"
+                @touchmove="handleChartTouchMove"
+                @touchend="handleChartTouchEnd"
+                @touchcancel="resetChartGesture"
+                @dblclick.prevent="toggleChartMagnification"
+            >
+                <svg
+                    :viewBox="`0 0 ${width} ${height}`"
+                    :class="mobile ? (isZoomed ? 'block h-auto max-h-[calc(100dvh-3rem)] w-full max-w-[100dvw] will-change-transform' : 'block h-auto w-full max-w-full') : 'h-[22rem] min-w-[600px] w-full'"
+                    :style="isZoomed ? chartTransformStyle : undefined"
+                    role="img"
+                    :aria-label="ariaLabel"
+                >
+                    <g class="text-white/10">
+                        <line v-for="tick in yTicks" :key="`y-${tick}`" :x1="plot.left" :y1="yAt(tick)" :x2="plot.right" :y2="yAt(tick)" stroke="currentColor" />
+                        <line v-for="(label, index) in labels" :key="`x-${label}`" :x1="xAt(index, labels.length)" :y1="plot.top" :x2="xAt(index, labels.length)" :y2="plot.bottom" stroke="currentColor" />
+                        <line :x1="plot.left" :y1="plot.top" :x2="plot.left" :y2="plot.bottom" stroke="currentColor" />
+                        <line :x1="plot.left" :y1="plot.bottom" :x2="plot.right" :y2="plot.bottom" stroke="currentColor" />
                     </g>
-                </g>
-            </svg>
 
-            <VisualizationEvidence class="min-w-[600px] px-2" :sources="validSources" :reasoning="reasoning" />
+                    <g :class="['doomsday-display text-white/55', mobile ? 'text-[16px]' : 'text-[11px]']">
+                        <text v-for="tick in yTicks" :key="`tick-${tick}`" :x="plot.left - 12" :y="yAt(tick) + 4" text-anchor="end" fill="currentColor">{{ formatValue(tick) }}</text>
+                        <text
+                            v-for="(label, index) in labels"
+                            :key="`label-${label}`"
+                            :x="xAt(index, labels.length)"
+                            :y="plot.bottom + 28"
+                            :text-anchor="rotateLabels ? 'end' : 'middle'"
+                            :transform="rotateLabels ? `rotate(-22 ${xAt(index, labels.length)} ${plot.bottom + 28})` : undefined"
+                            fill="currentColor"
+                        ><title>{{ label }}</title>{{ label }}</text>
+                        <text :x="(plot.left + plot.right) / 2" :y="height - 6" text-anchor="middle" fill="currentColor">{{ xAxis?.label }}</text>
+                        <text :transform="`rotate(-90 16 ${(plot.top + plot.bottom) / 2})`" x="16" :y="(plot.top + plot.bottom) / 2" text-anchor="middle" fill="currentColor">{{ yAxis?.label }} ({{ yAxis?.unit }})</text>
+                    </g>
+
+                    <g v-if="chartType === 'bar'">
+                        <rect v-for="bar in bars" :key="`${bar.name}-${bar.label}`" :x="bar.x" :y="bar.y" :width="bar.width" :height="bar.height" :fill="bar.color" rx="2">
+                            <title>{{ bar.name }} · {{ bar.label }}: {{ formatValue(bar.value) }} {{ yAxis?.unit }}</title>
+                        </rect>
+                    </g>
+
+                    <g v-else v-for="item in series" :key="item.name">
+                        <path v-if="chartType === 'area' && item.points.length > 1" :d="item.areaPath" :fill="item.color" fill-opacity="0.18" />
+                        <path v-if="item.points.length > 1" :d="item.path" fill="none" :stroke="item.color" :stroke-width="mobile ? 4 : 3" stroke-linecap="round" stroke-linejoin="round" />
+                        <circle v-for="point in item.points" :key="`${item.name}-${point.label}`" :cx="point.x" :cy="point.y" :r="mobile ? 5 : 4" :fill="item.color">
+                            <title>{{ item.name }} · {{ point.label }}: {{ formatValue(point.value) }} {{ yAxis?.unit }}</title>
+                        </circle>
+                    </g>
+
+                    <g :class="['doomsday-display', mobile ? 'text-[16px]' : 'text-[11px]']">
+                        <g v-for="(item, index) in series" :key="`legend-${item.name}`" :transform="`translate(${plot.left + index * 150}, 16)`">
+                            <line x1="0" y1="0" x2="22" y2="0" :stroke="item.color" stroke-width="3" stroke-linecap="round" />
+                            <text x="30" y="4" fill="rgba(255,255,255,0.72)">{{ item.name }}</text>
+                        </g>
+                    </g>
+                </svg>
+
+                <button
+                    v-if="mobile && !isZoomed"
+                    type="button"
+                    class="absolute inset-0 z-10 cursor-zoom-in rounded-lg bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ui-primary"
+                    :aria-label="t('expandChart')"
+                    @click.stop="openZoom"
+                >
+                    <span class="pointer-events-none absolute bottom-2 right-2 inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-black/80 px-2.5 py-1.5 text-[10px] font-medium text-white shadow-lg">
+                        <Maximize2 class="h-3.5 w-3.5" />
+                        {{ t('chartZoomHint') }}
+                    </span>
+                </button>
+            </div>
+
+            <div v-if="mobile && isZoomed" class="absolute bottom-3 left-1/2 z-30 flex -translate-x-1/2 items-center gap-1 rounded-full border border-white/15 bg-black/85 p-1 shadow-xl backdrop-blur-xl">
+                <button
+                    type="button"
+                    class="inline-flex h-10 w-10 items-center justify-center rounded-full text-white disabled:cursor-not-allowed disabled:opacity-35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ui-primary"
+                    :aria-label="t('zoomOutChart')"
+                    :disabled="chartScale <= minChartScale"
+                    @click.stop="zoomChartOut"
+                >
+                    <Minus class="h-4 w-4" />
+                </button>
+                <span class="min-w-12 text-center text-xs tabular-nums text-white" aria-live="polite">{{ Math.round(chartScale * 100) }}%</span>
+                <button
+                    type="button"
+                    class="inline-flex h-10 w-10 items-center justify-center rounded-full text-white disabled:cursor-not-allowed disabled:opacity-35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ui-primary"
+                    :aria-label="t('zoomInChart')"
+                    :disabled="chartScale >= maxChartScale"
+                    @click.stop="zoomChartIn"
+                >
+                    <Plus class="h-4 w-4" />
+                </button>
+                <button
+                    type="button"
+                    class="inline-flex h-10 w-10 items-center justify-center rounded-full text-white disabled:cursor-not-allowed disabled:opacity-35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ui-primary"
+                    :aria-label="t('resetChartZoom')"
+                    :disabled="chartScale === minChartScale && chartPanX === 0 && chartPanY === 0"
+                    @click.stop="resetChartMagnification"
+                >
+                    <RotateCcw class="h-4 w-4" />
+                </button>
+            </div>
+            <p v-if="mobile && isZoomed" class="pointer-events-none absolute left-3 top-3 z-20 rounded-full bg-black/70 px-3 py-1.5 text-[10px] text-white/70">{{ t('chartZoomGestureHint') }}</p>
+
+            <VisualizationEvidence v-if="!isZoomed" :class="mobile ? 'min-w-0 px-0' : 'min-w-[600px] px-2'" :sources="validSources" :explanation="explanation" :reasoning="reasoning" />
         </template>
-        <p v-else class="min-w-[600px] px-4 py-16 text-center text-sm text-white/55">Visualization unavailable: schema v2 axes, series and entity-level HTTPS sources are required.</p>
+        <p v-else :class="mobile ? 'min-w-0 px-2 py-10 text-center text-sm text-white/55' : 'min-w-[600px] px-4 py-16 text-center text-sm text-white/55'">{{ t('visualizationUnavailable') }}</p>
     </div>
 </template>
+

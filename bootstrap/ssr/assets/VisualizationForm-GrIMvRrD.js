@@ -7,7 +7,7 @@ import { _ as _sfc_main$5 } from "./BackofficeSelectField-CNJDQmD8.js";
 import { _ as _sfc_main$8 } from "./FormActions-Wl8L_zsK.js";
 import { d as SaveVisualizationDataRules } from "./form-rules-C_jmOmBo.js";
 import { AlertTriangle } from "lucide-vue-next";
-import { _ as _sfc_main$7 } from "./VisualizationPreview-CK8ZO4Lm.js";
+import { _ as _sfc_main$7 } from "./VisualizationPreview-CPwyEvMQ.js";
 import { o as optionItems, a as isRecord, d as defaultPayload, c as chartXAxisTypes, b as chartYAxisFormats, e as chartText, k as kpiText, p as parseChartPayload, g as parseKpiPayload, f as first, l as localizedText } from "./formHelpers-BXTPv_Pd.js";
 const _sfc_main$1 = /* @__PURE__ */ defineComponent({
   __name: "VisualizationPayloadEditor",

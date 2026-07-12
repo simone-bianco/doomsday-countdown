@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { t } from '@/i18n';
 
 const props = defineProps<{
     readonly sources: readonly string[];
+    readonly explanation: string | null;
     readonly reasoning: string | null;
 }>();
 
@@ -10,7 +12,7 @@ function sourceLabel(source: string, index: number): string {
     try {
         return new URL(source).hostname.replace(/^www\./, '');
     } catch {
-        return `Source ${index + 1}`;
+        return `${t('sourceLabel')} ${index + 1}`;
     }
 }
 
@@ -21,17 +23,22 @@ const validSources = computed(() => props.sources.filter((source) => {
         return false;
     }
 }));
+const explanationText = computed(() => props.explanation?.trim() ?? '');
 const reasoningText = computed(() => props.reasoning?.trim() ?? '');
 </script>
 
 <template>
-    <div v-if="reasoningText || validSources.length" class="min-w-0 space-y-3 border-t border-white/10 pt-3 text-xs leading-relaxed text-white/55">
+    <div v-if="explanationText || reasoningText || validSources.length" class="min-w-0 space-y-3 border-t border-white/10 pt-3 text-xs leading-relaxed text-white/55">
+        <p v-if="explanationText" class="min-w-0 break-words text-sm text-white/70">
+            <span class="font-semibold text-white/85">{{ t('chartExplanation') }}</span>
+            {{ explanationText }}
+        </p>
         <p v-if="reasoningText" class="min-w-0 break-words">
-            <span class="font-semibold text-white/75">Reasoning:</span>
+            <span class="font-semibold text-white/75">{{ t('reasoningLabel') }}</span>
             {{ reasoningText }}
         </p>
         <div v-if="validSources.length" class="min-w-0">
-            <span class="font-semibold text-white/75">Sources:</span>
+            <span class="font-semibold text-white/75">{{ t('sourcesLabel') }}</span>
             <a
                 v-for="(source, index) in validSources"
                 :key="source"

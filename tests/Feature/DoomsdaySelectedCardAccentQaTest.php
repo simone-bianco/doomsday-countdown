@@ -61,7 +61,7 @@ final class DoomsdaySelectedCardAccentQaTest extends TestCase
     {
         $this->seed(DoomsdaySeeder::class);
 
-        $this->get('/countdowns/taiwan-invasion?lang=en')->assertOk()->assertSee('Taiwan Invasion');
+        $this->get('/countdowns/taiwan-invasion?lang=en')->assertOk()->assertSee('Taiwan Strait: The Risk of War');
         $this->getJson(route('countdowns.data.statistics', ['slug' => 'taiwan-invasion', 'lang' => 'en']))
             ->assertOk()
             ->assertJsonPath('data.countdown_slug', 'taiwan-invasion');

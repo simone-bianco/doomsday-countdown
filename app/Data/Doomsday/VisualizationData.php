@@ -19,6 +19,7 @@ final class VisualizationData extends Data
         public readonly string $type,
         public readonly string $title,
         public readonly ?string $description,
+        public readonly ?string $explanation,
         public readonly array $sources,
         public readonly string $reasoning,
         public readonly array $payload,

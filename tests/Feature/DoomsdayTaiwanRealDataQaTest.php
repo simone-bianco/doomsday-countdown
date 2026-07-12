@@ -24,7 +24,7 @@ final class DoomsdayTaiwanRealDataQaTest extends TestCase
         $this->assertNotNull($countdown);
         $this->assertSame('taiwan-invasion', $countdown->slug);
         $this->assertTrue($countdown->is_published);
-        $this->assertSame('Taiwan Invasion', $countdown->title['en']);
+        $this->assertSame('Taiwan Strait: The Risk of War', $countdown->title['en']);
         $this->assertSame('Invasione di Taiwan', $countdown->title['it']);
         $this->assertSame('images/doomsday/taiwan_invasion.png', $countdown->image_path);
         $this->assertFileExists(public_path('images/doomsday/taiwan_invasion.png'));

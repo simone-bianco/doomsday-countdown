@@ -1,7 +1,7 @@
 import { defineComponent, computed, unref, withCtx, createVNode, toDisplayString, openBlock, createBlock, Fragment, renderList, useSSRContext } from "vue";
 import { ssrRenderComponent, ssrRenderAttr, ssrInterpolate, ssrRenderList } from "vue/server-renderer";
 import { Head } from "@inertiajs/vue3";
-import { c as _sfc_main$1 } from "./PublicLayout-CMrE3VbF.js";
+import { c as _sfc_main$1 } from "./PublicLayout-Cg7TjPHG.js";
 import "../ssr.js";
 import "@vue/server-renderer";
 import "clsx";

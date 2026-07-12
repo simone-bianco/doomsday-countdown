@@ -9842,6 +9842,14 @@ const resources = {
       projectionModel: "Projection model",
       estimatedTarget: "Estimated target",
       readMore: "Read more",
+      readLess: "Read less",
+      expandChart: "Open chart full screen",
+      closeChart: "Close full-screen chart",
+      chartZoomHint: "Tap to enlarge",
+      chartZoomGestureHint: "Pinch or double-tap to zoom",
+      zoomInChart: "Zoom in",
+      zoomOutChart: "Zoom out",
+      resetChartZoom: "Reset chart zoom",
       viewDetails: "View details",
       viewAllNews: "View all news",
       keyIndicators: "Key indicators",
@@ -9885,6 +9893,14 @@ const resources = {
       projectionModel: "Modello di proiezione",
       estimatedTarget: "Obiettivo stimato",
       readMore: "Leggi di più",
+      readLess: "Mostra meno",
+      expandChart: "Apri il grafico a schermo intero",
+      closeChart: "Chiudi il grafico a schermo intero",
+      chartZoomHint: "Tocca per ingrandire",
+      chartZoomGestureHint: "Pizzica o fai doppio tap per zoomare",
+      zoomInChart: "Aumenta zoom",
+      zoomOutChart: "Riduci zoom",
+      resetChartZoom: "Reimposta zoom grafico",
       viewDetails: "Vedi dettagli",
       viewAllNews: "Vedi tutte le notizie",
       keyIndicators: "Indicatori chiave",
@@ -9978,7 +9994,7 @@ async function withServerI18n(locale, callback) {
   return requestI18n.run(instance, callback);
 }
 const appName = "Doomsday Clock";
-const resolvePage = (name) => resolvePageComponent(`./Pages/${name}.vue`, /* @__PURE__ */ Object.assign({ "./Pages/Backoffice/Countdowns/Create.vue": () => import("./assets/Create-DjQ5GYy4.js"), "./Pages/Backoffice/Countdowns/Edit.vue": () => import("./assets/Edit-D6eiZHSj.js"), "./Pages/Backoffice/Countdowns/Index.vue": () => import("./assets/Index-ghR1-SGt.js"), "./Pages/Backoffice/Countdowns/Projections/Create.vue": () => import("./assets/Create-BMDM_fgf.js"), "./Pages/Backoffice/Countdowns/Projections/Edit.vue": () => import("./assets/Edit-D_CGC_d1.js"), "./Pages/Backoffice/Countdowns/Visualizations/Create.vue": () => import("./assets/Create-BRAawJkB.js"), "./Pages/Backoffice/Countdowns/Visualizations/Edit.vue": () => import("./assets/Edit-D6yrAiJB.js"), "./Pages/Backoffice/Index.vue": () => import("./assets/Index-BVJt1OiP.js"), "./Pages/Backoffice/OpenAiKeys/Index.vue": () => import("./assets/Index-Uz7F4dsV.js"), "./Pages/Backoffice/Users/Index.vue": () => import("./assets/Index-D5qMHbgr.js"), "./Pages/Doomsday/About.vue": () => import("./assets/About-BK44IgyS.js"), "./Pages/Doomsday/Home.vue": () => import("./assets/Home-BND_lgn7.js"), "./Pages/Doomsday/LegalPolicy.vue": () => import("./assets/LegalPolicy-CUa-41c5.js"), "./Pages/Home.vue": () => import("./assets/Home-BR5CTOL0.js"), "./Pages/Login.vue": () => import("./assets/Login-Q6hS_Dbv.js") }));
+const resolvePage = (name) => resolvePageComponent(`./Pages/${name}.vue`, /* @__PURE__ */ Object.assign({ "./Pages/Backoffice/Countdowns/Create.vue": () => import("./assets/Create-DjQ5GYy4.js"), "./Pages/Backoffice/Countdowns/Edit.vue": () => import("./assets/Edit-Dj1xC491.js"), "./Pages/Backoffice/Countdowns/Index.vue": () => import("./assets/Index-ghR1-SGt.js"), "./Pages/Backoffice/Countdowns/Projections/Create.vue": () => import("./assets/Create-BMDM_fgf.js"), "./Pages/Backoffice/Countdowns/Projections/Edit.vue": () => import("./assets/Edit-D_CGC_d1.js"), "./Pages/Backoffice/Countdowns/Visualizations/Create.vue": () => import("./assets/Create-0RYkaykv.js"), "./Pages/Backoffice/Countdowns/Visualizations/Edit.vue": () => import("./assets/Edit-CbAq2cLQ.js"), "./Pages/Backoffice/Index.vue": () => import("./assets/Index-BVJt1OiP.js"), "./Pages/Backoffice/OpenAiKeys/Index.vue": () => import("./assets/Index-Uz7F4dsV.js"), "./Pages/Backoffice/Users/Index.vue": () => import("./assets/Index-D5qMHbgr.js"), "./Pages/Doomsday/About.vue": () => import("./assets/About-BkpiCac1.js"), "./Pages/Doomsday/Home.vue": () => import("./assets/Home-By4aqdMv.js"), "./Pages/Doomsday/LegalPolicy.vue": () => import("./assets/LegalPolicy-B6HQ5KaP.js"), "./Pages/Home.vue": () => import("./assets/Home-Dy9iZ0Nj.js"), "./Pages/Login.vue": () => import("./assets/Login-Q6hS_Dbv.js") }));
 function ziggyConfigForPage(page) {
   const location = new URL(page.url, Ziggy$1.url);
   return {
@@ -9989,24 +10005,29 @@ function ziggyConfigForPage(page) {
   };
 }
 function render(page) {
-  return withServerI18n(page.props.locale, () => createInertiaApp({
-    page,
-    render: renderToString,
-    title: (title) => `${title} - ${appName}`,
-    resolve: resolvePage,
-    setup({ App, props, plugin }) {
-      const app = createSSRApp({
-        render: () => h$1(_sfc_main, { defaultTheme: "doomsday" }, () => h$1(App, props))
-      });
-      return app.use(U, ziggyConfigForPage(page)).use(plugin);
-    }
-  }));
+  return withServerI18n(
+    /** @type {DoomsdayPageProps} */
+    page.props.locale,
+    () => createInertiaApp({
+      page,
+      render: renderToString,
+      title: (title) => `${title} - ${appName}`,
+      resolve: resolvePage,
+      setup({ App, props, plugin }) {
+        const app = createSSRApp({
+          render: () => h$1(_sfc_main, { defaultTheme: "doomsday" }, () => h$1(App, props))
+        });
+        return app.use(U, ziggyConfigForPage(page)).use(plugin);
+      }
+    })
+  );
 }
 export {
   Button as B,
   DangerModal as D,
   Modal as M,
   NumberInput as N,
+  P,
   SkeletonLoader as S,
   ToastNotification as T,
   _sfc_main$I as _,

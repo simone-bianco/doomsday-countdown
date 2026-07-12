@@ -24,6 +24,7 @@ final class SaveVisualizationData extends Data
     /**
      * @param  array<string, string>  $title
      * @param  array<string, string>|null  $description
+     * @param  array<string, string>|null  $explanation
      * @param  array<int, string>  $sources
      * @param  array<string, string>  $reasoning
      * @param  array<string, mixed>  $payload
@@ -37,6 +38,8 @@ final class SaveVisualizationData extends Data
         public readonly array $title,
         #[Nullable, ArrayType]
         public readonly ?array $description,
+        #[Nullable, ArrayType]
+        public readonly ?array $explanation,
         #[Required, ArrayType]
         public readonly array $sources,
         #[Required, ArrayType, RequiredArrayKeys('en')]

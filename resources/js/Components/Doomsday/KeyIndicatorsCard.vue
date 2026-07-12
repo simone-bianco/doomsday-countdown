@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { Card } from '@simone-bianco/vue-ui-components';
-import { t } from '@/i18n';
+import { localizeDoomsdayLabel, t } from '@/i18n';
 import VisualizationEvidence from './VisualizationEvidence.vue';
 import type { VisualizationData } from '@/types/generated';
 
@@ -23,7 +23,7 @@ const indicators = computed((): Indicator[] => {
     }
 
     return items.filter(isRecord).map((item): Indicator => ({
-        label: String(item.label ?? ''),
+        label: localizeDoomsdayLabel(String(item.label ?? '')),
         value: String(item.value ?? ''),
         direction: String(item.direction ?? 'up'),
         sparkline: Array.isArray(item.sparkline) ? item.sparkline.map(Number).filter(Number.isFinite) : [],
@@ -48,7 +48,7 @@ const indicators = computed((): Indicator[] => {
             </div>
         </div>
         <div class="mt-5 min-w-0 pb-1">
-            <VisualizationEvidence :sources="visualization?.sources ?? []" :reasoning="visualization?.reasoning ?? null" />
+            <VisualizationEvidence :sources="visualization?.sources ?? []" :explanation="visualization?.explanation ?? null" :reasoning="visualization?.reasoning ?? null" />
         </div>
     </Card>
 </template>

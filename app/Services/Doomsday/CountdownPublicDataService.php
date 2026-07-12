@@ -376,7 +376,7 @@ final class CountdownPublicDataService
 
     private function toVisualization(Visualization $visualization, string $locale): VisualizationData
     {
-        return new VisualizationData($visualization->key, $visualization->type->value, $this->text($visualization->title, $locale), $this->text($visualization->description, $locale), $visualization->sources ?? [], $this->text($visualization->reasoning, $locale), $visualization->payload ?? [], $visualization->schema_version, $visualization->sort_order);
+        return new VisualizationData($visualization->key, $visualization->type->value, $this->text($visualization->title, $locale), $this->text($visualization->description, $locale), $this->text($visualization->explanation, $locale), $visualization->sources ?? [], $this->text($visualization->reasoning, $locale), $visualization->payload ?? [], $visualization->schema_version, $visualization->sort_order);
     }
 
     /** @return array<int, NewsData> */

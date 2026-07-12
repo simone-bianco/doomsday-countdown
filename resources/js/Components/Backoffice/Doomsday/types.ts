@@ -82,6 +82,7 @@ export type VisualizationRecord = {
     readonly type: string;
     readonly title: LocalizedText;
     readonly description: LocalizedText | null;
+    readonly explanation: LocalizedText | null;
     readonly sources: readonly string[];
     readonly reasoning: LocalizedText;
     readonly payload: unknown;

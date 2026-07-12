@@ -1,0 +1,514 @@
+{
+  "europe-war-countdown": {
+    "summary": {
+      "en": "If Europe’s deterrence fails, a military crisis with Russia could erupt before armies, industry and civilian infrastructure are ready.",
+      "it": "Se la deterrenza europea cede, una crisi militare con la Russia potrebbe esplodere prima che eserciti, industria e infrastrutture civili siano pronti."
+    },
+    "description": {
+      "en": "Europe is rebuilding its defences while the war in Ukraine, Russian rearmament and fragile supply chains keep narrowing the margin for error. This countdown tracks whether military readiness, industrial production and civil resilience can improve before a wider confrontation becomes harder to contain.",
+      "it": "L’Europa sta ricostruendo le proprie difese mentre la guerra in Ucraina, il riarmo russo e catene di fornitura fragili riducono il margine di errore. Il countdown misura se prontezza militare, produzione industriale e resilienza civile riusciranno a crescere prima che un confronto più ampio diventi difficile da contenere."
+    },
+    "visualizations": {
+      "projection_curve": {
+        "description": {
+          "en": "The three lines show how quickly the window for strengthening Europe’s defences closes under pessimistic, central and more favourable timelines.",
+          "it": "Le tre linee mostrano quanto rapidamente si chiude la finestra utile per rafforzare la difesa europea in uno scenario peggiore, intermedio e più favorevole."
+        },
+        "explanation": {
+          "en": "A steeper line means Europe has less time to turn political commitments into troops, ammunition, air defence and resilient infrastructure. The chart does not estimate the probability of war: it compares how much preparation time remains under three editorial scenarios.",
+          "it": "Una linea più ripida indica che resta meno tempo per trasformare gli impegni politici in truppe, munizioni, difesa aerea e infrastrutture resilienti. Il grafico non stima la probabilità di una guerra: confronta il tempo disponibile per prepararsi in tre scenari editoriali."
+        }
+      },
+      "key_indicators": {
+        "description": {
+          "en": "These figures show the scale of Europe’s defence effort in 2024, from total spending to procurement, research and the number of countries meeting the 2% benchmark.",
+          "it": "Questi valori mostrano la dimensione dello sforzo europeo per la difesa nel 2024: spesa totale, investimenti, acquisti, ricerca e numero di paesi sopra la soglia del 2%."
+        },
+        "explanation": {
+          "en": "The headline total is large, but the breakdown reveals how much money actually reaches equipment, research and long-term capability. The indicators use different units and should be read side by side, not added together.",
+          "it": "La cifra complessiva è elevata, ma la scomposizione mostra quanto denaro arriva davvero a equipaggiamenti, ricerca e capacità di lungo periodo. Gli indicatori usano unità diverse e vanno letti insieme, non sommati."
+        }
+      },
+      "nato_spending_share_trend": {
+        "description": {
+          "en": "The chart follows the share of national wealth devoted to defence by NATO Europe and Canada from 2014 to the 2025 estimate.",
+          "it": "Il grafico segue la quota di ricchezza nazionale destinata alla difesa da NATO Europa e Canada dal 2014 alla stima 2025."
+        },
+        "explanation": {
+          "en": "The rise after 2022 shows that defence has become a much larger budget priority across the alliance. Crossing 2% matters politically, but the percentage alone does not reveal whether spending produces deployable forces or arrives quickly enough.",
+          "it": "L’accelerazione dopo il 2022 mostra che la difesa è diventata una priorità di bilancio molto più forte. Superare il 2% conta sul piano politico, ma la percentuale da sola non dice se la spesa genera forze realmente impiegabili né se arriva abbastanza in fretta."
+        }
+      },
+      "nato_real_spending_trend": {
+        "description": {
+          "en": "This series tracks the real purchasing power of defence budgets, stripping out inflation by using constant 2021 US dollars.",
+          "it": "La serie misura il potere d’acquisto reale dei bilanci della difesa, eliminando l’effetto dell’inflazione con dollari costanti 2021."
+        },
+        "explanation": {
+          "en": "The upward curve shows that the increase is not only nominal: Europe and Canada are buying materially more defence capability than a decade ago. The sharp recent jump also highlights the pressure on factories, workforces and procurement systems to absorb the money effectively.",
+          "it": "La curva crescente mostra che l’aumento non è solo nominale: Europa e Canada stanno acquistando più capacità militare rispetto a dieci anni fa. Il salto recente evidenzia anche la pressione su fabbriche, personale e procedure d’acquisto, che devono trasformare rapidamente il denaro in capacità reali."
+        }
+      },
+      "selected_allies_2025": {
+        "description": {
+          "en": "The bars compare estimated 2025 defence spending as a share of GDP across a selected group of European allies.",
+          "it": "Le barre confrontano la quota di PIL destinata alla difesa nel 2025 per un gruppo selezionato di alleati europei."
+        },
+        "explanation": {
+          "en": "Front-line and northern allies devote the largest share of their economies to defence, reflecting different threat perceptions and strategic positions. This is a country comparison, not an alliance average, and it says nothing by itself about efficiency or military output.",
+          "it": "Gli alleati sul fronte orientale e nel Nord Europa destinano alla difesa le quote più alte, riflettendo percezioni della minaccia e posizioni strategiche diverse. È un confronto tra paesi, non una media dell’Alleanza, e da solo non misura efficienza o capacità militare prodotta."
+        }
+      },
+      "eu_investment_mix_2024": {
+        "description": {
+          "en": "The chart breaks Europe’s 2024 defence expenditure into total spending, investment, equipment procurement, research and technology.",
+          "it": "Il grafico scompone la spesa europea per la difesa nel 2024 tra totale, investimenti, acquisti di equipaggiamenti, ricerca e tecnologia."
+        },
+        "explanation": {
+          "en": "The gap between total expenditure and investment shows how much of the budget is absorbed by personnel, operations and existing structures. Procurement dominates investment, while research remains comparatively small despite its importance for future technological advantage.",
+          "it": "La distanza tra spesa totale e investimenti mostra quanto bilancio viene assorbito da personale, operazioni e strutture esistenti. Gli acquisti dominano gli investimenti, mentre la ricerca resta relativamente contenuta nonostante il suo peso sul vantaggio tecnologico futuro."
+        }
+      },
+      "readiness_instruments": {
+        "description": {
+          "en": "These policy targets show the scale of Europe’s attempt to expand ammunition production and mobilise new defence financing.",
+          "it": "Questi obiettivi mostrano la scala del tentativo europeo di aumentare la produzione di munizioni e mobilitare nuovi finanziamenti per la difesa."
+        },
+        "explanation": {
+          "en": "The figures describe different instruments: annual shell capacity, loan availability and a broader mobilisation ambition. They are not parts of one total, but together they show how far Europe intends to stretch industrial and financial capacity before 2030.",
+          "it": "I numeri descrivono strumenti diversi: capacità annua di produrre munizioni, disponibilità di prestiti e un obiettivo più ampio di mobilitazione finanziaria. Non formano un unico totale, ma insieme indicano quanto l’Europa vuole espandere capacità industriale e risorse entro il 2030."
+        }
+      }
+    }
+  },
+  "ai-job-apocalypse": {
+    "summary": {
+      "en": "Artificial intelligence could erase or hollow out millions of jobs faster than workers, schools and governments can adapt.",
+      "it": "L’intelligenza artificiale potrebbe cancellare o svuotare milioni di lavori più in fretta di quanto lavoratori, scuole e governi riescano ad adattarsi."
+    },
+    "description": {
+      "en": "Generative AI is moving from experiments into offices, factories and public services, automating tasks that once required trained people. This countdown tracks whether adoption, regulation and reskilling keep pace—or whether a wave of displacement arrives before new roles and protections are ready.",
+      "it": "L’IA generativa sta passando dagli esperimenti a uffici, fabbriche e servizi pubblici, automatizzando attività che richiedevano persone formate. Il countdown segue il confronto tra adozione, regole e riqualificazione: se resteranno indietro, lo spiazzamento del lavoro potrebbe arrivare prima di nuovi ruoli e nuove tutele."
+    },
+    "visualizations": {
+      "projection_curve": {
+        "description": {
+          "en": "The lines compare how quickly the world approaches the 2027 regulatory, 2030 adoption-and-skills and 2035 labour-market adjustment milestones.",
+          "it": "Le linee confrontano la corsa verso le scadenze del 2027 per le regole, del 2030 per adozione e competenze e del 2035 per l’adattamento del mercato del lavoro."
+        },
+        "explanation": {
+          "en": "The chart treats each milestone as a shrinking preparation window. A faster rise means institutions and workers have less time to respond before AI adoption reaches a new stage; it is not a forecast of unemployment.",
+          "it": "Il grafico tratta ogni scadenza come una finestra di preparazione che si restringe. Una salita più rapida significa meno tempo per istituzioni e lavoratori prima che l’adozione dell’IA raggiunga una nuova fase; non è una previsione della disoccupazione."
+        }
+      },
+      "key_indicators": {
+        "description": {
+          "en": "These indicators separate four questions often confused in the AI debate: exposure, high exposure, business adoption and automation risk.",
+          "it": "Questi indicatori separano quattro domande spesso confuse nel dibattito sull’IA: esposizione, alta esposizione, adozione nelle imprese e rischio di automazione."
+        },
+        "explanation": {
+          "en": "A job can be exposed to AI without disappearing, and a company can adopt AI without replacing its workforce. Reading the measures separately prevents dramatic headlines from turning different populations and definitions into one misleading number.",
+          "it": "Un lavoro può essere esposto all’IA senza scomparire, e un’impresa può adottarla senza sostituire il personale. Tenere separate le misure evita che titoli sensazionalistici trasformino popolazioni e definizioni diverse in un unico numero fuorviante."
+        }
+      },
+      "eu_enterprise_ai_adoption": {
+        "description": {
+          "en": "The chart shows how quickly AI use is spreading among EU companies with at least ten employees.",
+          "it": "Il grafico mostra quanto rapidamente si sta diffondendo l’uso dell’IA nelle imprese UE con almeno dieci addetti."
+        },
+        "explanation": {
+          "en": "The recent acceleration marks the transition from pilot projects to routine business use. Adoption does not measure job losses, but it signals how quickly AI can reshape workflows, hiring and productivity across the economy.",
+          "it": "L’accelerazione recente segna il passaggio dai progetti pilota all’uso quotidiano nelle imprese. L’adozione non misura i posti persi, ma indica la velocità con cui l’IA può cambiare processi, assunzioni e produttività."
+        }
+      },
+      "leading_ai_adopters": {
+        "description": {
+          "en": "The lines compare Denmark and Finland, two of Europe’s leading business adopters, across 2024 and 2025.",
+          "it": "Le linee confrontano Danimarca e Finlandia, tra i paesi europei più avanzati nell’adozione aziendale, tra 2024 e 2025."
+        },
+        "explanation": {
+          "en": "Both countries started from a high base and still recorded a sharp one-year increase. Their pace offers an early view of what wider European adoption may look like once infrastructure, skills and management practices align.",
+          "it": "Entrambi i paesi partivano da livelli elevati e hanno comunque registrato un forte aumento in un solo anno. Il loro ritmo anticipa ciò che potrebbe accadere nel resto d’Europa quando infrastrutture, competenze e organizzazione si allineano."
+        }
+      },
+      "exposure_by_income_group": {
+        "description": {
+          "en": "The bars show how much employment is exposed to generative AI across countries at different income levels.",
+          "it": "Le barre mostrano quanta occupazione è esposta all’IA generativa nei paesi con diversi livelli di reddito."
+        },
+        "explanation": {
+          "en": "Higher-income economies have more office and knowledge work that AI can affect, so their exposure is larger. Lower exposure in poorer countries does not mean lower vulnerability: weaker safety nets and training systems can make even a smaller shock harder to absorb.",
+          "it": "Le economie più ricche hanno più lavoro d’ufficio e della conoscenza, quindi mostrano un’esposizione maggiore. Nei paesi più poveri un valore più basso non significa minore vulnerabilità: tutele e formazione più deboli possono rendere difficile assorbire anche uno shock più piccolo."
+        }
+      },
+      "high_exposure_by_gender": {
+        "description": {
+          "en": "The chart compares the global share of men and women working in occupations with the highest levels of generative-AI exposure.",
+          "it": "Il grafico confronta la quota globale di uomini e donne occupati nelle professioni con i livelli più alti di esposizione all’IA generativa."
+        },
+        "explanation": {
+          "en": "Women are more concentrated in clerical and administrative occupations that current generative systems can affect directly. The gap highlights how technological disruption can reinforce existing labour-market inequalities unless transition policies are targeted.",
+          "it": "Le donne sono più concentrate in professioni amministrative e d’ufficio che i sistemi generativi possono modificare direttamente. Il divario mostra come la trasformazione tecnologica possa amplificare disuguaglianze già presenti senza politiche mirate."
+        }
+      },
+      "weighted_high_exposure": {
+        "description": {
+          "en": "This derived index combines the two highest exposure groups to compare the overall high-exposure burden for men and women.",
+          "it": "Questo indice derivato combina i due livelli più alti di esposizione per confrontare il peso complessivo dell’alta esposizione tra uomini e donne."
+        },
+        "explanation": {
+          "en": "The weighted result condenses several published shares into one cautious comparison. It is useful for seeing the gender gap at a glance, but it remains a derived indicator rather than a direct count of jobs that will be automated.",
+          "it": "Il risultato ponderato riassume diverse quote pubblicate in un confronto prudente. Aiuta a vedere subito il divario di genere, ma resta un indicatore derivato e non un conteggio diretto dei lavori che saranno automatizzati."
+        }
+      },
+      "reskilling_gap": {
+        "description": {
+          "en": "The indicators compare employees who say they need AI skills with those who actually received training in the previous year.",
+          "it": "Gli indicatori confrontano i lavoratori che dichiarano di aver bisogno di competenze sull’IA con quelli che hanno ricevuto formazione nell’ultimo anno."
+        },
+        "explanation": {
+          "en": "The distance between perceived need and completed training is the practical reskilling gap. Although the survey is country-specific, it illustrates a wider risk: adoption can move faster than employers and public systems can prepare people.",
+          "it": "La distanza tra bisogno percepito e formazione svolta è il vero divario di riqualificazione. Anche se l’indagine riguarda un solo paese, mostra un rischio più ampio: l’adozione può correre più veloce della capacità di imprese e istituzioni di preparare le persone."
+        }
+      }
+    }
+  },
+  "antibiotic-apocalypse": {
+    "summary": {
+      "en": "When bacteria stop responding to antibiotics, ordinary infections can become deadly again and routine surgery can become dangerously uncertain.",
+      "it": "Quando i batteri smettono di rispondere agli antibiotici, infezioni comuni possono tornare mortali e perfino un intervento di routine può diventare pericoloso."
+    },
+    "description": {
+      "en": "Antimicrobial resistance grows whenever bacteria survive medicines designed to kill them, leaving doctors with fewer effective treatments. The countdown follows deaths, resistant infections, antibiotic use and the weak pipeline of new drugs to show how quickly modern medicine could lose one of its basic protections.",
+      "it": "La resistenza antimicrobica cresce quando i batteri sopravvivono ai farmaci creati per eliminarli, lasciando ai medici sempre meno cure efficaci. Il countdown segue morti, infezioni resistenti, consumo di antibiotici e scarsità di nuovi farmaci per mostrare quanto rapidamente la medicina moderna possa perdere una delle sue protezioni fondamentali."
+    },
+    "visualizations": {
+      "projection_curve": {
+        "description": {
+          "en": "The three paths show how the operational burden of antimicrobial resistance could evolve toward the 2029, 2032 and 2036 assessment windows.",
+          "it": "I tre percorsi mostrano come potrebbe evolvere il peso operativo della resistenza antimicrobica verso le finestre di valutazione del 2029, 2032 e 2036."
+        },
+        "explanation": {
+          "en": "Lower values represent a smaller combined burden from resistance, treatment failure and weak system response. The lines are editorial scenarios built from several signals, not forecasts of an exact number of deaths.",
+          "it": "Valori più bassi indicano un peso combinato minore tra resistenza, fallimenti terapeutici e risposta insufficiente dei sistemi sanitari. Le linee sono scenari editoriali costruiti da più segnali, non previsioni di un numero esatto di morti."
+        }
+      },
+      "key_indicators": {
+        "description": {
+          "en": "The headline figures bring together infections, deaths and the number of antibacterial candidates still moving through the clinical pipeline.",
+          "it": "I dati principali riuniscono infezioni, decessi e numero di candidati antibatterici ancora presenti nella pipeline clinica."
+        },
+        "explanation": {
+          "en": "The burden is already measured in millions of infections and deaths, while the replacement pipeline remains small. Because the figures come from different geographies, years and definitions, they describe the scale of the problem but should not be combined into one total.",
+          "it": "Il peso è già misurato in milioni di infezioni e decessi, mentre la pipeline di sostituzione resta ridotta. Poiché i dati provengono da aree, anni e definizioni diverse, descrivono la scala del problema ma non vanno sommati in un unico totale."
+        }
+      },
+      "global_burden_2021": {
+        "description": {
+          "en": "The bars separate deaths directly attributable to bacterial resistance from the larger number of deaths associated with resistant infections.",
+          "it": "Le barre separano i decessi direttamente attribuibili alla resistenza batterica dal numero più ampio di morti associate a infezioni resistenti."
+        },
+        "explanation": {
+          "en": "“Attributable” estimates deaths that would not have occurred if the infection had been drug-susceptible; “associated” counts all deaths involving a resistant infection. The gap shows why headlines can differ sharply even when they refer to the same global burden study.",
+          "it": "“Attribuibile” stima i decessi che non sarebbero avvenuti con un’infezione sensibile ai farmaci; “associato” conta tutti i decessi in cui era presente un’infezione resistente. La differenza spiega perché i titoli possano riportare numeri molto diversi partendo dallo stesso studio globale."
+        }
+      },
+      "eu_resistant_bsi_2024": {
+        "description": {
+          "en": "The chart compares two resistant bloodstream-infection indicators in 2024 with the reduction targets set for 2030.",
+          "it": "Il grafico confronta due indicatori di infezioni del sangue resistenti nel 2024 con gli obiettivi di riduzione fissati per il 2030."
+        },
+        "explanation": {
+          "en": "Each pathogen–drug combination is tracked separately because resistance does not rise uniformly. The distance from the 2030 target shows where prevention, stewardship and infection control must accelerate most.",
+          "it": "Ogni combinazione patogeno–farmaco è seguita separatamente perché la resistenza non cresce allo stesso modo ovunque. La distanza dall’obiettivo 2030 indica dove prevenzione, uso responsabile e controllo delle infezioni devono accelerare di più."
+        }
+      },
+      "carbapenem_klebsiella_trend": {
+        "description": {
+          "en": "The line tracks EU/EEA bloodstream infections caused by Klebsiella pneumoniae resistant to carbapenems, a last-line class of antibiotics.",
+          "it": "La linea segue nell’UE/SEE le infezioni del sangue da Klebsiella pneumoniae resistente ai carbapenemi, antibiotici spesso usati come ultima risorsa."
+        },
+        "explanation": {
+          "en": "A rising incidence means hospitals are seeing more infections for which treatment options are severely limited. This organism is a critical warning signal because it spreads in healthcare settings and can turn common complications into life-threatening events.",
+          "it": "Un’incidenza in crescita significa che gli ospedali incontrano più infezioni con possibilità di cura fortemente limitate. È un segnale critico perché il batterio può diffondersi nelle strutture sanitarie e trasformare complicazioni comuni in eventi potenzialmente letali."
+        }
+      },
+      "community_antibiotic_consumption": {
+        "description": {
+          "en": "The series shows how much systemic antibacterial medicine is consumed in the community across the EU/EEA.",
+          "it": "La serie mostra quanto farmaco antibatterico sistemico viene consumato nella comunità nell’UE/SEE."
+        },
+        "explanation": {
+          "en": "High or poorly targeted consumption increases the selective pressure that allows resistant bacteria to survive and spread. The trend is therefore a proxy for stewardship pressure, not a direct measure of resistance itself.",
+          "it": "Un consumo elevato o poco mirato aumenta la pressione selettiva che permette ai batteri resistenti di sopravvivere e diffondersi. La tendenza è quindi un indicatore dell’uso degli antibiotici, non una misura diretta della resistenza."
+        }
+      },
+      "access_antibiotic_share": {
+        "description": {
+          "en": "The chart compares the share of lower-resistance-risk “Access” antibiotics with the 2030 international target.",
+          "it": "Il grafico confronta la quota di antibiotici “Access”, a minore rischio di favorire resistenze, con l’obiettivo internazionale per il 2030."
+        },
+        "explanation": {
+          "en": "A higher Access share generally means health systems are relying more on recommended first-line treatments and less on broader-spectrum options. Reaching the target would signal better prescribing, though it does not guarantee that total use is appropriate.",
+          "it": "Una quota Access più alta indica in genere un maggiore uso delle terapie di prima linea raccomandate e minore dipendenza da farmaci ad ampio spettro. Raggiungere il target segnalerebbe prescrizioni migliori, ma non garantirebbe da solo che il consumo totale sia appropriato."
+        }
+      },
+      "clinical_pipeline_2025": {
+        "description": {
+          "en": "The bars count traditional antibiotics and non-traditional antibacterial treatments currently in clinical development.",
+          "it": "Le barre contano gli antibiotici tradizionali e le terapie antibatteriche non tradizionali attualmente in sviluppo clinico."
+        },
+        "explanation": {
+          "en": "The pipeline appears larger when every candidate is counted, but only a fraction will reach patients and even fewer may target the most urgent resistant pathogens. The chart shows research activity, not the number of future approved medicines.",
+          "it": "La pipeline sembra più ampia contando tutti i candidati, ma solo una parte arriverà ai pazienti e ancora meno potrebbe colpire i patogeni resistenti più urgenti. Il grafico misura l’attività di ricerca, non il numero di futuri farmaci approvati."
+        }
+      }
+    }
+  },
+  "sixth-mass-extinction": {
+    "summary": {
+      "en": "Species, habitats and food webs are collapsing together—and when nature loses resilience, human food, water and security become more fragile too.",
+      "it": "Specie, habitat e catene alimentari stanno cedendo insieme: quando la natura perde resilienza, diventano più fragili anche cibo, acqua e sicurezza umana."
+    },
+    "description": {
+      "en": "The sixth mass extinction is not a single future event but an accelerating loss of species and ecosystems already visible across the planet. This countdown follows population decline, habitat destruction, protected areas, wetlands and forests to measure whether conservation can slow the damage before ecological systems cross irreversible thresholds.",
+      "it": "La sesta estinzione di massa non è un singolo evento futuro, ma una perdita accelerata di specie ed ecosistemi già visibile in tutto il pianeta. Il countdown segue calo delle popolazioni, distruzione degli habitat, aree protette, zone umide e foreste per capire se la conservazione può rallentare il danno prima di soglie irreversibili."
+    },
+    "visualizations": {
+      "projection_curve": {
+        "description": {
+          "en": "The lines compare protected-land coverage at the 2029 reporting deadline, the 2030 policy target and the longer 2050 recovery horizon.",
+          "it": "Le linee confrontano la copertura terrestre protetta alla scadenza di reporting del 2029, al target politico del 2030 e all’orizzonte di recupero del 2050."
+        },
+        "explanation": {
+          "en": "The chart shows how quickly conservation coverage would need to expand under three scenarios. More protected area is necessary but not sufficient: ecological quality, connectivity and enforcement determine whether protection actually reverses biodiversity loss.",
+          "it": "Il grafico mostra quanto rapidamente dovrebbe crescere la copertura di conservazione nei tre scenari. Aumentare le aree protette è necessario ma non sufficiente: qualità ecologica, connessioni e applicazione delle regole decidono se la tutela riduce davvero la perdita di biodiversità."
+        }
+      },
+      "key_indicators": {
+        "description": {
+          "en": "The indicators summarise the global scale of threatened species, altered land, damaged oceans and historical wetland loss.",
+          "it": "Gli indicatori riassumono la scala globale delle specie minacciate, dei territori trasformati, degli oceani sotto pressione e della perdita storica di zone umide."
+        },
+        "explanation": {
+          "en": "Each number measures a different part of ecological decline, so they cannot be merged into one score. Together they show that the crisis is not limited to rare species: it affects the physical systems that support food, water and climate stability.",
+          "it": "Ogni numero misura una parte diversa del declino ecologico e non può essere fuso in un unico punteggio. Insieme mostrano che la crisi non riguarda solo specie rare, ma i sistemi fisici che sostengono cibo, acqua e stabilità climatica."
+        }
+      },
+      "living_planet_index": {
+        "description": {
+          "en": "The index follows the average change in monitored vertebrate populations worldwide since 1970.",
+          "it": "L’indice segue la variazione media delle popolazioni di vertebrati monitorate nel mondo dal 1970."
+        },
+        "explanation": {
+          "en": "A falling index means the monitored populations contain far fewer animals on average than they did at the baseline. It does not mean the same percentage of species has disappeared, but it reveals a broad erosion of wildlife abundance across ecosystems.",
+          "it": "Un indice in calo significa che, in media, le popolazioni monitorate contengono molti meno animali rispetto al valore iniziale. Non indica che la stessa percentuale di specie sia scomparsa, ma segnala una vasta erosione dell’abbondanza della fauna."
+        }
+      },
+      "wetland_extent_index": {
+        "description": {
+          "en": "The chart reconstructs the global decline in wetland extent since 1970 using an indexed baseline.",
+          "it": "Il grafico ricostruisce il declino globale dell’estensione delle zone umide dal 1970 usando una base indicizzata."
+        },
+        "explanation": {
+          "en": "Wetlands filter water, store carbon, reduce floods and support exceptional biodiversity. A lower index means a smaller global area remains to perform those functions, increasing ecological and human vulnerability at the same time.",
+          "it": "Le zone umide filtrano l’acqua, immagazzinano carbonio, riducono le alluvioni e ospitano una biodiversità eccezionale. Un indice più basso significa meno territorio capace di svolgere queste funzioni, con un aumento simultaneo della vulnerabilità ecologica e umana."
+        }
+      },
+      "protected_area_coverage": {
+        "description": {
+          "en": "The bars compare current global protected-area coverage with the 30% conservation target for 2030.",
+          "it": "Le barre confrontano l’attuale copertura globale delle aree protette con l’obiettivo del 30% fissato per il 2030."
+        },
+        "explanation": {
+          "en": "The remaining gap shows how much land and water still need credible protection within a few years. Designating territory on paper is only the first step: management quality and ecological connectivity determine whether the target produces real recovery.",
+          "it": "La distanza residua mostra quanta terra e quante acque devono ancora ricevere una protezione credibile in pochi anni. Disegnare confini sulla carta è solo il primo passo: qualità della gestione e connessioni ecologiche determinano se il target produce un recupero reale."
+        }
+      },
+      "threatened_vertebrate_groups": {
+        "description": {
+          "en": "The chart compares the share of threatened species across five vertebrate groups that have been assessed comprehensively.",
+          "it": "Il grafico confronta la quota di specie minacciate in cinque gruppi di vertebrati valutati in modo completo."
+        },
+        "explanation": {
+          "en": "Amphibians stand out as especially vulnerable because they depend on both aquatic and terrestrial habitats and react quickly to pollution, disease and climate change. Differences between groups reflect real ecology as well as the quality and timing of assessments.",
+          "it": "Gli anfibi emergono come particolarmente vulnerabili perché dipendono da habitat acquatici e terrestri e reagiscono rapidamente a inquinamento, malattie e cambiamento climatico. Le differenze tra gruppi riflettono sia l’ecologia sia qualità e data delle valutazioni."
+        }
+      },
+      "forest_net_loss_rate": {
+        "description": {
+          "en": "The bars compare the average annual rate of net forest loss across successive assessment periods.",
+          "it": "Le barre confrontano il tasso medio annuo di perdita netta di foreste in periodi di valutazione successivi."
+        },
+        "explanation": {
+          "en": "A slower net loss is progress, but “net” can hide the replacement of complex natural forests with plantations or regrowth elsewhere. The chart therefore measures the balance of area, not the full ecological quality of what has been lost and gained.",
+          "it": "Un rallentamento della perdita netta è un progresso, ma il dato “netto” può nascondere la sostituzione di foreste naturali complesse con piantagioni o ricrescita altrove. Il grafico misura il bilancio delle superfici, non tutta la qualità ecologica di ciò che viene perso e guadagnato."
+        }
+      }
+    }
+  },
+  "taiwan-invasion": {
+    "summary": {
+      "en": "A blockade or invasion of Taiwan could draw China and the United States into war and cut the world off from its most advanced semiconductors.",
+      "it": "Un blocco o un’invasione di Taiwan potrebbe trascinare Cina e Stati Uniti in guerra e interrompere la fornitura mondiale dei semiconduttori più avanzati."
+    },
+    "description": {
+      "en": "Pressure around Taiwan is rising through military flights, naval patrols, cyber operations and economic coercion, even without a declared war. This countdown tracks the warning signs of blockade, quarantine or invasion and the global economic shock that could follow a crisis in the Taiwan Strait.",
+      "it": "La pressione su Taiwan cresce attraverso voli militari, pattuglie navali, operazioni informatiche e coercizione economica, anche senza una guerra dichiarata. Il countdown segue i segnali di blocco, quarantena o invasione e lo shock mondiale che potrebbe seguire a una crisi nello Stretto."
+    },
+    "visualizations": {
+      "projection_curve": {
+        "description": {
+          "en": "The three lines compare editorial risk paths for escalating coercion, blockade pressure and a full military crisis around Taiwan.",
+          "it": "Le tre linee confrontano percorsi editoriali di rischio per coercizione crescente, pressione da blocco e una crisi militare aperta attorno a Taiwan."
+        },
+        "explanation": {
+          "en": "The index rises as military activity, political signalling and economic pressure accumulate. It does not assign a probability to invasion; it helps compare how quickly different crisis pathways could become more dangerous.",
+          "it": "L’indice cresce quando si accumulano attività militari, segnali politici e pressione economica. Non assegna una probabilità all’invasione: serve a confrontare quanto rapidamente diversi percorsi di crisi possano diventare più pericolosi."
+        }
+      },
+      "key_indicators": {
+        "description": {
+          "en": "These headline indicators combine military pressure with the trade, semiconductor and energy vulnerabilities that would magnify a Taiwan crisis.",
+          "it": "Gli indicatori principali uniscono la pressione militare alle vulnerabilità commerciali, tecnologiche ed energetiche che amplificherebbero una crisi su Taiwan."
+        },
+        "explanation": {
+          "en": "No single metric predicts war, but together the figures show why the stakes are global. Taiwan’s strategic position, chip production and import dependence mean that even coercion short of invasion could produce severe disruption.",
+          "it": "Nessun indicatore da solo prevede una guerra, ma insieme i dati spiegano perché la posta in gioco sia globale. Posizione strategica, produzione di chip e dipendenza dalle importazioni fanno sì che perfino una coercizione inferiore all’invasione possa provocare gravi interruzioni."
+        }
+      },
+      "pla_pressure_trend": {
+        "description": {
+          "en": "The line tracks annual Chinese military activity reported around Taiwan’s air-defence identification zone.",
+          "it": "La linea segue l’attività militare cinese annuale segnalata attorno alla zona di identificazione della difesa aerea di Taiwan."
+        },
+        "explanation": {
+          "en": "A sustained rise increases operational pressure on Taiwan and normalises a larger Chinese military presence near the island. The measure captures visible air activity, not every naval, cyber or coast-guard operation involved in coercion.",
+          "it": "Una crescita prolungata aumenta la pressione operativa su Taiwan e normalizza una presenza militare cinese più ampia vicino all’isola. La misura registra l’attività aerea visibile, non tutte le operazioni navali, informatiche o della guardia costiera."
+        }
+      },
+      "naval_pressure_2026": {
+        "description": {
+          "en": "The chart contrasts a reference naval presence with reports of more than 110 military and coast-guard ships operating in the region during July 2026.",
+          "it": "Il grafico confronta una presenza navale di riferimento con i report di oltre 110 navi militari e della guardia costiera nella regione nel luglio 2026."
+        },
+        "explanation": {
+          "en": "A massed maritime presence can rehearse blockade operations, stretch Taiwan’s surveillance capacity and make sudden escalation harder to distinguish from an exercise. The comparison is a pressure snapshot, not a continuous fleet count.",
+          "it": "Una presenza marittima concentrata può provare operazioni di blocco, sovraccaricare la sorveglianza taiwanese e rendere difficile distinguere un’escalation improvvisa da un’esercitazione. Il confronto è una fotografia della pressione, non un conteggio continuo della flotta."
+        }
+      },
+      "economic_exposure": {
+        "description": {
+          "en": "The bars compare trade flows, economic activity and sanctions exposure that could be disrupted by a crisis in the Taiwan Strait.",
+          "it": "Le barre confrontano flussi commerciali, attività economica ed esposizione a sanzioni che una crisi nello Stretto di Taiwan potrebbe interrompere."
+        },
+        "explanation": {
+          "en": "The categories use different economic concepts, but all point to the same conclusion: disruption would extend far beyond Taiwan. Shipping, electronics production and financial sanctions could transmit the shock through global supply chains within days.",
+          "it": "Le categorie usano concetti economici diversi, ma indicano la stessa conclusione: l’interruzione andrebbe ben oltre Taiwan. Trasporto marittimo, produzione elettronica e sanzioni finanziarie potrebbero trasmettere lo shock alle catene globali in pochi giorni."
+        }
+      },
+      "scenario_gdp_shock": {
+        "description": {
+          "en": "The chart compares editorial midpoint estimates of Taiwan’s first-year GDP loss under escalating crisis scenarios.",
+          "it": "Il grafico confronta stime editoriali centrali della perdita di PIL di Taiwan nel primo anno sotto scenari di crisi crescente."
+        },
+        "explanation": {
+          "en": "A quarantine would damage trade and confidence, a blockade would cut essential flows, and invasion would destroy productive capacity directly. The values are scenario midpoints for comparison, not precise economic forecasts.",
+          "it": "Una quarantena danneggerebbe commercio e fiducia, un blocco interromperebbe flussi essenziali e un’invasione distruggerebbe direttamente capacità produttiva. I valori sono punti medi di scenario per il confronto, non previsioni economiche precise."
+        }
+      },
+      "energy_resilience": {
+        "description": {
+          "en": "The indicators show Taiwan’s dependence on imported energy and the limited reserve buffer available if maritime supply is interrupted.",
+          "it": "Gli indicatori mostrano la dipendenza di Taiwan dall’energia importata e il margine limitato delle riserve in caso di interruzione dei rifornimenti marittimi."
+        },
+        "explanation": {
+          "en": "Extremely high import dependence makes energy one of Taiwan’s most immediate vulnerabilities during a blockade. LNG reserves measured in days illustrate how quickly electricity generation and industry could face pressure if shipping stopped.",
+          "it": "La dipendenza quasi totale dalle importazioni rende l’energia una delle vulnerabilità più immediate di Taiwan durante un blocco. Riserve di GNL misurate in giorni mostrano quanto rapidamente elettricità e industria potrebbero entrare sotto pressione se le navi smettessero di arrivare."
+        }
+      }
+    }
+  },
+  "unlivable-heat": {
+    "summary": {
+      "en": "Extreme heat and humidity are making some cities dangerous for the human body, turning outdoor work and ordinary life into a growing survival problem.",
+      "it": "Caldo e umidità estremi stanno rendendo alcune città pericolose per il corpo umano, trasformando il lavoro all’aperto e la vita quotidiana in un problema di sopravvivenza."
+    },
+    "description": {
+      "en": "Heat does not make the whole planet uninhabitable at once: it expands city by city, season by season, as temperatures, humidity and night-time heat rise. This countdown tracks global warming, tropical nights, heat-stress days and cooling demand to show where the limits of safe living and working are being pushed first.",
+      "it": "Il caldo non rende tutto il pianeta inabitabile nello stesso momento: avanza città dopo città e stagione dopo stagione, mentre aumentano temperatura, umidità e calore notturno. Il countdown segue riscaldamento globale, notti tropicali, giorni di stress termico e domanda di raffrescamento per mostrare dove vengono superati per primi i limiti della vita e del lavoro sicuri."
+    },
+    "visualizations": {
+      "projection_curve": {
+        "description": {
+          "en": "The lines combine the observed 2025 temperature anomaly with central estimates for near-, mid- and long-term climate windows under three emissions pathways.",
+          "it": "Le linee uniscono l’anomalia osservata nel 2025 alle stime centrali per le finestre climatiche di breve, medio e lungo periodo in tre percorsi emissivi."
+        },
+        "explanation": {
+          "en": "The separation between scenarios grows over time, showing how today’s emissions choices shape the heat burden later in the century. These are global air-temperature pathways; local humidity, urban design and access to cooling determine how dangerous the heat becomes for people.",
+          "it": "La distanza tra gli scenari cresce nel tempo e mostra quanto le scelte sulle emissioni di oggi determinino il peso del caldo nel resto del secolo. Sono traiettorie della temperatura globale dell’aria: umidità locale, forma delle città e accesso al raffrescamento decidono quanto il calore diventi pericoloso per le persone."
+        }
+      },
+      "key_indicators": {
+        "description": {
+          "en": "The indicators combine global warming with observed heat stress, tropical nights and heat-related mortality in Europe.",
+          "it": "Gli indicatori uniscono il riscaldamento globale a stress termico osservato, notti tropicali e mortalità legata al caldo in Europa."
+        },
+        "explanation": {
+          "en": "The figures describe different dimensions of heat risk: the climate background, dangerous daytime exposure, loss of night-time recovery and the human toll. They use different units and populations, so they should be read as a warning dashboard rather than a single index.",
+          "it": "I valori descrivono dimensioni diverse del rischio: il clima di fondo, l’esposizione pericolosa di giorno, la perdita di recupero notturno e il costo umano. Usano unità e popolazioni differenti e vanno letti come un cruscotto d’allarme, non come un unico indice."
+        }
+      },
+      "global_temperature_anomaly": {
+        "description": {
+          "en": "The line shows the annual global mean air-temperature anomaly relative to the 1850–1900 pre-industrial baseline.",
+          "it": "La linea mostra l’anomalia annuale della temperatura media globale dell’aria rispetto al periodo preindustriale 1850–1900."
+        },
+        "explanation": {
+          "en": "Each step upward raises the baseline from which heatwaves begin, making extreme events more likely and more intense. A global average can look small, but it represents much larger changes over land, in the Arctic and during regional extremes.",
+          "it": "Ogni aumento alza il livello di partenza delle ondate di calore, rendendo gli estremi più probabili e intensi. Una media globale può sembrare piccola, ma corrisponde a cambiamenti molto maggiori sulle terre emerse, nell’Artico e durante gli eventi regionali."
+        }
+      },
+      "tropical_night_area_share": {
+        "description": {
+          "en": "The chart tracks the share of Europe experiencing at least one night above the tropical-night threshold in each decade.",
+          "it": "Il grafico segue la quota d’Europa che registra almeno una notte sopra la soglia di notte tropicale in ogni decennio."
+        },
+        "explanation": {
+          "en": "Hot nights prevent the body and buildings from recovering after daytime heat, increasing health risks even when daytime peaks do not change. A growing area share means this stress is spreading geographically, not remaining confined to traditional hot spots.",
+          "it": "Le notti calde impediscono al corpo e agli edifici di recuperare dopo il calore diurno, aumentando il rischio sanitario anche senza nuovi picchi massimi. Una quota territoriale in crescita significa che lo stress si sta diffondendo geograficamente, non resta confinato alle zone tradizionalmente calde."
+        }
+      },
+      "southeast_heat_stress_days": {
+        "description": {
+          "en": "The bars compare the number of summer days with strong heat stress in southeastern Europe against the recent climate average.",
+          "it": "Le barre confrontano i giorni estivi di forte stress termico nell’Europa sudorientale con la media climatica recente."
+        },
+        "explanation": {
+          "en": "More days above the UTCI threshold mean longer periods when outdoor work, exercise and daily mobility become physiologically demanding. The comparison shows not just a hotter peak, but a longer season of dangerous exposure.",
+          "it": "Più giorni sopra la soglia UTCI significano periodi più lunghi in cui lavoro all’aperto, attività fisica e spostamenti quotidiani diventano pesanti per l’organismo. Il confronto mostra non solo picchi più alti, ma una stagione di esposizione pericolosa più lunga."
+        }
+      },
+      "southeast_tropical_nights": {
+        "description": {
+          "en": "The chart compares summer nights above 20°C in southeastern Europe with the 1991–2020 reference period.",
+          "it": "Il grafico confronta le notti estive sopra i 20°C nell’Europa sudorientale con il periodo di riferimento 1991–2020."
+        },
+        "explanation": {
+          "en": "When minimum temperatures remain high, vulnerable people lose the nightly cooling period that normally reduces cardiovascular and respiratory stress. Repeated hot nights also increase electricity demand and worsen the impact of multi-day heatwaves.",
+          "it": "Quando le temperature minime restano elevate, le persone vulnerabili perdono il raffrescamento notturno che normalmente riduce lo stress cardiovascolare e respiratorio. Notti calde ripetute aumentano anche la domanda elettrica e aggravano le ondate di calore di più giorni."
+        }
+      },
+      "eu_cooling_degree_days_2022": {
+        "description": {
+          "en": "The bars compare cooling degree days across five EU countries with particularly high demand for air conditioning in 2022.",
+          "it": "Le barre confrontano i gradi giorno di raffrescamento in cinque paesi UE con domanda particolarmente elevata di climatizzazione nel 2022."
+        },
+        "explanation": {
+          "en": "A higher value means buildings required more cooling over the year to maintain comfortable indoor temperatures. The measure links extreme heat to electricity demand, household costs and the risk that people without access to cooling are left exposed.",
+          "it": "Un valore più alto significa che gli edifici hanno richiesto più raffrescamento durante l’anno per mantenere temperature interne sopportabili. La misura collega il caldo estremo a domanda elettrica, costi familiari e rischio che le persone senza accesso alla climatizzazione restino esposte."
+        }
+      }
+    }
+  }
+}

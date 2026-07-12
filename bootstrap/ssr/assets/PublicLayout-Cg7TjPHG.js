@@ -1,8 +1,8 @@
-import { defineComponent, computed, mergeProps, unref, useSSRContext, createVNode, resolveDynamicComponent, ref, reactive, onMounted, onBeforeUnmount, withCtx, openBlock, createBlock, Fragment, renderList, createCommentVNode, toDisplayString, createTextVNode } from "vue";
+import { defineComponent, computed, mergeProps, unref, useSSRContext, ref, reactive, onMounted, onBeforeUnmount, withCtx, createVNode, resolveDynamicComponent, openBlock, createBlock, Fragment, renderList, createCommentVNode, toDisplayString, createTextVNode } from "vue";
 import { ssrRenderAttrs, ssrRenderClass, ssrRenderComponent, ssrInterpolate, ssrRenderList, ssrRenderAttr, ssrRenderVNode, ssrRenderSlot } from "vue/server-renderer";
-import { t, B as Button, _ as _sfc_main$8, v as setLanguage, w as _sfc_main$9, T as ToastNotification } from "../ssr.js";
-import { router, usePage, Head } from "@inertiajs/vue3";
-import { HeartHandshake, ExternalLink, MessagesSquare, Send, Cookie, Settings2, ShieldCheck, Globe2 } from "lucide-vue-next";
+import { t, B as Button, _ as _sfc_main$8, v as setLanguage, w as _sfc_main$9, P, T as ToastNotification } from "../ssr.js";
+import { router, usePage, Head, Link } from "@inertiajs/vue3";
+import { HeartHandshake, ExternalLink, Cookie, Settings2, ShieldCheck, Globe2 } from "lucide-vue-next";
 const PATREON_URL = "https://www.patreon.com/cw/doomsdayclock";
 const _sfc_main$7 = /* @__PURE__ */ defineComponent({
   __name: "PatreonSupportLink",
@@ -64,12 +64,12 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent({
       {
         label: "Discord",
         href: "https://discord.gg/NmKXDzwzK",
-        icon: MessagesSquare
+        iconSrc: "/images/community/discord.png"
       },
       {
         label: "Telegram",
         href: "https://t.me/doomsdayclockofficial",
-        icon: Send
+        iconSrc: "/images/community/telegram.png"
       }
     ];
     return (_ctx, _push, _parent, _attrs) => {
@@ -78,12 +78,7 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent({
         "aria-label": "Discord and Telegram"
       }, _attrs))}><!--[-->`);
       ssrRenderList(communityLinks, (link) => {
-        _push(`<a${ssrRenderAttr("href", link.href)} target="_blank" rel="noopener noreferrer"${ssrRenderAttr("aria-label", `${link.label} — ${unref(t)("opensInNewTab")}`)}${ssrRenderAttr("title", link.label)} class="${ssrRenderClass(isHeader.value ? "group inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/12 bg-white/[0.035] text-white/72 transition hover:border-ui-primary/60 hover:bg-ui-primary/[0.10] hover:text-ui-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ui-primary focus-visible:ring-offset-2 focus-visible:ring-offset-black" : "group inline-flex min-h-12 items-center gap-3 rounded-xl border border-white/12 bg-white/[0.035] px-3.5 py-3 text-sm font-semibold text-white/78 transition hover:-translate-y-0.5 hover:border-ui-primary/50 hover:bg-ui-primary/[0.08] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ui-primary focus-visible:ring-offset-2 focus-visible:ring-offset-black sm:px-4")}"><span class="${ssrRenderClass(isHeader.value ? "inline-flex items-center justify-center" : "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-black/35 text-ui-primary transition group-hover:border-ui-primary/30")}">`);
-        ssrRenderVNode(_push, createVNode(resolveDynamicComponent(link.icon), {
-          class: "h-4 w-4",
-          "aria-hidden": "true"
-        }, null), _parent);
-        _push(`</span>`);
+        _push(`<a${ssrRenderAttr("href", link.href)} target="_blank" rel="noopener noreferrer"${ssrRenderAttr("aria-label", `${link.label} — ${unref(t)("opensInNewTab")}`)}${ssrRenderAttr("title", link.label)} class="${ssrRenderClass(isHeader.value ? "group inline-flex h-9 w-9 items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ui-primary focus-visible:ring-offset-2 focus-visible:ring-offset-black" : "group inline-flex min-h-12 items-center gap-3 rounded-xl border border-white/12 bg-white/[0.035] px-3.5 py-3 text-sm font-semibold text-white/78 transition hover:-translate-y-0.5 hover:border-ui-primary/50 hover:bg-ui-primary/[0.08] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ui-primary focus-visible:ring-offset-2 focus-visible:ring-offset-black sm:px-4")}"><span class="${ssrRenderClass(isHeader.value ? "inline-flex items-center justify-center" : "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-black/35 text-ui-primary transition group-hover:border-ui-primary/30")}"><img${ssrRenderAttr("src", link.iconSrc)} alt="" class="h-5 w-5 object-contain" width="20" height="20" loading="eager" decoding="async" aria-hidden="true"></span>`);
         if (!isHeader.value) {
           _push(`<span class="min-w-0 flex-1 truncate">${ssrInterpolate(link.label)}</span>`);
         } else {
@@ -470,13 +465,7 @@ function trackingConfig() {
     googleAnalyticsId: String("").trim()
   };
 }
-function shouldLoadTracking(consent) {
-  return consent.analytics || consent.marketing;
-}
 function loadAllowedGoogleTags(consent) {
-  if (!shouldLoadTracking(consent)) {
-    return;
-  }
   const config = trackingConfig();
   if (config.googleTagManagerId !== "" && !googleTagManagerLoaded) {
     loadGoogleTagManager(config.googleTagManagerId);
@@ -505,6 +494,7 @@ function applyTrackingConsent(consent) {
 }
 function initializeConsentRuntime() {
   initializeGoogleConsentDefaults();
+  loadAllowedGoogleTags(createConsentPreferences(EMPTY_CONSENT_DRAFT, "rejected_all", null));
   const stored = readStoredConsent();
   if (stored !== null) {
     applyTrackingConsent(stored);
@@ -973,32 +963,56 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
           if (_push2) {
             _push2(`<!--[-->`);
             ssrRenderList(__props.languages, (language) => {
-              _push2(`<a${ssrRenderAttr("href", language.url)} class="${ssrRenderClass([language.is_current ? "bg-white/10 text-white" : "text-ui-muted-foreground", "flex items-center justify-between rounded px-3 py-2 transition hover:bg-white/10"])}"${_scopeId}><span class="flex items-center gap-3"${_scopeId}><span class="inline-flex h-5 w-7 items-center justify-center overflow-hidden rounded-sm bg-white/10 text-base leading-none"${_scopeId}>${ssrInterpolate(language.flag)}</span> ${ssrInterpolate(language.native_label)}</span>`);
-              if (language.is_current) {
-                _push2(`<span class="text-ui-primary"${_scopeId}>✓</span>`);
-              } else {
-                _push2(`<!---->`);
-              }
-              _push2(`</a>`);
+              _push2(ssrRenderComponent(unref(Link), {
+                key: language.code,
+                href: language.url,
+                class: ["flex items-center justify-between rounded px-3 py-2 transition hover:bg-white/10", language.is_current ? "bg-white/10 text-white" : "text-ui-muted-foreground"]
+              }, {
+                default: withCtx((_2, _push3, _parent3, _scopeId2) => {
+                  if (_push3) {
+                    _push3(`<span class="flex items-center gap-3"${_scopeId2}><span class="inline-flex h-5 w-7 items-center justify-center overflow-hidden rounded-sm bg-white/10 text-base leading-none"${_scopeId2}>${ssrInterpolate(language.flag)}</span> ${ssrInterpolate(language.native_label)}</span>`);
+                    if (language.is_current) {
+                      _push3(`<span class="text-ui-primary"${_scopeId2}>✓</span>`);
+                    } else {
+                      _push3(`<!---->`);
+                    }
+                  } else {
+                    return [
+                      createVNode("span", { class: "flex items-center gap-3" }, [
+                        createVNode("span", { class: "inline-flex h-5 w-7 items-center justify-center overflow-hidden rounded-sm bg-white/10 text-base leading-none" }, toDisplayString(language.flag), 1),
+                        createTextVNode(" " + toDisplayString(language.native_label), 1)
+                      ]),
+                      language.is_current ? (openBlock(), createBlock("span", {
+                        key: 0,
+                        class: "text-ui-primary"
+                      }, "✓")) : createCommentVNode("", true)
+                    ];
+                  }
+                }),
+                _: 2
+              }, _parent2, _scopeId));
             });
             _push2(`<!--]-->`);
           } else {
             return [
               (openBlock(true), createBlock(Fragment, null, renderList(__props.languages, (language) => {
-                return openBlock(), createBlock("a", {
+                return openBlock(), createBlock(unref(Link), {
                   key: language.code,
                   href: language.url,
                   class: ["flex items-center justify-between rounded px-3 py-2 transition hover:bg-white/10", language.is_current ? "bg-white/10 text-white" : "text-ui-muted-foreground"]
-                }, [
-                  createVNode("span", { class: "flex items-center gap-3" }, [
-                    createVNode("span", { class: "inline-flex h-5 w-7 items-center justify-center overflow-hidden rounded-sm bg-white/10 text-base leading-none" }, toDisplayString(language.flag), 1),
-                    createTextVNode(" " + toDisplayString(language.native_label), 1)
+                }, {
+                  default: withCtx(() => [
+                    createVNode("span", { class: "flex items-center gap-3" }, [
+                      createVNode("span", { class: "inline-flex h-5 w-7 items-center justify-center overflow-hidden rounded-sm bg-white/10 text-base leading-none" }, toDisplayString(language.flag), 1),
+                      createTextVNode(" " + toDisplayString(language.native_label), 1)
+                    ]),
+                    language.is_current ? (openBlock(), createBlock("span", {
+                      key: 0,
+                      class: "text-ui-primary"
+                    }, "✓")) : createCommentVNode("", true)
                   ]),
-                  language.is_current ? (openBlock(), createBlock("span", {
-                    key: 0,
-                    class: "text-ui-primary"
-                  }, "✓")) : createCommentVNode("", true)
-                ], 10, ["href"]);
+                  _: 2
+                }, 1032, ["href", "class"]);
               }), 128))
             ];
           }
@@ -1024,13 +1038,65 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
   },
   setup(__props) {
     const props = __props;
-    const homeUrl = computed(() => `/?lang=${props.currentLocale}`);
-    const aboutUrl = computed(() => `/about?lang=${props.currentLocale}`);
+    const homeUrl = computed(() => P("home", { lang: props.currentLocale }));
+    const aboutUrl = computed(() => P("about", { lang: props.currentLocale }));
     function navClass(page) {
       return props.activePage === page ? "border-ui-primary text-ui-primary" : "border-transparent text-white/80 hover:text-white";
     }
     return (_ctx, _push, _parent, _attrs) => {
-      _push(`<header${ssrRenderAttrs(mergeProps({ class: "fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-black/82 backdrop-blur-xl" }, _attrs))}><div class="mx-auto flex max-w-[1760px] items-center justify-between px-4 py-2 sm:px-7"><a${ssrRenderAttr("href", homeUrl.value)} class="flex items-center gap-3" aria-label="Doomsday Clock home"><img src="/images/doomsday/doomsday_logo_transparent.png" alt="Doomsday Clock" class="h-9 w-auto sm:h-10"></a><nav class="hidden items-center gap-8 text-sm uppercase tracking-[0.18em] lg:flex"><a${ssrRenderAttr("href", homeUrl.value)} class="${ssrRenderClass(["border-b-2 px-2 pb-2 pt-1", navClass("home")])}">${ssrInterpolate(unref(t)("home"))}</a><a${ssrRenderAttr("href", aboutUrl.value)} class="${ssrRenderClass(["border-b-2 px-2 pb-2 pt-1", navClass("about")])}">${ssrInterpolate(unref(t)("about"))}</a></nav><div class="flex items-center gap-1.5 sm:gap-2.5">`);
+      _push(`<header${ssrRenderAttrs(mergeProps({ class: "fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-black/82 backdrop-blur-xl" }, _attrs))}><div class="mx-auto flex max-w-[1760px] items-center justify-between px-4 py-2 sm:px-7">`);
+      _push(ssrRenderComponent(unref(Link), {
+        href: homeUrl.value,
+        class: "flex items-center gap-3",
+        "aria-label": "Doomsday Clock home"
+      }, {
+        default: withCtx((_, _push2, _parent2, _scopeId) => {
+          if (_push2) {
+            _push2(`<img src="/images/doomsday/doomsday_logo_transparent.png" alt="Doomsday Clock" class="h-9 w-auto sm:h-10"${_scopeId}>`);
+          } else {
+            return [
+              createVNode("img", {
+                src: "/images/doomsday/doomsday_logo_transparent.png",
+                alt: "Doomsday Clock",
+                class: "h-9 w-auto sm:h-10"
+              })
+            ];
+          }
+        }),
+        _: 1
+      }, _parent));
+      _push(`<nav class="hidden items-center gap-8 text-sm uppercase tracking-[0.18em] lg:flex">`);
+      _push(ssrRenderComponent(unref(Link), {
+        href: homeUrl.value,
+        class: ["border-b-2 px-2 pb-2 pt-1", navClass("home")]
+      }, {
+        default: withCtx((_, _push2, _parent2, _scopeId) => {
+          if (_push2) {
+            _push2(`${ssrInterpolate(unref(t)("home"))}`);
+          } else {
+            return [
+              createTextVNode(toDisplayString(unref(t)("home")), 1)
+            ];
+          }
+        }),
+        _: 1
+      }, _parent));
+      _push(ssrRenderComponent(unref(Link), {
+        href: aboutUrl.value,
+        class: ["border-b-2 px-2 pb-2 pt-1", navClass("about")]
+      }, {
+        default: withCtx((_, _push2, _parent2, _scopeId) => {
+          if (_push2) {
+            _push2(`${ssrInterpolate(unref(t)("about"))}`);
+          } else {
+            return [
+              createTextVNode(toDisplayString(unref(t)("about")), 1)
+            ];
+          }
+        }),
+        _: 1
+      }, _parent));
+      _push(`</nav><div class="flex items-center gap-1.5 sm:gap-2.5">`);
       _push(ssrRenderComponent(_sfc_main$6, { placement: "header" }, null, _parent));
       _push(ssrRenderComponent(_sfc_main$7, { placement: "header" }, null, _parent));
       _push(ssrRenderComponent(_sfc_main$2, {
