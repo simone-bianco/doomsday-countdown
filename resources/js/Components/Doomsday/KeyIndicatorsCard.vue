@@ -2,6 +2,7 @@
 import { computed } from 'vue';
 import { Card } from '@simone-bianco/vue-ui-components';
 import { t } from '@/i18n';
+import VisualizationEvidence from './VisualizationEvidence.vue';
 import type { VisualizationData } from '@/types/generated';
 
 const props = defineProps<{
@@ -42,5 +43,6 @@ const indicators = computed((): Indicator[] => {
                 </div>
             </div>
         </div>
+        <VisualizationEvidence :sources="visualization?.sources ?? []" :reasoning="visualization?.reasoning ?? null" />
     </Card>
 </template>

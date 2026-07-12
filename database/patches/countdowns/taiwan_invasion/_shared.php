@@ -11,6 +11,12 @@ return new class
     {
         return [
             'dod' => 'https://media.defense.gov/2025/Dec/23/2003849070/-1/-1/1/ANNUAL-REPORT-TO-CONGRESS-MILITARY-AND-SECURITY-DEVELOPMENTS-INVOLVING-THE-PEOPLES-REPUBLIC-OF-CHINA-2025.PDF',
+            'dni_ata_2026' => 'https://www.dni.gov/files/ODNI/documents/assessments/ATA-2026-Unclassified-Report.pdf',
+            'csis_expert_survey' => 'https://chinapower.csis.org/survey-experts-us-china-relations-2026/',
+            'csis_pla_purges' => 'https://www.csis.org/analysis/assessing-xis-unprecedented-purges-chinas-military-key-developments-and-potential',
+            'brookings_2028_inflection' => 'https://www.brookings.edu/articles/adapting-us-taiwan-policy-for-a-new-strategic-reality/',
+            'taiwan_constitution_term' => 'https://english.president.gov.tw/Page/95',
+            'taiwan_inauguration_2024' => 'https://english.president.gov.tw/News/6726',
             'reuters_status_quo' => 'https://www.reuters.com/world/china/chinas-actions-risk-creation-new-status-quo-taiwan-official-says-2026-07-08/',
             'reuters_preparedness' => 'https://www.reuters.com/business/aerospace-defense/taiwans-preparations-face-chinese-attack-are-not-provocation-senior-official-2026-07-07/',
             'reuters_naval' => 'https://www.reuters.com/world/china/taiwan-says-it-is-tracking-upward-trend-chinese-naval-movements-2026-07-06/',
@@ -53,11 +59,12 @@ return new class
     }
 
     /**
-     * @param array<string, string> $title
-     * @param array<string, string> $description
-     * @param array<int, string> $labels
-     * @param array<int, int|float|array<string, mixed>> $series
-     * @param array<int, string> $sources
+     * @param  array<string, string>  $title
+     * @param  array<string, string>  $description
+     * @param  array<string, string>  $reasoning
+     * @param  array<int, string>  $labels
+     * @param  array<int, int|float|array<string, mixed>>  $series
+     * @param  array<int, string>  $sources
      * @return array<string, mixed>
      */
     public function chartVisualization(
@@ -65,6 +72,7 @@ return new class
         VisualizationType $type,
         array $title,
         array $description,
+        array $reasoning,
         array $labels,
         array $series,
         string $xLabel,
@@ -74,7 +82,6 @@ return new class
         string $yFormat,
         array $sources,
         int $sortOrder,
-        ?string $note = null,
     ): array {
         $payload = [
             'labels' => $labels,
@@ -83,18 +90,15 @@ return new class
                 'x' => ['label' => $xLabel, 'type' => $xType],
                 'y' => ['label' => $yLabel, 'unit' => $yUnit, 'format' => $yFormat],
             ],
-            'sources' => $sources,
         ];
-
-        if ($note !== null) {
-            $payload['note'] = $note;
-        }
 
         return [
             'key' => $key,
             'type' => $type,
             'title' => $title,
             'description' => $description,
+            'sources' => array_values(array_unique($sources)),
+            'reasoning' => $reasoning,
             'payload' => $payload,
             'schema_version' => 2,
             'sort_order' => $sortOrder,

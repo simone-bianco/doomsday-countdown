@@ -10,9 +10,11 @@ import { defaultPayload, first, localizedText, optionItems } from '@/Components/
 import type { BackofficeOptions, LocalizedText, VisualizationPayload, VisualizationRecord } from '@/Components/Backoffice/Doomsday/types';
 import type { SaveVisualizationData } from '@/types/generated';
 
-type SaveVisualizationForm = Omit<SaveVisualizationData, 'title' | 'description' | 'payload'> & {
+type SaveVisualizationForm = Omit<SaveVisualizationData, 'title' | 'description' | 'sources' | 'reasoning' | 'payload'> & {
     title: LocalizedText;
     description: LocalizedText;
+    sources: string[];
+    reasoning: LocalizedText;
     payload: VisualizationPayload;
 } & Record<string, unknown>;
 
@@ -38,20 +40,45 @@ function schemaVersion(type: string): number {
     return isChartType(type) ? 2 : 1;
 }
 
+function isHttpsUrl(value: string): boolean {
+    try {
+        return new URL(value).protocol === 'https:';
+    } catch {
+        return false;
+    }
+}
+
 const initialType = props.visualization?.type ?? first(props.options.visualization_types.filter((type) => editableTypes.includes(type as typeof editableTypes[number])), 'line');
 const initialPayload = (props.visualization?.payload as VisualizationPayload | undefined) ?? defaultPayload(initialType);
 const emit = defineEmits<{ (event: 'saved'): void; (event: 'cancel'): void }>();
 const form = useSmartForm<SaveVisualizationForm>({ ...SaveVisualizationDataRules });
 const payloadDraft = ref<VisualizationPayload>(initialPayload);
 const payloadIsValid = ref(true);
+const sourcesText = ref((props.visualization?.sources ?? []).join('\n'));
+const parsedSources = computed(() => sourcesText.value.split('\n').map((source) => source.trim()).filter((source) => source !== ''));
+const evidenceError = computed(() => {
+    if (form.reasoning.en.trim() === '') {
+        return 'Explain how the values were calculated or selected.';
+    }
+    if (parsedSources.value.length === 0) {
+        return 'Add at least one HTTPS source URL.';
+    }
+    if (parsedSources.value.some((source) => !isHttpsUrl(source))) {
+        return 'Every source must be a valid HTTPS URL.';
+    }
+
+    return '';
+});
 const supportedOptions = computed(() => optionItems(props.options.visualization_types.filter((type) => editableTypes.includes(type as typeof editableTypes[number]))));
-const submitDisabled = computed(() => form.processing || !payloadIsValid.value);
+const submitDisabled = computed(() => form.processing || !payloadIsValid.value || evidenceError.value !== '');
 
 form.fill({
     key: props.visualization?.key ?? '',
     type: initialType,
     title: localizedText(props.visualization?.title.en ?? ''),
     description: localizedText(props.visualization?.description?.en ?? ''),
+    sources: [...(props.visualization?.sources ?? [])],
+    reasoning: localizedText(props.visualization?.reasoning.en ?? ''),
     payload: initialPayload,
     schema_version: schemaVersion(initialType),
     sort_order: props.visualization?.sort_order ?? 0,
@@ -73,10 +100,11 @@ watch(() => form.type, (type) => {
 });
 
 function submit(): void {
-    if (!payloadIsValid.value) {
+    if (!payloadIsValid.value || evidenceError.value !== '') {
         return;
     }
 
+    form.sources = [...new Set(parsedSources.value)];
     form.payload = payloadDraft.value;
     const method = props.method === 'post' ? form.post : form.put;
     method(props.submitUrl, { preserveScroll: true, onSuccess: () => emit('saved') });
@@ -111,7 +139,19 @@ function submit(): void {
             <Textarea v-model="form.description.en" label="Description (EN)" :rows="2" :error="form.errors.description" />
         </div>
 
-        <VisualizationPayloadEditor v-model:type="form.type" v-model:payload="payloadDraft" v-model:valid="payloadIsValid" />
+        <div class="grid gap-4 md:grid-cols-2">
+            <Textarea v-model="form.reasoning.en" label="Reasoning / calculation (EN)" :rows="5" helper-text="Explain formulas, transformations, assumptions and whether values are observed, projected or editorial." :error="form.errors.reasoning" />
+            <Textarea v-model="sourcesText" label="Sources" :rows="5" helper-text="One authoritative HTTPS source URL per line. Stored on the visualization, not inside its payload." :error="form.errors.sources" />
+        </div>
+        <p v-if="evidenceError" class="text-sm text-ui-danger">{{ evidenceError }}</p>
+
+        <VisualizationPayloadEditor
+            v-model:type="form.type"
+            v-model:payload="payloadDraft"
+            v-model:valid="payloadIsValid"
+            :sources="parsedSources"
+            :reasoning="form.reasoning.en"
+        />
 
         <FormActions compact>
             <Button type="submit" :loading="form.processing" :disabled="submitDisabled">{{ submitLabel }}</Button>

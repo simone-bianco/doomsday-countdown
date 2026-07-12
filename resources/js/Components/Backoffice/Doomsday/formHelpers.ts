@@ -10,8 +10,6 @@ export type ChartPayloadText = {
     readonly yLabel: string;
     readonly yUnit: string;
     readonly yFormat: ChartYAxisFormat;
-    readonly sources: string;
-    readonly note: string;
     readonly series: string;
 };
 
@@ -65,7 +63,6 @@ export function defaultPayload(type: string): VisualizationPayload {
             x: { label: isBar ? 'Category' : 'Sequence', type: isBar ? 'category' : 'ordinal' },
             y: { label: 'Value', unit: '%', format: 'percent' },
         },
-        sources: [],
     } satisfies ChartPayload;
 }
 
@@ -83,8 +80,6 @@ export function parseChartPayload(text: ChartPayloadText): ChartPayload {
             x: { label: text.xLabel.trim(), type: text.xType },
             y: { label: text.yLabel.trim(), unit: text.yUnit.trim(), format: text.yFormat },
         },
-        sources: lines(text.sources),
-        ...(text.note.trim() === '' ? {} : { note: text.note.trim() }),
     };
 }
 
@@ -106,8 +101,6 @@ export function chartText(payload: unknown): ChartPayloadText {
             yLabel: 'Value',
             yUnit: '%',
             yFormat: 'percent',
-            sources: '',
-            note: '',
             series: 'Scenario: 20, 42, 64',
         };
     }
@@ -134,8 +127,6 @@ export function chartText(payload: unknown): ChartPayloadText {
         yLabel: typeof yAxis.label === 'string' ? yAxis.label : 'Value',
         yUnit: typeof yAxis.unit === 'string' ? yAxis.unit : '%',
         yFormat: isChartYAxisFormat(yAxis.format) ? yAxis.format : 'percent',
-        sources: Array.isArray(payload.sources) ? payload.sources.map(String).join('\n') : '',
-        note: typeof payload.note === 'string' ? payload.note : '',
         series: series || 'Scenario: 20, 42, 64',
     };
 }

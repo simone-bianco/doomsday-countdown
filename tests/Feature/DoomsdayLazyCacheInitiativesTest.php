@@ -247,6 +247,8 @@ final class DoomsdayLazyCacheInitiativesTest extends TestCase
             'type' => VisualizationType::Kpi,
             'title' => ['en' => 'Indicators'],
             'description' => ['en' => 'Indicator list'],
+            'sources' => ['https://example.com/indicators'],
+            'reasoning' => ['en' => 'Values are direct test fixtures.'],
             'payload' => ['items' => []],
             'schema_version' => 1,
             'sort_order' => 1,

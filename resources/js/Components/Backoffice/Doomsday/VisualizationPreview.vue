@@ -13,6 +13,8 @@ const props = defineProps<{
         readonly type: string;
         readonly title: { readonly en?: string };
         readonly description?: { readonly en?: string } | null;
+        readonly sources: readonly string[];
+        readonly reasoning: { readonly en?: string };
         readonly payload: VisualizationPayload;
         readonly schema_version: number;
         readonly sort_order: number;
@@ -27,6 +29,8 @@ const publicVisualization = computed<VisualizationData>(() => ({
     type: props.visualization.type,
     title: title.value,
     description: props.visualization.description?.en ?? null,
+    sources: [...props.visualization.sources],
+    reasoning: props.visualization.reasoning.en ?? '',
     payload: props.visualization.payload as Array<unknown>,
     schema_version: props.visualization.schema_version,
     sort_order: props.visualization.sort_order,
@@ -43,7 +47,14 @@ const publicVisualization = computed<VisualizationData>(() => ({
             <Badge :label="visualization.type" variant="soft" />
         </div>
 
-        <VisualizationChart v-if="isChart" :payload="visualization.payload" :type="visualization.type" compact />
+        <VisualizationChart
+            v-if="isChart"
+            :payload="visualization.payload"
+            :type="visualization.type"
+            :sources="visualization.sources"
+            :reasoning="visualization.reasoning.en ?? ''"
+            compact
+        />
         <KeyIndicatorsCard v-else-if="isKpi" :visualization="publicVisualization" />
         <div v-else class="rounded-lg border border-dashed border-ui-border p-4 text-sm text-ui-muted-foreground">
             <Badge label="Preview unavailable" :icon="AlertTriangle" color="warning" variant="soft" />

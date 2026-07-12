@@ -310,6 +310,7 @@ final class BackofficeDoomsdayCrudTest extends TestCase
             ->post(route('backoffice.countdowns.visualizations.store', $countdown), $this->visualizationPayload([
                 'type' => 'bar',
                 'key' => 'categorical_bar',
+                'reasoning' => ['en' => 'Direct categorical values from the cited source.'],
                 'payload' => [
                     'labels' => ['A', 'B'],
                     'series' => [['name' => 'Exposure', 'values' => [1.2, 2.4]]],
@@ -317,8 +318,6 @@ final class BackofficeDoomsdayCrudTest extends TestCase
                         'x' => ['label' => 'Category', 'type' => 'category'],
                         'y' => ['label' => 'Exposure', 'unit' => 'US$ trillion', 'format' => 'currency'],
                     ],
-                    'sources' => ['https://example.com/source'],
-                    'note' => 'Scenario comparison.',
                 ],
             ]))
             ->assertRedirect()
@@ -455,6 +454,8 @@ final class BackofficeDoomsdayCrudTest extends TestCase
             'type' => 'line',
             'title' => ['en' => 'Projection curve'],
             'description' => ['en' => 'Projection chart.'],
+            'sources' => ['https://example.com/source'],
+            'reasoning' => ['en' => 'Values are copied directly from the cited test source.'],
             'payload' => [
                 'labels' => ['2026', '2027'],
                 'series' => [['name' => 'Risk', 'values' => [10, 20]]],
@@ -462,7 +463,6 @@ final class BackofficeDoomsdayCrudTest extends TestCase
                     'x' => ['label' => 'Year', 'type' => 'temporal'],
                     'y' => ['label' => 'Risk', 'unit' => '%', 'format' => 'percent'],
                 ],
-                'sources' => ['https://example.com/source'],
             ],
             'schema_version' => 2,
             'sort_order' => 1,

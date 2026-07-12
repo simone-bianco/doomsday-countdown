@@ -37,8 +37,6 @@ export type ChartPayload = {
         readonly x: { readonly label: string; readonly type: ChartXAxisType };
         readonly y: { readonly label: string; readonly unit: string; readonly format: ChartYAxisFormat };
     };
-    readonly sources: string[];
-    readonly note?: string;
 };
 
 export type KpiPayload = {
@@ -84,6 +82,8 @@ export type VisualizationRecord = {
     readonly type: string;
     readonly title: LocalizedText;
     readonly description: LocalizedText | null;
+    readonly sources: readonly string[];
+    readonly reasoning: LocalizedText;
     readonly payload: unknown;
     readonly schema_version: number;
     readonly sort_order: number;

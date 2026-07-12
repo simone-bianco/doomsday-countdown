@@ -12,7 +12,13 @@ defineProps<{
 <template>
     <Card :ui="{ root: 'doomsday-card rounded-xl sm:col-span-2', body: 'p-5 sm:p-6' }">
         <h3 class="doomsday-display mb-4 text-white">{{ t('projectionModel') }}</h3>
-        <VisualizationChart v-if="section.projection_chart" :payload="section.projection_chart.payload" :type="section.projection_chart.type" />
+        <VisualizationChart
+            v-if="section.projection_chart"
+            :payload="section.projection_chart.payload"
+            :type="section.projection_chart.type"
+            :sources="section.projection_chart.sources"
+            :reasoning="section.projection_chart.reasoning"
+        />
         <p class="mt-4 text-sm text-ui-muted-foreground">{{ section.projection_chart?.description }}</p>
     </Card>
 

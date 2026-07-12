@@ -231,7 +231,7 @@ final class BackofficeCountdownService
     {
         $query = $countdown->visualizations();
 
-        $this->applySearch($query, $search, ['key', 'type', 'title', 'description']);
+        $this->applySearch($query, $search, ['key', 'type', 'title', 'description', 'reasoning']);
         $this->applyRelationOrder($query, $sort, $direction);
 
         $paginator = $query
@@ -309,6 +309,8 @@ final class BackofficeCountdownService
             'type' => $visualization->type->value,
             'title' => $visualization->title,
             'description' => $visualization->description,
+            'sources' => $visualization->sources,
+            'reasoning' => $visualization->reasoning,
             'payload' => $visualization->payload,
             'schema_version' => $visualization->schema_version,
             'sort_order' => $visualization->sort_order,

@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('type')->default('line');
             $table->json('title');
             $table->json('description')->nullable();
+            $table->json('sources');
+            $table->json('reasoning');
             $table->json('payload');
             $table->unsignedInteger('schema_version')->default(1);
             $table->unsignedInteger('sort_order')->default(0);

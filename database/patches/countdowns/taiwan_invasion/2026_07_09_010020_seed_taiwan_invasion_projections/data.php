@@ -15,15 +15,29 @@ return new class($shared)
     public function projections(): array
     {
         $methodology = [
-            'assumption' => 'Editorial risk estimate as of 2026-07-08; dates are scenario windows, not predictions.',
-            'drivers' => ['PLA 2027 readiness marker', 'ADIZ and naval activity', 'blockade and quarantine alternatives', 'Taiwan civil resilience', 'allied deterrence'],
-            'sources' => [$this->shared->sources()['dod'], $this->shared->sources()['reuters_status_quo'], $this->shared->sources()['reuters_naval'], $this->shared->sources()['reuters_drone']],
+            'assumption' => 'Editorial risk estimate as of 2026-07-11; exact dates are scenario anchors, not predictions of an invasion order.',
+            'date_semantics' => 'Pessimistic uses the end-2027 PLA capability milestone; neutral uses Taiwan’s 2028 presidential transition as the next political inflection point; optimistic assumes deterrence holds through the following full presidential cycle.',
+            'default_selection' => 'At a UTC request time, the public producer selects the nearest future Pessimistic projection first, then Neutral, Optimistic and Other. The exact target second remains active; rollover occurs only after it passes. If none is future, the producer uses the deterministic expired fallback, and Countdown.target_date is used only when no projection exists.',
+            'probability_score_note' => 'Scores are editorial scenario weights and are not official or empirical cumulative probabilities.',
+            'drivers' => ['PLA end-2027 capability milestone', 'no fixed invasion timeline in the 2026 U.S. intelligence assessment', '2028 Taiwan presidential transition', 'quarantine and blockade alternatives', 'PLA command disruption and readiness', 'Taiwan civil resilience', 'allied deterrence'],
+            'sources' => [
+                $this->shared->sources()['dod'],
+                $this->shared->sources()['dni_ata_2026'],
+                $this->shared->sources()['csis_expert_survey'],
+                $this->shared->sources()['csis_pla_purges'],
+                $this->shared->sources()['brookings_2028_inflection'],
+                $this->shared->sources()['taiwan_constitution_term'],
+                $this->shared->sources()['taiwan_inauguration_2024'],
+                $this->shared->sources()['reuters_status_quo'],
+                $this->shared->sources()['reuters_naval'],
+                $this->shared->sources()['reuters_drone'],
+            ],
         ];
 
         return [
             [
                 'type' => ProjectionType::Optimistic,
-                'target_date' => CarbonImmutable::parse('2029-01-15 00:00:00', 'UTC'),
+                'target_date' => CarbonImmutable::parse('2032-05-20 00:00:00', 'UTC'),
                 'title' => $this->shared->t(
                     en: 'Deterrence holds',
                     it: 'La deterrenza regge',
@@ -52,7 +66,7 @@ return new class($shared)
             ],
             [
                 'type' => ProjectionType::Neutral,
-                'target_date' => CarbonImmutable::parse('2027-10-01 00:00:00', 'UTC'),
+                'target_date' => CarbonImmutable::parse('2028-05-20 00:00:00', 'UTC'),
                 'title' => $this->shared->t(
                     en: 'Baseline risk window',
                     it: 'Finestra base di rischio',
@@ -81,7 +95,7 @@ return new class($shared)
             ],
             [
                 'type' => ProjectionType::Pessimistic,
-                'target_date' => CarbonImmutable::parse('2027-03-15 00:00:00', 'UTC'),
+                'target_date' => CarbonImmutable::parse('2027-12-31 23:59:59', 'UTC'),
                 'title' => $this->shared->t(
                     en: 'Accelerated crisis',
                     it: 'Crisi accelerata',

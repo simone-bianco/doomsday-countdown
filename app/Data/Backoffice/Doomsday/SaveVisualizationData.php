@@ -22,9 +22,11 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 final class SaveVisualizationData extends Data
 {
     /**
-     * @param array<string, string> $title
-     * @param array<string, string>|null $description
-     * @param array<string, mixed> $payload
+     * @param  array<string, string>  $title
+     * @param  array<string, string>|null  $description
+     * @param  array<int, string>  $sources
+     * @param  array<string, string>  $reasoning
+     * @param  array<string, mixed>  $payload
      */
     public function __construct(
         #[Required, StringType, Max(120), Regex('/^[a-z0-9]+(?:[_-][a-z0-9]+)*$/')]
@@ -36,11 +38,14 @@ final class SaveVisualizationData extends Data
         #[Nullable, ArrayType]
         public readonly ?array $description,
         #[Required, ArrayType]
+        public readonly array $sources,
+        #[Required, ArrayType, RequiredArrayKeys('en')]
+        public readonly array $reasoning,
+        #[Required, ArrayType]
         public readonly array $payload,
         #[Required, IntegerType, Min(1)]
         public readonly int $schema_version,
         #[Required, IntegerType, Min(0)]
         public readonly int $sort_order,
-    ) {
-    }
+    ) {}
 }

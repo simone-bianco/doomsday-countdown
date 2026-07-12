@@ -6,6 +6,7 @@ namespace Tests\Feature;
 
 use App\Services\Doomsday\Cache\CountdownCache;
 use App\Services\Doomsday\Cache\DoomsdayCacheKeys;
+use Carbon\CarbonImmutable;
 use Database\Seeders\DoomsdaySeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
@@ -16,8 +17,16 @@ final class DoomsdayPublicPagesTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_home_page_renders_public_doomsday_dashboard_from_seeded_database(): void
+    protected function tearDown(): void
     {
+        $this->travelBack();
+
+        parent::tearDown();
+    }
+
+    public function test_home_page_renders_active_pessimistic_projection_for_all_seeded_countdowns(): void
+    {
+        $this->travelTo(CarbonImmutable::parse('2026-07-12 00:00:00', 'UTC'));
         $this->seed(DoomsdaySeeder::class);
 
         $this->get('/?lang=en')
@@ -26,9 +35,32 @@ final class DoomsdayPublicPagesTest extends TestCase
                 ->component('Doomsday/Home')
                 ->where('page.app_name', 'Doomsday Countdown')
                 ->where('page.current_locale', 'en')
-                ->has('page.countdowns', 1)
+                ->has('page.countdowns', 6)
                 ->where('page.countdowns.0.slug', 'taiwan-invasion')
                 ->where('page.countdowns.0.title', 'Taiwan Invasion')
+                ->where('page.countdowns.0.timer.target_date', fn (?string $target): bool => $this->isUtcTimestamp($target, '2027-12-31 23:59:59'))
+                ->where('page.countdowns.0.main_projection.type', 'pessimistic')
+                ->where('page.countdowns.0.main_projection.target_date', fn (?string $target): bool => $this->isUtcTimestamp($target, '2027-12-31 23:59:59'))
+                ->where('page.countdowns.1.slug', 'europe-war-countdown')
+                ->where('page.countdowns.1.timer.target_date', fn (?string $target): bool => $this->isUtcTimestamp($target, '2027-03-31 23:59:59'))
+                ->where('page.countdowns.1.main_projection.type', 'pessimistic')
+                ->where('page.countdowns.1.main_projection.target_date', fn (?string $target): bool => $this->isUtcTimestamp($target, '2027-03-31 23:59:59'))
+                ->where('page.countdowns.2.slug', 'ai-job-apocalypse')
+                ->where('page.countdowns.2.timer.target_date', fn (?string $target): bool => $this->isUtcTimestamp($target, '2027-12-02 23:59:59'))
+                ->where('page.countdowns.2.main_projection.type', 'pessimistic')
+                ->where('page.countdowns.2.main_projection.target_date', fn (?string $target): bool => $this->isUtcTimestamp($target, '2027-12-02 23:59:59'))
+                ->where('page.countdowns.3.slug', 'sixth-mass-extinction')
+                ->where('page.countdowns.3.timer.target_date', fn (?string $target): bool => $this->isUtcTimestamp($target, '2029-06-30 23:59:59'))
+                ->where('page.countdowns.3.main_projection.type', 'pessimistic')
+                ->where('page.countdowns.3.main_projection.target_date', fn (?string $target): bool => $this->isUtcTimestamp($target, '2029-06-30 23:59:59'))
+                ->where('page.countdowns.4.slug', 'antibiotic-apocalypse')
+                ->where('page.countdowns.4.timer.target_date', fn (?string $target): bool => $this->isUtcTimestamp($target, '2029-12-31 23:59:59'))
+                ->where('page.countdowns.4.main_projection.type', 'pessimistic')
+                ->where('page.countdowns.4.main_projection.target_date', fn (?string $target): bool => $this->isUtcTimestamp($target, '2029-12-31 23:59:59'))
+                ->where('page.countdowns.5.slug', 'unlivable-heat')
+                ->where('page.countdowns.5.timer.target_date', fn (?string $target): bool => $this->isUtcTimestamp($target, '2040-12-31 23:59:59'))
+                ->where('page.countdowns.5.main_projection.type', 'pessimistic')
+                ->where('page.countdowns.5.main_projection.target_date', fn (?string $target): bool => $this->isUtcTimestamp($target, '2040-12-31 23:59:59'))
                 ->where('page.selected_countdown', null)
                 ->where('selected_countdown', null)
                 ->missing('forecast_section')
@@ -37,8 +69,9 @@ final class DoomsdayPublicPagesTest extends TestCase
                 ->missing('initiatives_section'));
     }
 
-    public function test_detail_route_renders_top_level_selected_countdown_overview_only(): void
+    public function test_detail_route_uses_same_active_pessimistic_projection_as_home(): void
     {
+        $this->travelTo(CarbonImmutable::parse('2026-07-12 00:00:00', 'UTC'));
         $this->seed(DoomsdaySeeder::class);
 
         $this->get('/countdowns/taiwan-invasion?lang=it')
@@ -49,6 +82,9 @@ final class DoomsdayPublicPagesTest extends TestCase
                 ->where('page.selected_countdown', null)
                 ->where('selected_countdown.slug', 'taiwan-invasion')
                 ->where('selected_countdown.title', 'Invasione di Taiwan')
+                ->where('selected_countdown.main_projection.type', 'pessimistic')
+                ->where('selected_countdown.main_projection.target_date', fn (?string $target): bool => $this->isUtcTimestamp($target, '2027-12-31 23:59:59'))
+                ->where('selected_countdown.timer.target_date', fn (?string $target): bool => $this->isUtcTimestamp($target, '2027-12-31 23:59:59'))
                 ->has('selected_countdown.key_indicators')
                 ->missing('selected_countdown.projections')
                 ->missing('selected_countdown.visualizations')
@@ -97,5 +133,11 @@ final class DoomsdayPublicPagesTest extends TestCase
         $this->assertCount(3, $page['stats']);
         $this->assertCount(3, $page['timeline']);
         $this->assertCount(5, $page['faq']);
+    }
+
+    private function isUtcTimestamp(?string $actual, string $expected): bool
+    {
+        return $actual !== null
+            && CarbonImmutable::parse($actual)->utc()->format('Y-m-d H:i:s') === $expected;
     }
 }

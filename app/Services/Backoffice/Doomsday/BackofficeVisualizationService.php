@@ -27,6 +27,7 @@ final class BackofficeVisualizationService
 
     public function create(Countdown|Projection $visualizable, SaveVisualizationData $data): Visualization
     {
+        $this->validateEvidence($data);
         $this->validatePayload($data);
 
         return $visualizable->visualizations()->create($this->attributes($data));
@@ -35,6 +36,7 @@ final class BackofficeVisualizationService
     public function update(Countdown|Projection $visualizable, Visualization $visualization, SaveVisualizationData $data): Visualization
     {
         $this->assertBelongsToVisualizable($visualizable, $visualization);
+        $this->validateEvidence($data);
         $this->validatePayload($data);
         $visualization->update($this->attributes($data));
 
@@ -55,6 +57,8 @@ final class BackofficeVisualizationService
             'type' => $data->type,
             'title' => $this->normalizer->localizedText($data->title, 'title'),
             'description' => $this->normalizer->optionalLocalizedText($data->description),
+            'sources' => array_values(array_unique(array_map(static fn (string $source): string => trim($source), $data->sources))),
+            'reasoning' => $this->normalizer->localizedText($data->reasoning, 'reasoning'),
             'payload' => $data->payload,
             'schema_version' => $data->schema_version,
             'sort_order' => $data->sort_order,
@@ -69,6 +73,19 @@ final class BackofficeVisualizationService
 
         if ($visualization->visualizable_type !== $visualizable->getMorphClass()) {
             throw new NotFoundHttpException;
+        }
+    }
+
+    private function validateEvidence(SaveVisualizationData $data): void
+    {
+        if (! array_is_list($data->sources) || $data->sources === []) {
+            throw ValidationException::withMessages(['sources' => 'At least one HTTPS source is required.']);
+        }
+
+        foreach ($data->sources as $source) {
+            if (! is_string($source) || filter_var($source, FILTER_VALIDATE_URL) === false || parse_url($source, PHP_URL_SCHEME) !== 'https') {
+                throw ValidationException::withMessages(['sources' => 'Every source must be a valid HTTPS URL.']);
+            }
         }
     }
 
@@ -138,19 +155,6 @@ final class BackofficeVisualizationService
             throw ValidationException::withMessages(['payload.axes.y.format' => 'The y-axis format must be integer, decimal, percent or currency.']);
         }
 
-        $sources = $payload['sources'] ?? null;
-        if (! is_array($sources) || ! array_is_list($sources) || $sources === []) {
-            throw ValidationException::withMessages(['payload.sources' => 'Schema v2 charts require at least one HTTPS source.']);
-        }
-        foreach ($sources as $source) {
-            if (! is_string($source) || filter_var($source, FILTER_VALIDATE_URL) === false || parse_url($source, PHP_URL_SCHEME) !== 'https') {
-                throw ValidationException::withMessages(['payload.sources' => 'Every chart source must be a valid HTTPS URL.']);
-            }
-        }
-
-        if (array_key_exists('note', $payload) && $payload['note'] !== null && (! is_string($payload['note']) || trim($payload['note']) === '')) {
-            throw ValidationException::withMessages(['payload.note' => 'The optional chart note must be a non-empty string.']);
-        }
     }
 
     /** @param array<int, mixed> $series */

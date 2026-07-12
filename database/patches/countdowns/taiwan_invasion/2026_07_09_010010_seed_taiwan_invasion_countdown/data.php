@@ -207,7 +207,7 @@ return new class($shared)
             ),
             'severity' => CountdownSeverity::Critical,
             'status' => CountdownStatus::Active,
-            'target_date' => CarbonImmutable::parse('2027-10-01 00:00:00', 'UTC'),
+            'target_date' => CarbonImmutable::parse('2028-05-20 00:00:00', 'UTC'),
             'image_path' => 'images/doomsday/taiwan_invasion.png',
             'sort_order' => 1,
             'is_published' => true,

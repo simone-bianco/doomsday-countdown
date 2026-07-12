@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import VisualizationEvidence from './VisualizationEvidence.vue';
 
 const props = defineProps<{
     readonly payload: unknown;
     readonly type: string;
+    readonly sources: readonly string[];
+    readonly reasoning: string;
     readonly compact?: boolean;
 }>();
 
@@ -49,14 +52,6 @@ function parseYAxis(value: unknown): YAxis | null {
     return { label: value.label, unit: value.unit, format: value.format as YAxis['format'] };
 }
 
-function sourceLabel(source: string, index: number): string {
-    try {
-        return new URL(source).hostname.replace(/^www\./, '');
-    } catch {
-        return `Source ${index + 1}`;
-    }
-}
-
 const chartType = computed((): ChartType | null => isChartType(props.type) ? props.type : null);
 const source = computed((): Record<string, unknown> => isRecord(props.payload) ? props.payload : {});
 const labels = computed((): string[] => Array.isArray(source.value.labels)
@@ -65,10 +60,7 @@ const labels = computed((): string[] => Array.isArray(source.value.labels)
 const axes = computed(() => isRecord(source.value.axes) ? source.value.axes : {});
 const xAxis = computed(() => parseXAxis(axes.value.x));
 const yAxis = computed(() => parseYAxis(axes.value.y));
-const sources = computed((): string[] => Array.isArray(source.value.sources)
-    ? source.value.sources.filter((item): item is string => typeof item === 'string' && item.startsWith('https://'))
-    : []);
-const note = computed((): string => typeof source.value.note === 'string' ? source.value.note : '');
+const validSources = computed(() => props.sources.filter((item) => item.startsWith('https://')));
 
 const rawSeries = computed((): RawSeries[] => {
     const raw = source.value.series;
@@ -107,7 +99,7 @@ const rawSeries = computed((): RawSeries[] => {
 });
 
 const isPayloadValid = computed(() => {
-    if (!chartType.value || !xAxis.value || !yAxis.value || labels.value.length === 0 || sources.value.length === 0 || rawSeries.value.length === 0) {
+    if (!chartType.value || !xAxis.value || !yAxis.value || labels.value.length === 0 || validSources.value.length === 0 || rawSeries.value.length === 0) {
         return false;
     }
     if (chartType.value === 'bar' && xAxis.value.type !== 'category') {
@@ -247,22 +239,8 @@ const ariaLabel = computed(() => isPayloadValid.value
                 </g>
             </svg>
 
-            <div class="min-w-[600px] space-y-2 border-t border-white/10 px-2 pt-3 text-xs leading-relaxed text-white/55">
-                <p v-if="note"><span class="font-semibold text-white/75">Note:</span> {{ note }}</p>
-                <div>
-                    <span class="font-semibold text-white/75">Sources:</span>
-                    <a
-                        v-for="(item, index) in sources"
-                        :key="item"
-                        :href="item"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="ml-2 break-all text-ui-primary underline-offset-2 hover:underline"
-                        :title="item"
-                    >{{ sourceLabel(item, index) }}</a>
-                </div>
-            </div>
+            <VisualizationEvidence class="min-w-[600px] px-2" :sources="validSources" :reasoning="reasoning" />
         </template>
-        <p v-else class="min-w-[600px] px-4 py-16 text-center text-sm text-white/55">Visualization unavailable: schema v2 axes, series and HTTPS sources are required.</p>
+        <p v-else class="min-w-[600px] px-4 py-16 text-center text-sm text-white/55">Visualization unavailable: schema v2 axes, series and entity-level HTTPS sources are required.</p>
     </div>
 </template>

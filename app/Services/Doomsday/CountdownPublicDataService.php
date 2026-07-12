@@ -19,13 +19,13 @@ use App\Data\Doomsday\ProjectionData;
 use App\Data\Doomsday\VisualizationData;
 use App\Enums\InitiativeLocale;
 use App\Enums\NewsLocale;
-use App\Enums\ProjectionType;
 use App\Models\Countdown;
 use App\Models\Initiative;
 use App\Models\News;
 use App\Models\Projection;
 use App\Models\Visualization;
 use App\Services\Doomsday\Copy\AboutPageCopy;
+use Carbon\CarbonImmutable;
 use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Str;
@@ -33,6 +33,14 @@ use Illuminate\Support\Str;
 final class CountdownPublicDataService
 {
     public function __construct(private readonly AboutPageCopy $aboutPageCopy) {}
+
+    /** @var array<string, int> */
+    private const ACTIVE_PROJECTION_PRIORITY = [
+        'pessimistic' => 0,
+        'neutral' => 1,
+        'optimistic' => 2,
+        'other' => 3,
+    ];
 
     /** @var array<string, array{label: string, native: string, flag: string}> */
     private const LANGUAGES = [
@@ -61,6 +69,7 @@ final class CountdownPublicDataService
     public function indexPayload(string $locale): array
     {
         $locale = $this->normalizeLocale($locale);
+        $at = CarbonImmutable::now('UTC');
         $countdowns = Countdown::query()
             ->published()
             ->with(['projections'])
@@ -72,7 +81,7 @@ final class CountdownPublicDataService
             'current_locale' => $locale,
             'hero' => $this->hero($locale),
             'countdowns' => $countdowns
-                ->map(fn (Countdown $countdown): array => $this->toIndexItem($countdown, $locale, false)->toArray())
+                ->map(fn (Countdown $countdown): array => $this->toIndexItem($countdown, $locale, false, $at)->toArray())
                 ->values()
                 ->all(),
         ];
@@ -168,7 +177,9 @@ final class CountdownPublicDataService
             ->with(['projections', 'visualizations'])
             ->first();
 
-        return $countdown instanceof Countdown ? $this->toOverview($countdown, $this->normalizeLocale($locale))->toArray() : null;
+        return $countdown instanceof Countdown
+            ? $this->toOverview($countdown, $this->normalizeLocale($locale), CarbonImmutable::now('UTC'))->toArray()
+            : null;
     }
 
     /** @return array<string, mixed>|null */
@@ -185,10 +196,11 @@ final class CountdownPublicDataService
         }
 
         $locale = $this->normalizeLocale($locale);
-        $mainProjection = $this->mainProjection($countdown);
-        $projectionChart = $mainProjection instanceof Projection
-            ? $mainProjection->visualizations->firstWhere('key', 'projection_curve')
-            : null;
+        $projectionChart = $countdown->projections
+            ->sortBy(fn (Projection $projection): array => [$projection->sort_order, $projection->id])
+            ->flatMap(fn (Projection $projection): Collection => $projection->visualizations
+                ->sortBy(fn (Visualization $visualization): array => [$visualization->sort_order, $visualization->id]))
+            ->firstWhere('key', 'projection_curve');
 
         return (new CountdownForecastsData(
             countdown_slug: $countdown->slug,
@@ -243,9 +255,9 @@ final class CountdownPublicDataService
             : null;
     }
 
-    private function toIndexItem(Countdown $countdown, string $locale, bool $isSelected): CountdownIndexData
+    private function toIndexItem(Countdown $countdown, string $locale, bool $isSelected, CarbonImmutable $at): CountdownIndexData
     {
-        $mainProjection = $this->mainProjection($countdown);
+        $mainProjection = $this->activeProjection($countdown, $at);
 
         return new CountdownIndexData(
             id: $countdown->id,
@@ -256,16 +268,16 @@ final class CountdownPublicDataService
             status: $countdown->status->value,
             severity: $countdown->severity->value,
             sort_order: $countdown->sort_order,
-            timer: $this->timer($mainProjection?->target_date ?? $countdown->target_date, $locale),
+            timer: $this->timer($mainProjection instanceof Projection ? $mainProjection->target_date : $countdown->target_date, $locale),
             main_projection: $mainProjection instanceof Projection ? $this->toProjection($mainProjection, $locale, false) : null,
             url: '/countdowns/'.$countdown->slug.'?lang='.$locale,
             is_selected: $isSelected,
         );
     }
 
-    private function toOverview(Countdown $countdown, string $locale): CountdownOverviewData
+    private function toOverview(Countdown $countdown, string $locale, CarbonImmutable $at): CountdownOverviewData
     {
-        $mainProjection = $this->mainProjection($countdown);
+        $mainProjection = $this->activeProjection($countdown, $at);
         $keyIndicators = $countdown->visualizations->firstWhere('key', 'key_indicators');
 
         return new CountdownOverviewData(
@@ -276,7 +288,7 @@ final class CountdownPublicDataService
             description: $this->text($countdown->description, $locale),
             image_url: asset($countdown->image_path),
             severity: $countdown->severity->value,
-            timer: $this->timer($mainProjection?->target_date ?? $countdown->target_date, $locale),
+            timer: $this->timer($mainProjection instanceof Projection ? $mainProjection->target_date : $countdown->target_date, $locale),
             main_projection: $mainProjection instanceof Projection ? $this->toProjection($mainProjection, $locale, false) : null,
             causes: $this->textList($countdown->causes, $locale),
             consequences: $this->textList($countdown->consequences, $locale),
@@ -285,17 +297,45 @@ final class CountdownPublicDataService
         );
     }
 
-    private function mainProjection(Countdown $countdown): ?Projection
+    private function activeProjection(Countdown $countdown, CarbonImmutable $at): ?Projection
     {
-        $priority = [
-            ProjectionType::Neutral->value => 0,
-            ProjectionType::Pessimistic->value => 1,
-            ProjectionType::Optimistic->value => 2,
-            ProjectionType::Other->value => 3,
-        ];
+        foreach (array_keys(self::ACTIVE_PROJECTION_PRIORITY) as $type) {
+            $future = $countdown->projections
+                ->filter(fn (Projection $projection): bool => $projection->type->value === $type
+                    && $projection->target_date !== null
+                    && $projection->target_date->utc()->greaterThanOrEqualTo($at))
+                ->sortBy(fn (Projection $projection): array => [
+                    $projection->target_date?->getTimestamp() ?? PHP_INT_MAX,
+                    $projection->sort_order,
+                    $projection->id,
+                ])
+                ->first();
+
+            if ($future instanceof Projection) {
+                return $future;
+            }
+        }
+
+        $latestExpired = $countdown->projections
+            ->filter(fn (Projection $projection): bool => $projection->target_date !== null)
+            ->sortBy(fn (Projection $projection): array => [
+                -($projection->target_date?->getTimestamp() ?? PHP_INT_MIN),
+                self::ACTIVE_PROJECTION_PRIORITY[$projection->type->value] ?? 4,
+                $projection->sort_order,
+                $projection->id,
+            ])
+            ->first();
+
+        if ($latestExpired instanceof Projection) {
+            return $latestExpired;
+        }
 
         return $countdown->projections
-            ->sortBy(fn (Projection $projection): array => [$priority[$projection->type->value] ?? 4, $projection->sort_order, $projection->id])
+            ->sortBy(fn (Projection $projection): array => [
+                self::ACTIVE_PROJECTION_PRIORITY[$projection->type->value] ?? 4,
+                $projection->sort_order,
+                $projection->id,
+            ])
             ->first();
     }
 
@@ -316,7 +356,7 @@ final class CountdownPublicDataService
 
     private function toVisualization(Visualization $visualization, string $locale): VisualizationData
     {
-        return new VisualizationData($visualization->key, $visualization->type->value, $this->text($visualization->title, $locale), $this->text($visualization->description, $locale), $visualization->payload ?? [], $visualization->schema_version, $visualization->sort_order);
+        return new VisualizationData($visualization->key, $visualization->type->value, $this->text($visualization->title, $locale), $this->text($visualization->description, $locale), $visualization->sources ?? [], $this->text($visualization->reasoning, $locale), $visualization->payload ?? [], $visualization->schema_version, $visualization->sort_order);
     }
 
     /** @return array<int, NewsData> */

@@ -7,6 +7,10 @@ import VisualizationPreview from '@/Components/Backoffice/Doomsday/Visualization
 import { chartText, chartXAxisTypes, chartYAxisFormats, defaultPayload, isRecord, kpiText, optionItems, parseChartPayload, parseKpiPayload } from '@/Components/Backoffice/Doomsday/formHelpers';
 import type { ChartXAxisType, ChartYAxisFormat, VisualizationPayload } from '@/Components/Backoffice/Doomsday/types';
 
+const props = defineProps<{
+    readonly sources: readonly string[];
+    readonly reasoning: string;
+}>();
 const typeModel = defineModel<string>('type', { required: true });
 const payloadModel = defineModel<VisualizationPayload>('payload', { required: true });
 const validModel = defineModel<boolean>('valid', { default: true });
@@ -17,8 +21,6 @@ const xTypeValue = ref<ChartXAxisType>('ordinal');
 const yLabelText = ref('');
 const yUnitText = ref('');
 const yFormatValue = ref<ChartYAxisFormat>('percent');
-const sourcesText = ref('');
-const noteText = ref('');
 const seriesText = ref('');
 const itemsText = ref('');
 const isHydrating = ref(false);
@@ -28,18 +30,6 @@ const yFormatOptions = optionItems(chartYAxisFormats);
 const isChart = computed(() => ['line', 'area', 'bar'].includes(typeModel.value));
 const isKpi = computed(() => typeModel.value === 'kpi');
 const isSupported = computed(() => isChart.value || isKpi.value);
-
-function isHttpsUrl(value: unknown): boolean {
-    if (typeof value !== 'string') {
-        return false;
-    }
-
-    try {
-        return new URL(value).protocol === 'https:';
-    } catch {
-        return false;
-    }
-}
 
 function chartErrors(): string[] {
     const payload = payloadModel.value as unknown;
@@ -100,14 +90,6 @@ function chartErrors(): string[] {
         errors.push('Choose a valid y-axis format.');
     }
 
-    const sources = Array.isArray(payload.sources) ? payload.sources : [];
-    if (sources.length === 0 || sources.some((source) => !isHttpsUrl(source))) {
-        errors.push('Add at least one valid HTTPS source.');
-    }
-    if ('note' in payload && payload.note !== undefined && (typeof payload.note !== 'string' || payload.note.trim() === '')) {
-        errors.push('The optional note must contain text.');
-    }
-
     return errors;
 }
 
@@ -135,6 +117,8 @@ const previewVisualization = computed(() => ({
     type: typeModel.value,
     title: { en: 'Draft preview' },
     description: { en: 'Live preview before saving' },
+    sources: [...props.sources],
+    reasoning: { en: props.reasoning },
     payload: payloadModel.value,
     schema_version: isChart.value ? 2 : 1,
     sort_order: 0,
@@ -149,8 +133,6 @@ function hydrateText(payload: unknown): void {
     yLabelText.value = chart.yLabel;
     yUnitText.value = chart.yUnit;
     yFormatValue.value = chart.yFormat;
-    sourcesText.value = chart.sources;
-    noteText.value = chart.note;
     seriesText.value = chart.series;
     itemsText.value = kpiText(payload);
     isHydrating.value = false;
@@ -169,8 +151,6 @@ function syncPayload(): void {
             yLabel: yLabelText.value,
             yUnit: yUnitText.value,
             yFormat: yFormatValue.value,
-            sources: sourcesText.value,
-            note: noteText.value,
             series: seriesText.value,
         });
     } else if (isKpi.value) {
@@ -205,7 +185,7 @@ watch(errors, () => {
     validModel.value = !hasErrors.value;
 }, { immediate: true });
 
-watch([labelsText, xLabelText, xTypeValue, yLabelText, yUnitText, yFormatValue, sourcesText, noteText, seriesText, itemsText], syncPayload, { flush: 'sync' });
+watch([labelsText, xLabelText, xTypeValue, yLabelText, yUnitText, yFormatValue, seriesText, itemsText], syncPayload, { flush: 'sync' });
 </script>
 
 <template>
@@ -213,7 +193,7 @@ watch([labelsText, xLabelText, xTypeValue, yLabelText, yUnitText, yFormatValue, 
         <div class="flex flex-wrap items-center justify-between gap-3">
             <div>
                 <p class="font-semibold">Payload editor</p>
-                <p class="text-sm text-ui-muted-foreground">Schema v2 chart payload with live pre-save preview.</p>
+                <p class="text-sm text-ui-muted-foreground">Structured payload editor; sources and calculation reasoning are managed on the visualization.</p>
             </div>
             <Badge :label="typeModel" :color="isSupported ? 'success' : 'warning'" variant="soft" />
         </div>
@@ -228,8 +208,6 @@ watch([labelsText, xLabelText, xTypeValue, yLabelText, yUnitText, yFormatValue, 
                 <BackofficeSelectField label="Y-axis format" :model-value="yFormatValue" :options="yFormatOptions" :clearable="false" @update:model-value="chooseYFormat" />
             </div>
             <Textarea v-model="seriesText" label="Series" :rows="4" helper-text="One series per line: Scenario: 20, 42, 64" />
-            <Textarea v-model="sourcesText" label="Sources" :rows="3" helper-text="One HTTPS source URL per line." />
-            <Textarea v-model="noteText" label="Note" :rows="2" helper-text="Optional methodological or interpretation note." />
         </div>
 
         <div v-else-if="isKpi" class="space-y-4">

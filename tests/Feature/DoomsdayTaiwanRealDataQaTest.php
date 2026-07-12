@@ -6,6 +6,7 @@ namespace Tests\Feature;
 
 use App\Enums\InitiativeType;
 use App\Models\Countdown;
+use Carbon\CarbonImmutable;
 use Database\Seeders\DoomsdaySeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -14,12 +15,12 @@ final class DoomsdayTaiwanRealDataQaTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_fresh_seed_public_state_contains_only_taiwan_countdown_with_readable_asset(): void
+    public function test_fresh_seed_public_state_contains_taiwan_countdown_with_readable_asset_in_six_item_catalog(): void
     {
         $this->seed(DoomsdaySeeder::class);
         $countdowns = Countdown::query()->with(['projections', 'visualizations', 'news', 'initiatives', 'contentSources'])->get();
-        $this->assertCount(1, $countdowns);
-        $countdown = $countdowns->first();
+        $this->assertCount(6, $countdowns);
+        $countdown = $countdowns->firstWhere('slug', 'taiwan-invasion');
         $this->assertNotNull($countdown);
         $this->assertSame('taiwan-invasion', $countdown->slug);
         $this->assertTrue($countdown->is_published);
@@ -41,6 +42,7 @@ final class DoomsdayTaiwanRealDataQaTest extends TestCase
 
     public function test_public_routes_and_json_endpoints_expose_taiwan_payload_integrity(): void
     {
+        CarbonImmutable::setTestNow(CarbonImmutable::parse('2026-07-12 00:00:00', 'UTC'));
         $this->seed(DoomsdaySeeder::class);
         $this->get('/?lang=en')
             ->assertOk()
@@ -53,7 +55,10 @@ final class DoomsdayTaiwanRealDataQaTest extends TestCase
         $overview = $this->getJson(route('countdowns.data.overview', ['slug' => 'taiwan-invasion', 'lang' => 'en']));
         $overview->assertOk()
             ->assertJsonPath('data.slug', 'taiwan-invasion')
-            ->assertJsonPath('data.image_url', asset('images/doomsday/taiwan_invasion.png'));
+            ->assertJsonPath('data.image_url', asset('images/doomsday/taiwan_invasion.png'))
+            ->assertJsonPath('data.main_projection.type', 'pessimistic');
+        $overviewData = $overview->json('data');
+        $this->assertStringStartsWith('2027-12-31T23:59:59', $overviewData['timer']['target_date']);
 
         $forecasts = $this->getJson(route('countdowns.data.forecasts', ['slug' => 'taiwan-invasion', 'lang' => 'en']))->assertOk()->json('data');
         $statistics = $this->getJson(route('countdowns.data.statistics', ['slug' => 'taiwan-invasion', 'lang' => 'en']))->assertOk()->json('data');
@@ -63,11 +68,50 @@ final class DoomsdayTaiwanRealDataQaTest extends TestCase
         $this->assertSame('taiwan-invasion', $forecasts['countdown_slug']);
         $this->assertCount(3, $forecasts['projections']);
         $this->assertSame(['optimistic', 'neutral', 'pessimistic'], array_column($forecasts['projections'], 'type'));
+        $this->assertNotNull($forecasts['projection_chart']);
+        $this->assertSame('projection_curve', $forecasts['projection_chart']['key']);
+        $this->assertSame('index points', $forecasts['projection_chart']['payload']['axes']['y']['unit']);
+        $this->assertSame('decimal', $forecasts['projection_chart']['payload']['axes']['y']['format']);
+        $this->assertSame(['Pessimistic', 'Neutral', 'Optimistic'], array_column($forecasts['projection_chart']['payload']['series'], 'name'));
+        $this->assertArrayNotHasKey('sources', $forecasts['projection_chart']['payload']);
+        $this->assertArrayNotHasKey('reasoning', $forecasts['projection_chart']['payload']);
+        $this->assertNotEmpty($forecasts['projection_chart']['sources']);
+        $this->assertNotSame('', trim($forecasts['projection_chart']['reasoning']));
+
+        $projectionSeries = collect($forecasts['projection_chart']['payload']['series'])->keyBy('name');
+        $pessimisticValues = $projectionSeries['Pessimistic']['values'];
+        $neutralValues = $projectionSeries['Neutral']['values'];
+        $optimisticValues = $projectionSeries['Optimistic']['values'];
+        $this->assertCount(count($forecasts['projection_chart']['payload']['labels']), $pessimisticValues);
+        $this->assertCount(count($forecasts['projection_chart']['payload']['labels']), $neutralValues);
+        $this->assertCount(count($forecasts['projection_chart']['payload']['labels']), $optimisticValues);
+        foreach (array_keys($pessimisticValues) as $index) {
+            $this->assertGreaterThanOrEqual($neutralValues[$index], $pessimisticValues[$index]);
+            $this->assertGreaterThanOrEqual($optimisticValues[$index], $neutralValues[$index]);
+        }
+        $publicChartLanguage = strtolower((string) json_encode([
+            $forecasts['projection_chart']['title'],
+            $forecasts['projection_chart']['description'],
+            $forecasts['projection_chart']['reasoning'],
+            $forecasts['projection_chart']['payload']['axes']['y'],
+        ], JSON_THROW_ON_ERROR));
+        $this->assertStringNotContainsString('probability', $publicChartLanguage);
         $this->assertSame('taiwan-invasion', $statistics['countdown_slug']);
         $visualizationKeys = array_column($statistics['visualizations'], 'key');
         foreach (['key_indicators', 'pla_pressure_trend', 'economic_exposure', 'scenario_gdp_shock', 'energy_resilience'] as $requiredKey) {
             $this->assertContains($requiredKey, $visualizationKeys);
         }
+        foreach ($statistics['visualizations'] as $visualization) {
+            $this->assertNotEmpty($visualization['sources'], $visualization['key']);
+            $this->assertNotSame('', trim($visualization['reasoning']), $visualization['key']);
+            foreach ($visualization['sources'] as $source) {
+                $this->assertStringStartsWith('https://', $source, $visualization['key']);
+            }
+            $this->assertArrayNotHasKey('sources', $visualization['payload'], $visualization['key']);
+            $this->assertArrayNotHasKey('reasoning', $visualization['payload'], $visualization['key']);
+        }
+        $this->assertNotEmpty($forecasts['projection_chart']['sources']);
+        $this->assertNotSame('', trim($forecasts['projection_chart']['reasoning']));
 
         $this->assertSame('taiwan-invasion', $news['countdown_slug']);
         $this->assertGreaterThanOrEqual(9, count($news['news']));
@@ -120,6 +164,12 @@ final class DoomsdayTaiwanRealDataQaTest extends TestCase
         $this->assertCount(1, $initiativeVideos);
         $this->assertSame('resource', $initiativeVideos[0]['type']);
         $this->assertSame('Global Taiwan Institute', $initiativeVideos[0]['organization']);
+    }
+
+    protected function tearDown(): void
+    {
+        CarbonImmutable::setTestNow();
+        parent::tearDown();
     }
 
     public function test_taiwan_content_patches_are_idempotent_and_rollback_only_owned_records(): void
