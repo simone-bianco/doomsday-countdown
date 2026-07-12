@@ -39,14 +39,14 @@ const communityLinks = [
             :aria-label="`${link.label} — ${t('opensInNewTab')}`"
             :title="link.label"
             :class="isHeader
-                ? 'group inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/12 bg-white/[0.035] text-white/72 transition hover:border-ui-primary/60 hover:bg-ui-primary/[0.10] hover:text-ui-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ui-primary focus-visible:ring-offset-2 focus-visible:ring-offset-black'
+                ? 'group inline-flex h-9 w-9 items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ui-primary focus-visible:ring-offset-2 focus-visible:ring-offset-black'
                 : 'group inline-flex min-h-12 items-center gap-3 rounded-xl border border-white/12 bg-white/[0.035] px-3.5 py-3 text-sm font-semibold text-white/78 transition hover:-translate-y-0.5 hover:border-ui-primary/50 hover:bg-ui-primary/[0.08] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ui-primary focus-visible:ring-offset-2 focus-visible:ring-offset-black sm:px-4'"
         >
             <span :class="isHeader ? 'inline-flex items-center justify-center' : 'inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-black/35 text-ui-primary transition group-hover:border-ui-primary/30'">
                 <img
                     :src="link.iconSrc"
                     alt=""
-                    :class="isHeader ? 'h-4 w-4 object-contain' : 'h-5 w-5 object-contain'"
+                    class="h-5 w-5 object-contain"
                     width="20"
                     height="20"
                     loading="eager"

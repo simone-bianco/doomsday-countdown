@@ -89,6 +89,7 @@ return [
         'paths' => [
             base_path('.env'),
             base_path('.env.backup'),
+            base_path('.env.prod'),
             base_path('.env.production'),
             base_path('.phpunit.result.cache'),
             base_path('.agent'),

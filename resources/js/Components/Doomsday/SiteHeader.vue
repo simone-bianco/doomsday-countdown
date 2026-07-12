@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { Link } from '@inertiajs/vue3';
+import { route } from '../../../../vendor/tightenco/ziggy';
 import LanguageSelector from './LanguageSelector.vue';
 import PatreonSupportLink from './PatreonSupportLink.vue';
 import CommunityLinks from './CommunityLinks.vue';
@@ -14,8 +16,8 @@ const props = withDefaults(defineProps<{
     activePage: 'home',
 });
 
-const homeUrl = computed(() => `/?lang=${props.currentLocale}`);
-const aboutUrl = computed(() => `/about?lang=${props.currentLocale}`);
+const homeUrl = computed(() => route('home', { lang: props.currentLocale }));
+const aboutUrl = computed(() => route('about', { lang: props.currentLocale }));
 
 function navClass(page: 'home' | 'about'): string {
     return props.activePage === page
@@ -27,13 +29,13 @@ function navClass(page: 'home' | 'about'): string {
 <template>
     <header class="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-black/82 backdrop-blur-xl">
         <div class="mx-auto flex max-w-[1760px] items-center justify-between px-4 py-2 sm:px-7">
-            <a :href="homeUrl" class="flex items-center gap-3" aria-label="Doomsday Clock home">
+            <Link :href="homeUrl" class="flex items-center gap-3" aria-label="Doomsday Clock home">
                 <img src="/images/doomsday/doomsday_logo_transparent.png" alt="Doomsday Clock" class="h-9 w-auto sm:h-10" />
-            </a>
+            </Link>
 
             <nav class="hidden items-center gap-8 text-sm uppercase tracking-[0.18em] lg:flex">
-                <a :href="homeUrl" :class="['border-b-2 px-2 pb-2 pt-1', navClass('home')]">{{ t('home') }}</a>
-                <a :href="aboutUrl" :class="['border-b-2 px-2 pb-2 pt-1', navClass('about')]">{{ t('about') }}</a>
+                <Link :href="homeUrl" :class="['border-b-2 px-2 pb-2 pt-1', navClass('home')]">{{ t('home') }}</Link>
+                <Link :href="aboutUrl" :class="['border-b-2 px-2 pb-2 pt-1', navClass('about')]">{{ t('about') }}</Link>
             </nav>
 
             <div class="flex items-center gap-1.5 sm:gap-2.5">

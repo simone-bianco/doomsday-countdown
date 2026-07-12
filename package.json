@@ -5,7 +5,7 @@
     "scripts": {
         "build": "vite build",
         "build:ssr": "npm run ziggy:generate && vite build --ssr",
-        "build:production": "npm run build && npm run build:ssr",
+        "build:production": "node scripts/production-assets.mjs prepare && npm run build && npm run build:ssr && node scripts/production-assets.mjs verify",
         "dev": "vite",
         "test:ssr": "node tests/Node/ssr-hydration.mjs",
         "ziggy:generate": "php artisan ziggy:generate resources/js/generated/ziggy.js --no-interaction"

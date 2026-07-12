@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { AnimatePresence, motion } from 'motion-v';
-import { Head } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
+import { route } from '../../../../vendor/tightenco/ziggy';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import CountdownList from '@/Components/Doomsday/CountdownList.vue';
 import HeroSection from '@/Components/Doomsday/HeroSection.vue';
@@ -81,7 +82,7 @@ const pageStateMotion = computed(() => resolveMotionPreset(panelReveal, reducedM
                     </div>
                     <footer class="mx-auto flex max-w-[1760px] items-center justify-between px-4 pb-8 text-xs text-ui-muted-foreground sm:px-7">
                         <span>All countdowns are editorial estimates based on public-source scenario data.</span>
-                        <a :href="`/about?lang=${page.current_locale}`" class="text-ui-primary">Learn more about our methodology</a>
+                        <Link :href="route('about', { lang: page.current_locale })" class="text-ui-primary">Learn more about our methodology</Link>
                     </footer>
                 </motion.div>
             </template>

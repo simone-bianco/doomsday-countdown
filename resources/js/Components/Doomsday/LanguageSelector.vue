@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue';
+import { Link } from '@inertiajs/vue3';
 import { Button, Dropdown } from '@simone-bianco/vue-ui-components';
 import { Globe2 } from 'lucide-vue-next';
 import { setLanguage } from '@/i18n';
@@ -26,7 +27,7 @@ onMounted(() => {
             </Button>
         </template>
         <template #content>
-            <a
+            <Link
                 v-for="language in languages"
                 :key="language.code"
                 :href="language.url"
@@ -38,7 +39,7 @@ onMounted(() => {
                     {{ language.native_label }}
                 </span>
                 <span v-if="language.is_current" class="text-ui-primary">✓</span>
-            </a>
+            </Link>
         </template>
     </Dropdown>
 </template>

@@ -86,4 +86,24 @@ final class ProductionReleaseOperationsContractTest extends TestCase
         $this->assertStringContainsString('not an analytics integration', $evidence);
         $this->assertStringContainsString('not an external health dependency', $evidence);
     }
+
+    public function test_production_environment_and_vite_assets_fail_closed(): void
+    {
+        $environment = (string) file_get_contents(__DIR__.'/../../.env.prod');
+        $package = json_decode((string) file_get_contents(__DIR__.'/../../package.json'), true, flags: JSON_THROW_ON_ERROR);
+        $assetGuard = (string) file_get_contents(__DIR__.'/../../scripts/production-assets.mjs');
+        $productionConfig = (string) file_get_contents(__DIR__.'/../../config/production.php');
+
+        $this->assertMatchesRegularExpression('/^APP_ENV=production$/m', $environment);
+        $this->assertMatchesRegularExpression('/^APP_DEBUG=false$/m', $environment);
+        $this->assertMatchesRegularExpression('/^APP_KEY=$/m', $environment);
+        $this->assertMatchesRegularExpression('/^SESSION_SECURE_COOKIE=true$/m', $environment);
+        $this->assertMatchesRegularExpression('/^SESSION_HTTP_ONLY=true$/m', $environment);
+        $this->assertMatchesRegularExpression('/^CACHE_PREFIX=.*production.*$/m', $environment);
+        $this->assertStringContainsString('scripts/production-assets.mjs prepare', $package['scripts']['build:production']);
+        $this->assertStringContainsString('scripts/production-assets.mjs verify', $package['scripts']['build:production']);
+        $this->assertStringContainsString("resolve(root, 'public/hot')", $assetGuard);
+        $this->assertStringContainsString("resolve(root, 'public/build/manifest.json')", $assetGuard);
+        $this->assertStringContainsString("base_path('.env.prod')", $productionConfig);
+    }
 }
